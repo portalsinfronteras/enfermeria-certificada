@@ -1,0 +1,66 @@
+@import "tailwindcss";
+
+@layer utilities {
+  @keyframes dropFall {
+    0% {
+      top: 10px;
+      opacity: 0;
+      transform: scale(0.6);
+    }
+    20% {
+      opacity: 1;
+      transform: scale(1);
+    }
+    85% {
+      top: 90px;
+      opacity: 1;
+      transform: scale(1.1);
+    }
+    100% {
+      top: 105px;
+      opacity: 0;
+      transform: scale(0.5);
+    }
+  }
+
+  .animate-drop-fall {
+    animation: dropFall 1.5s infinite cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  /* Touch and horizontal scroll helpers */
+  .touch-scroll {
+    -webkit-overflow-scrolling: touch;
+    touch-action: pan-x;
+  }
+
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+}
+
+/* Custom clinical dark scrollbar in Teal and Deep Navy */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #061824;
+}
+::-webkit-scrollbar-thumb {
+  background: #12425a;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #22b8af;
+}
+
+/* Base mobile responsive smoothing */
+html, body {
+  overflow-x: hidden;
+  max-width: 100vw;
+  -webkit-tap-highlight-color: transparent;
+}
