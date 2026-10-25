@@ -11,7 +11,7 @@ export default defineConfig(() => {
       tailwindcss(),
       VitePWA({
         registerType: 'autoUpdate',
-        includeAssets: ['favicon.ico', 'icon.svg', 'assets/aistudio/*'],
+        includeAssets: ['favicon.ico', 'icon.svg', 'icon-192.png', 'icon-512.png', 'apple-touch-icon.png', 'assets/aistudio/*'],
         manifest: {
           id: '/',
           name: 'Enfermería Certificada - Lic. Miguel Pantoja',
@@ -20,20 +20,28 @@ export default defineConfig(() => {
           theme_color: '#071d2b',
           background_color: '#061824',
           display: 'standalone',
+          orientation: 'portrait',
           start_url: '/',
           scope: '/',
+          categories: ['medical', 'education', 'health'],
           icons: [
             {
-              src: '/icon.svg',
-              sizes: 'any',
-              type: 'image/svg+xml',
+              src: '/icon-192.png',
+              sizes: '192x192',
+              type: 'image/png',
               purpose: 'any',
             },
             {
-              src: '/assets/aistudio/WhatsApp_Image_2026-10-22_at_4.29.58_PM_412bb916.jpeg',
+              src: '/icon-512.png',
               sizes: '512x512',
-              type: 'image/jpeg',
+              type: 'image/png',
               purpose: 'any',
+            },
+            {
+              src: '/icon-512.png',
+              sizes: '512x512',
+              type: 'image/png',
+              purpose: 'maskable',
             },
           ],
         },
@@ -74,10 +82,7 @@ export default defineConfig(() => {
       },
     },
     server: {
-      // HMR is disabled in AI Studio via DISABLE_HMR env var.
-      // Do not modify—file watching is disabled to prevent flickering during agent edits.
       hmr: process.env.DISABLE_HMR !== 'true',
-      // Disable file watching when DISABLE_HMR is true to save CPU during agent edits.
       watch: process.env.DISABLE_HMR === 'true' ? null : {},
     },
   };
