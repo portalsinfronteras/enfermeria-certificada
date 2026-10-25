@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Header, TabType } from './components/Header';
 import { VademecumTab } from './components/VademecumTab';
 import { DiagnosticosMedicosTab } from './components/DiagnosticosMedicosTab';
@@ -10,6 +10,7 @@ import { CrecimientoTab } from './components/CrecimientoTab';
 import { GoteoTab } from './components/GoteoTab';
 import { VacunasTab } from './components/VacunasTab';
 import { SimulacroEnaeTab } from './components/SimulacroEnaeTab';
+import { CursosTab, decodeCertificateToken, IssuedCertificate } from './components/CursosTab';
 
 // New Advanced Clinical Suites
 import { EscalasTab } from './components/EscalasTab';
@@ -22,6 +23,26 @@ import { OfflineIndicator } from './components/OfflineIndicator';
 export default function App() {
   const [activeTab, setActiveTab] = useState<TabType>('vademecum');
   const [isFooterDonationOpen, setIsFooterDonationOpen] = useState(false);
+  const [qrVerifiedCert, setQrVerifiedCert] = useState<IssuedCertificate | null>(null);
+
+  // Detectar automáticamente si el usuario escaneó el Código QR de un Certificado (?verificar=...&datos=...)
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      const token = params.get('datos');
+      const verifyCode = params.get('verificar');
+
+      if (token) {
+        const decoded = decodeCertificateToken(token);
+        if (decoded) {
+          setQrVerifiedCert(decoded);
+          setActiveTab('cursos');
+        }
+      } else if (verifyCode) {
+        setActiveTab('cursos');
+      }
+    }
+  }, []);
 
   return (
     <div className="min-h-screen flex flex-col bg-[#061824] text-slate-100 antialiased selection:bg-[#22b8af] selection:text-[#061824] overflow-x-hidden">
@@ -47,6 +68,17 @@ export default function App() {
         {activeTab === 'crecimiento' && <CrecimientoTab />}
         {activeTab === 'imc' && <ImcTab />}
         {activeTab === 'enae' && <SimulacroEnaeTab />}
+        {activeTab === 'cursos' && (
+          <CursosTab
+            initialVerifyData={qrVerifiedCert}
+            onClearVerify={() => {
+              setQrVerifiedCert(null);
+              if (typeof window !== 'undefined' && window.location.search) {
+                window.history.replaceState({}, '', window.location.pathname);
+              }
+            }}
+          />
+        )}
       </main>
 
       {/* Clinical Reference Footer */}
@@ -54,8 +86,8 @@ export default function App() {
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-3 sm:gap-4">
           <div className="flex items-center gap-3 w-full md:w-auto text-left">
             <img
-              src="/assets/aistudio/WhatsApp_Image_2026-10-22_at_4.29.58_PM_412bb916.jpeg"
-              alt="Logo"
+              src="/icon-192.png"
+              alt="Logo Enfermería Certificada"
               className="w-8 h-8 rounded-full border border-[#22b8af] shrink-0"
             />
             <div className="min-w-0">
