@@ -14,7 +14,8 @@ import {
   HeartPulse,
   FileSpreadsheet,
   ChevronDown,
-  Layers
+  Layers,
+  Award
 } from 'lucide-react';
 import { DonationModal } from './DonationModal';
 import { PWAInstallButton } from './PWAInstallButton';
@@ -33,7 +34,8 @@ export type TabType =
   | 'vacunas'
   | 'crecimiento'
   | 'imc'
-  | 'enae';
+  | 'enae'
+  | 'cursos';
 
 interface HeaderProps {
   activeTab: TabType;
@@ -68,11 +70,12 @@ export const Header: React.FC<HeaderProps> = ({ activeTab, setActiveTab }) => {
     { id: 'nanda', label: 'NANDA-NOC-NIC (PLACE)', category: 'gestion', icon: FileSpreadsheet, color: 'text-amber-300' },
     { id: 'soapie', label: 'SOAPIE IA', category: 'gestion', icon: Wand2, color: 'text-amber-400' },
 
-    // 📈 Docencia & Niño (4)
+    // 📈 Docencia & Niño (5)
+    { id: 'cursos', label: 'Cursos + Certificado QR', category: 'docencia', icon: Award, color: 'text-amber-400' },
+    { id: 'enae', label: 'Simulacro ENAE', category: 'docencia', icon: GraduationCap, color: 'text-amber-300' },
     { id: 'vacunas', label: 'Inmunizaciones', category: 'docencia', icon: Syringe, color: 'text-rose-400' },
     { id: 'crecimiento', label: 'Curvas / TPED', category: 'docencia', icon: LineChart, color: 'text-teal-300' },
     { id: 'imc', label: 'IMC / Z-Score', category: 'docencia', icon: Scale, color: 'text-cyan-400' },
-    { id: 'enae', label: 'Simulacro ENAE', category: 'docencia', icon: GraduationCap, color: 'text-amber-300' },
   ];
 
   // Identificar categoría activa
@@ -152,7 +155,7 @@ export const Header: React.FC<HeaderProps> = ({ activeTab, setActiveTab }) => {
           <div className="flex items-center space-x-2.5 sm:space-x-3 min-w-0">
             <div className="relative w-9 h-9 sm:w-11 sm:h-11 rounded-full p-0.5 bg-gradient-to-tr from-[#179c94] via-[#22b8af] to-[#42edd8] shadow-lg shadow-[#22b8af]/25 shrink-0">
               <img
-                src="/assets/aistudio/WhatsApp_Image_2026-10-22_at_4.29.58_PM_412bb916.jpeg"
+                src="/icon-192.png"
                 alt="Logo Enfermería Certificada"
                 className="w-full h-full rounded-full object-cover bg-white"
               />
