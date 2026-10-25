@@ -18,7 +18,9 @@ import {
   ArrowLeft,
   Check,
   AlertCircle,
-  ExternalLink
+  ExternalLink,
+  Download,
+  Share2
 } from 'lucide-react';
 import { COURSES_DATA, ClinicalCourse } from '../data/coursesData';
 
@@ -95,10 +97,12 @@ export const CursosTab: React.FC<CursosTabProps> = ({ initialVerifyData, onClear
   const [activeModuleIndex, setActiveModuleIndex] = useState<number>(0);
   const [viewMode, setViewMode] = useState<'catalog' | 'study' | 'exam' | 'certificate' | 'verify'>('catalog');
 
+  // Student identity state
   const [studentName, setStudentName] = useState<string>(() => localStorage.getItem('ec_student_name') || '');
   const [studentDocType, setStudentDocType] = useState<'DNI' | 'CEP' | 'CE'>(() => (localStorage.getItem('ec_student_doctype') as any) || 'CEP');
   const [studentDocNumber, setStudentDocNumber] = useState<string>(() => localStorage.getItem('ec_student_docnum') || '');
 
+  // Course progress: { [courseId]: { completedModules: string[], bestScore?: number, certId?: string } }
   const [progress, setProgress] = useState<Record<string, { completedModules: string[]; bestScore?: number; certId?: string }>>(() => {
     try {
       const saved = localStorage.getItem(STORAGE_KEY_PROGRESS);
@@ -108,6 +112,7 @@ export const CursosTab: React.FC<CursosTabProps> = ({ initialVerifyData, onClear
     }
   });
 
+  // Issued certificates list
   const [certificates, setCertificates] = useState<IssuedCertificate[]>(() => {
     try {
       const saved = localStorage.getItem(STORAGE_KEY_CERTS);
@@ -117,14 +122,17 @@ export const CursosTab: React.FC<CursosTabProps> = ({ initialVerifyData, onClear
     }
   });
 
+  // Module self-check state
   const [moduleAnswer, setModuleAnswer] = useState<number | null>(null);
   const [moduleChecked, setModuleChecked] = useState<boolean>(false);
 
+  // Final exam answers: { [questionId]: selectedOptionIndex }
   const [examAnswers, setExamAnswers] = useState<Record<string, number>>({});
   const [examSubmitted, setExamSubmitted] = useState<boolean>(false);
   const [examScore, setExamScore] = useState<number>(0);
   const [activeCertificate, setActiveCertificate] = useState<IssuedCertificate | null>(null);
 
+  // Manual code verification search
   const [searchVerifyCode, setSearchVerifyCode] = useState<string>('');
   const [verifiedCertResult, setVerifiedCertResult] = useState<IssuedCertificate | null>(null);
   const [verifyError, setVerifyError] = useState<string>('');
@@ -204,11 +212,13 @@ export const CursosTab: React.FC<CursosTabProps> = ({ initialVerifyData, onClear
         correctCount++;
       }
     });
+    // Vigésimal score (0 to 20)
     const calculatedScore = Math.round((correctCount / selectedCourse.finalExam.length) * 20);
     setExamScore(calculatedScore);
     setExamSubmitted(true);
 
     if (calculatedScore >= 14) {
+      // Check if certificate already issued for this course + student
       const existingCert = certificates.find(
         (c) =>
           c.courseId === selectedCourse.id &&
@@ -284,10 +294,166 @@ export const CursosTab: React.FC<CursosTabProps> = ({ initialVerifyData, onClear
     return `https://api.qrserver.com/v1/create-qr-code/?size=220x220&margin=8&data=${encodeURIComponent(verifyUrl)}`;
   };
 
+  const loadImageElement = (src: string): Promise<HTMLImageElement> => {
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      img.crossOrigin = 'anonymous';
+      img.onload = () => resolve(img);
+      img.onerror = (e) => reject(e);
+      img.src = src;
+    });
+  };
+
+  // Renderiza la Constancia sobre la plantilla limpia oficial (1024x722 -> escalada a 2048x1444 HD)
+  const renderCertificateCanvas = async (cert: IssuedCertificate): Promise<HTMLCanvasElement> => {
+    const canvas = document.createElement('canvas');
+    const W = 2048;
+    const H = 1444;
+    canvas.width = W;
+    canvas.height = H;
+    const ctx = canvas.getContext('2d')!;
+
+    // 1. Dibujar tu plantilla limpia oficial de fondo
+    const bgImg = await loadImageElement('/plantilla-certificado.jpg');
+    ctx.drawImage(bgImg, 0, 0, W, H);
+
+    // 2. Título principal: CONSTANCIA
+    ctx.textAlign = 'center';
+    ctx.fillStyle = '#16264c';
+    ctx.font = '900 104px Montserrat, "Segoe UI", Arial, sans-serif';
+    ctx.fillText('CONSTANCIA', W / 2 - 40, 345);
+
+    // 3. Subtítulo
+    ctx.fillStyle = '#4b5563';
+    ctx.font = '500 38px Montserrat, "Segoe UI", Arial, sans-serif';
+    ctx.fillText('de Capacitación y Aprobación Académica en Enfermería', W / 2 - 40, 412);
+
+    ctx.fillStyle = '#6b7280';
+    ctx.font = '500 30px Montserrat, "Segoe UI", Arial, sans-serif';
+    ctx.fillText('Por la presente, se hace constar que:', W / 2 - 40, 466);
+
+    // 4. Nombre del participante en letra cursiva caligráfica azul marino
+    ctx.fillStyle = '#16264c';
+    ctx.font = 'italic 400 108px "Great Vibes", "Brush Script MT", "Segoe Script", Georgia, cursive';
+    ctx.fillText(cert.studentName, W / 2 - 20, 595);
+
+    // 5. Párrafo central con datos del curso, documento, horas y nota
+    ctx.fillStyle = '#475569';
+    ctx.font = '500 28px Montserrat, "Segoe UI", Arial, sans-serif';
+    const line1 = `Identificado(a) con ${cert.studentDocType} N° ${cert.studentDocNumber}, ha culminado y aprobado satisfactoriamente el Curso de Actualización:`;
+    ctx.fillText(line1, W / 2, 678);
+
+    ctx.fillStyle = '#0f766e';
+    ctx.font = '800 36px Montserrat, "Segoe UI", Arial, sans-serif';
+    ctx.fillText(`“${cert.courseTitle.toUpperCase()}”`, W / 2, 738);
+
+    ctx.fillStyle = '#334155';
+    ctx.font = '600 27px Montserrat, "Segoe UI", Arial, sans-serif';
+    const line3 = `Desarrollado con una duración de ${cert.academicHours} HORAS ACADÉMICAS (${cert.credits} CRÉDITOS) y calificación aprobatoria de ${cert.score}/20.`;
+    ctx.fillText(line3, W / 2, 795);
+
+    ctx.fillStyle = '#5b6472';
+    ctx.font = '400 25px Montserrat, "Segoe UI", Arial, sans-serif';
+    ctx.fillText(
+      'Reconocemos su compromiso, dedicación y esfuerzo en su actualización continua,',
+      W / 2,
+      852
+    );
+    ctx.fillText(
+      'que refleja su vocación y profesionalismo en el cuidado de la salud.',
+      W / 2,
+      890
+    );
+
+    // 6. Fecha justo encima de la firma que ya viene en la plantilla (derecha)
+    ctx.textAlign = 'center';
+    ctx.fillStyle = '#475569';
+    ctx.font = '600 28px Montserrat, "Segoe UI", Arial, sans-serif';
+    ctx.fillText(`Lima, ${cert.issueDate}`, 1640, 1085);
+
+    // 7. Recuadro de Código QR y Registro en la parte inferior central
+    const boxX = 640;
+    const boxY = 1145;
+    const boxW = 630;
+    const boxH = 210;
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.94)';
+    ctx.strokeStyle = '#cbd5e1';
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.roundRect(boxX, boxY, boxW, boxH, 20);
+    ctx.fill();
+    ctx.stroke();
+
+    try {
+      const qrImg = await loadImageElement(getQrImageUrl(cert));
+      ctx.drawImage(qrImg, boxX + 20, boxY + 20, 170, 170);
+    } catch {}
+
+    ctx.textAlign = 'left';
+    ctx.fillStyle = '#16264c';
+    ctx.font = '800 23px Montserrat, "Segoe UI", Arial, sans-serif';
+    ctx.fillText('CONSTANCIA CON QR VERIFICABLE', boxX + 208, boxY + 58);
+
+    ctx.fillStyle = '#334155';
+    ctx.font = '600 21px Montserrat, "Segoe UI", Arial, sans-serif';
+    ctx.fillText(`Reg. N°: ${cert.certId} (${cert.courseCode})`, boxX + 208, boxY + 95);
+    ctx.fillText(`Titular: ${cert.studentDocType} ${cert.studentDocNumber}`, boxX + 208, boxY + 130);
+
+    ctx.fillStyle = '#0d9488';
+    ctx.font = '700 21px Montserrat, "Segoe UI", Arial, sans-serif';
+    ctx.fillText('www.enfermeriacertificada.com', boxX + 208, boxY + 166);
+
+    return canvas;
+  };
+
+  const handleDownloadImage = async (cert: IssuedCertificate) => {
+    try {
+      const canvas = await renderCertificateCanvas(cert);
+      const dataUrl = canvas.toDataURL('image/png');
+      const link = document.createElement('a');
+      link.href = dataUrl;
+      link.download = `Constancia_${cert.certId}_${cert.studentName.replace(/\s+/g, '_')}.png`;
+      link.click();
+    } catch (err) {
+      console.error('Error al generar imagen:', err);
+    }
+  };
+
+  const handleShareSocial = async (cert: IssuedCertificate) => {
+    try {
+      const canvas = await renderCertificateCanvas(cert);
+      const blob: Blob | null = await new Promise((res) => canvas.toBlob(res, 'image/png'));
+      const shareText = `¡Acabo de aprobar el curso "${cert.courseTitle}" (${cert.academicHours} hrs) en Enfermería Certificada! 🩺🎓 Verifica mi constancia aquí: ${getVerificationUrl(cert)}`;
+
+      if (blob && navigator.share) {
+        const file = new File([blob], `Constancia_${cert.certId}.png`, { type: 'image/png' });
+        if (navigator.canShare && navigator.canShare({ files: [file] })) {
+          await navigator.share({
+            title: `Constancia - ${cert.courseTitle}`,
+            text: shareText,
+            files: [file],
+          });
+          return;
+        }
+        await navigator.share({
+          title: `Constancia - ${cert.courseTitle}`,
+          text: shareText,
+          url: getVerificationUrl(cert),
+        });
+        return;
+      }
+
+      // Fallback en PC: Descargar la imagen lista y abrir WhatsApp para compartir
+      await handleDownloadImage(cert);
+      window.open(`https://wa.me/?text=${encodeURIComponent(shareText)}`, '_blank');
+    } catch (err) {
+      console.error('Error al compartir:', err);
+    }
+  };
+
   const handlePrintCertificate = (cert: IssuedCertificate) => {
-    const verifyUrl = getVerificationUrl(cert);
     const qrUrl = getQrImageUrl(cert);
-    const logoUrl = `${window.location.origin}/icon-512.png`;
+    const tplUrl = `${window.location.origin}/plantilla-certificado.jpg`;
 
     const printWindow = window.open('', '_blank');
     if (!printWindow) return;
@@ -297,7 +463,8 @@ export const CursosTab: React.FC<CursosTabProps> = ({ initialVerifyData, onClear
       <html lang="es">
       <head>
         <meta charset="UTF-8" />
-        <title>Certificado_${cert.certId}_${cert.studentName.replace(/\s+/g, '_')}</title>
+        <title>Constancia_${cert.certId}_${cert.studentName.replace(/\s+/g, '_')}</title>
+        <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Montserrat:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
         <style>
           @page {
             size: A4 landscape;
@@ -311,327 +478,172 @@ export const CursosTab: React.FC<CursosTabProps> = ({ initialVerifyData, onClear
           body {
             margin: 0;
             padding: 0;
-            font-family: 'Georgia', 'Times New Roman', serif;
-            background: #061824;
-            color: #0f172a;
+            background: #0f172a;
+            font-family: 'Montserrat', 'Segoe UI', Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
           }
           .page {
             width: 297mm;
             height: 210mm;
-            padding: 12mm;
-            background: linear-gradient(135deg, #061824 0%, #0b2d42 50%, #061824 100%);
             position: relative;
-            page-break-after: always;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            overflow: hidden;
+            background: #ffffff;
           }
-          .cert-frame {
+          /* Tu plantilla en limpio ocupa exactamente el 100% del fondo */
+          .bg-template {
+            position: absolute;
+            inset: 0;
             width: 100%;
             height: 100%;
-            background: #ffffff;
-            border: 4px solid #179c94;
-            border-radius: 14px;
-            padding: 10mm 14mm;
-            position: relative;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            box-shadow: inset 0 0 0 3px #d4af37, 0 20px 40px rgba(0,0,0,0.4);
+            object-fit: fill;
+            z-index: 1;
           }
-          .watermark {
+          .overlay-content {
             position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 320px;
-            height: 320px;
-            opacity: 0.05;
-            pointer-events: none;
+            inset: 0;
+            z-index: 5;
           }
-          .top-bar {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            border-bottom: 2px solid #0e7490;
-            padding-bottom: 10px;
-          }
-          .brand-left {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-          }
-          .brand-logo {
-            width: 72px;
-            height: 72px;
-            border-radius: 50%;
-            border: 2.5px solid #179c94;
-            object-fit: cover;
-          }
-          .brand-title {
-            font-family: 'Segoe UI', Arial, sans-serif;
-            font-size: 19px;
-            font-weight: 900;
-            color: #071d2b;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin: 0;
-          }
-          .brand-sub {
-            font-family: 'Segoe UI', Arial, sans-serif;
-            font-size: 11px;
-            font-weight: 700;
-            color: #0d9488;
-            margin-top: 3px;
-          }
-          .reg-badge {
-            text-align: right;
-            font-family: 'Segoe UI', Arial, sans-serif;
-          }
-          .reg-code {
-            background: #071d2b;
-            color: #32d2c2;
-            padding: 5px 12px;
-            border-radius: 6px;
-            font-size: 12px;
-            font-weight: 800;
-            letter-spacing: 0.8px;
-          }
-          .center-content {
+          /* Bloque central encajado en la zona blanca limpia de tu plantilla */
+          .center-block {
+            position: absolute;
+            top: 17%;
+            left: 6%;
+            right: 8%;
             text-align: center;
-            margin: 6px 0;
-            z-index: 2;
           }
-          .cert-heading {
-            font-size: 34px;
+          .main-title {
+            font-size: 40pt;
             font-weight: 900;
-            color: #071d2b;
-            letter-spacing: 4px;
-            margin: 4px 0 2px;
+            color: #16264c;
+            letter-spacing: 3px;
             text-transform: uppercase;
-          }
-          .cert-subheading {
-            font-family: 'Segoe UI', Arial, sans-serif;
-            font-size: 12px;
-            font-weight: 700;
-            color: #b45309;
-            letter-spacing: 2.5px;
-            text-transform: uppercase;
-            margin-bottom: 12px;
-          }
-          .grant-label {
-            font-family: 'Segoe UI', Arial, sans-serif;
-            font-size: 13px;
-            color: #475569;
             margin: 0;
+            line-height: 1;
           }
-          .student-name {
-            font-size: 30px;
-            font-weight: bold;
-            color: #061824;
-            margin: 8px auto 4px;
-            padding-bottom: 4px;
-            border-bottom: 2px solid #cbd5e1;
-            max-width: 82%;
-            text-transform: uppercase;
+          .sub-title {
+            font-size: 14pt;
+            font-weight: 500;
+            color: #4b5563;
+            margin: 2.5mm 0 1.5mm;
           }
-          .student-doc {
-            font-family: 'Segoe UI', Arial, sans-serif;
-            font-size: 12px;
+          .grant-intro {
+            font-size: 11pt;
+            font-weight: 500;
+            color: #6b7280;
+            margin: 0 0 2mm;
+          }
+          .student-script-name {
+            font-family: 'Great Vibes', 'Brush Script MT', 'Segoe Script', cursive;
+            font-size: 46pt;
+            font-weight: 400;
+            color: #16264c;
+            margin: 1mm 0 3mm;
+            line-height: 1.08;
+          }
+          .description-text {
+            font-size: 10.5pt;
+            font-weight: 400;
+            color: #475569;
+            line-height: 1.6;
+            max-width: 222mm;
+            margin: 0 auto;
+          }
+          .description-text strong {
+            color: #16264c;
             font-weight: 700;
-            color: #334155;
-            margin-bottom: 10px;
           }
-          .course-reason {
-            font-family: 'Segoe UI', Arial, sans-serif;
-            font-size: 13.5px;
-            color: #334155;
-            max-width: 88%;
-            margin: 0 auto 8px;
-            line-height: 1.45;
-          }
-          .course-title {
-            font-family: 'Segoe UI', Arial, sans-serif;
-            font-size: 23px;
-            font-weight: 900;
+          .course-highlight {
+            display: block;
+            font-size: 14pt;
+            font-weight: 800;
             color: #0f766e;
-            margin: 6px auto 10px;
+            margin: 2mm 0;
             text-transform: uppercase;
-            max-width: 90%;
           }
-          .metrics-row {
-            display: inline-flex;
-            gap: 18px;
-            background: #f0fdfa;
-            border: 1px solid #99f6e4;
-            padding: 8px 22px;
-            border-radius: 999px;
-            font-family: 'Segoe UI', Arial, sans-serif;
-            font-size: 12.5px;
-            color: #0f172a;
-            margin-top: 4px;
+          /* Fecha posicionada exactamente encima de la firma de tu plantilla (abajo a la derecha) */
+          .date-above-sig {
+            position: absolute;
+            bottom: 23.5%;
+            right: 8.5%;
+            width: 72mm;
+            text-align: center;
+            font-size: 10.5pt;
+            font-weight: 600;
+            color: #475569;
           }
-          .bottom-bar {
-            display: flex;
-            align-items: flex-end;
-            justify-content: space-between;
-            margin-top: 8px;
-            padding-top: 8px;
-          }
-          .qr-box {
+          /* Código QR posicionado en el espacio limpio inferior central (entre la onda izquierda y tu firma) */
+          .qr-bottom-center {
+            position: absolute;
+            bottom: 6%;
+            left: 31%;
             display: flex;
             align-items: center;
             gap: 10px;
-            text-align: left;
-            font-family: 'Segoe UI', Arial, sans-serif;
+            background: rgba(255, 255, 255, 0.94);
+            border: 1.5px solid #cbd5e1;
+            border-radius: 10px;
+            padding: 5px 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.06);
           }
           .qr-img {
-            width: 84px;
-            height: 84px;
-            border: 2px solid #071d2b;
-            border-radius: 8px;
-            padding: 2px;
-            background: #fff;
+            width: 20mm;
+            height: 20mm;
+            display: block;
           }
-          .qr-info {
-            font-size: 10px;
+          .qr-meta {
+            font-size: 8pt;
             color: #475569;
-            max-width: 210px;
             line-height: 1.35;
-          }
-          .signature-block {
-            text-align: center;
-            font-family: 'Segoe UI', Arial, sans-serif;
-            min-width: 240px;
-          }
-          .sig-script {
-            font-family: 'Brush Script MT', 'Segoe Script', cursive;
-            font-size: 28px;
-            color: #0c4a6e;
-            margin-bottom: -6px;
-          }
-          .sig-line {
-            border-top: 2px solid #071d2b;
-            padding-top: 5px;
-            font-size: 13px;
-            font-weight: 800;
-            color: #071d2b;
-          }
-          .sig-role {
-            font-size: 11px;
-            color: #0d9488;
-            font-weight: 700;
-          }
-          .seal-circle {
-            width: 82px;
-            height: 82px;
-            border: 3px double #d4af37;
-            border-radius: 50%;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            font-family: 'Segoe UI', Arial, sans-serif;
-            background: radial-gradient(circle, #fef9c3 0%, #fde047 100%);
-            color: #713f12;
-            font-weight: 900;
-            font-size: 9.5px;
-            padding: 6px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.12);
-          }
-          .syllabus-box {
-            margin-top: 8px;
-            font-family: 'Segoe UI', Arial, sans-serif;
-            font-size: 11px;
-            color: #475569;
-            background: #f8fafc;
-            border: 1px solid #e2e8f0;
-            border-radius: 8px;
-            padding: 6px 12px;
             text-align: left;
+          }
+          .qr-meta strong {
+            color: #16264c;
+            font-size: 8.5pt;
           }
         </style>
       </head>
       <body>
         <div class="page">
-          <div class="cert-frame">
-            <img src="${logoUrl}" class="watermark" alt="" />
+          <img src="${tplUrl}" class="bg-template" alt="Plantilla Oficial" />
 
-            <div class="top-bar">
-              <div class="brand-left">
-                <img src="${logoUrl}" class="brand-logo" alt="Logo" />
-                <div>
-                  <h1 class="brand-title">Enfermería Certificada</h1>
-                  <div class="brand-sub">PLATAFORMA DE EDUCACIÓN CONTINUA Y ACTUALIZACIÓN CLÍNICA • PERÚ</div>
-                  <div style="font-family: 'Segoe UI', sans-serif; font-size: 10px; color: #64748b; margin-top: 2px;">
-                    www.enfermeriacertificada.com | Dirección Académica: Lic. Miguel Pantoja A. (CEP 120064)
-                  </div>
-                </div>
+          <div class="overlay-content">
+            <div class="center-block">
+              <h1 class="main-title">CONSTANCIA</h1>
+              <div class="sub-title">
+                de Capacitación y Aprobación Académica en Enfermería
               </div>
-              <div class="reg-badge">
-                <div class="reg-code">REGISTRO N° ${cert.certId}</div>
-                <div style="font-size: 10.5px; color: #475569; margin-top: 4px; font-weight: 600;">
-                  Código de Curso: ${cert.courseCode}
-                </div>
+              <div class="grant-intro">Por la presente, se hace constar que:</div>
+
+              <div class="student-script-name">${cert.studentName}</div>
+
+              <div class="description-text">
+                Identificado(a) con <strong>${cert.studentDocType} N° ${cert.studentDocNumber}</strong>, ha culminado y aprobado satisfactoriamente el Curso de Actualización Clínica:
+                <span class="course-highlight">“${cert.courseTitle}”</span>
+                Desarrollado con una duración de <strong>${cert.academicHours} HORAS ACADÉMICAS (${cert.credits} CRÉDITOS)</strong> y calificación aprobatoria de <strong>${cert.score}/20</strong>.<br/>
+                Reconocemos su compromiso, dedicación y esfuerzo en su actualización continua, que refleja su vocación y profesionalismo en el cuidado de la salud.
               </div>
             </div>
 
-            <div class="center-content">
-              <div class="cert-heading">CERTIFICADO</div>
-              <div class="cert-subheading">DE CAPACITACIÓN Y APROBACIÓN ACADÉMICA</div>
-
-              <p class="grant-label">Otorgado a:</p>
-              <div class="student-name">${cert.studentName}</div>
-              <div class="student-doc">Documento / Registro: ${cert.studentDocType} N° ${cert.studentDocNumber}</div>
-
-              <p class="course-reason">
-                Por haber culminado y aprobado satisfactoriamente todos los módulos teóricos-prácticos y la evaluación final del curso de actualización clínica en:
-              </p>
-              <div class="course-title">“${cert.courseTitle}”</div>
-
-              <div class="metrics-row">
-                <span><strong>Valor Académico:</strong> ${cert.academicHours} Horas Académicas (${cert.credits} Créditos)</span>
-                <span>•</span>
-                <span><strong>Calificación Final:</strong> ${cert.score} / 20 (Aprobado)</span>
-                <span>•</span>
-                <span><strong>Modalidad:</strong> Virtual Autoinstructiva</span>
-              </div>
-
-              <div class="syllabus-box">
-                <strong>Módulos desarrollados:</strong> ${cert.modules.join(' • ')}
-              </div>
+            <div class="date-above-sig">
+              Lima, ${cert.issueDate}
             </div>
 
-            <div class="bottom-bar">
-              <div class="qr-box">
-                <img src="${qrUrl}" class="qr-img" alt="QR de Verificación" />
-                <div class="qr-info">
-                  <strong style="color: #071d2b; font-size: 11px;">CERTIFICADO CON QR VERIFICABLE</strong><br/>
-                  Escanee el código QR con la cámara de su celular o ingrese a <strong>enfermeriacertificada.com</strong> con el código <strong>${cert.certId}</strong> para validar su autenticidad.<br/>
-                  <span style="color: #0d9488; font-weight: 700;">Fecha de emisión: ${cert.issueDate}</span>
-                </div>
-              </div>
-
-              <div class="seal-circle">
-                <span>SELLO DE</span>
-                <span style="font-size: 11px; margin: 2px 0;">VALIDEZ</span>
-                <span>ACADÉMICA</span>
-                <span style="font-size: 8px; font-weight: 700; margin-top: 2px;">CEP 120064</span>
-              </div>
-
-              <div class="signature-block">
-                <div class="sig-script">Miguel Pantoja A.</div>
-                <div class="sig-line">Lic. Miguel Pantoja A.</div>
-                <div class="sig-role">Licenciado en Enfermería - CEP 120064</div>
-                <div style="font-size: 10px; color: #64748b;">Director General - Enfermería Certificada</div>
+            <div class="qr-bottom-center">
+              <img src="${qrUrl}" class="qr-img" alt="QR de Verificación" />
+              <div class="qr-meta">
+                <strong>CONSTANCIA CON QR VERIFICABLE</strong><br/>
+                Reg. N°: <strong>${cert.certId}</strong> (${cert.courseCode})<br/>
+                Titular: <strong>${cert.studentDocType} ${cert.studentDocNumber}</strong><br/>
+                <strong>www.enfermeriacertificada.com</strong>
               </div>
             </div>
           </div>
         </div>
         <script>
           window.onload = function() {
-            setTimeout(function() { window.print(); }, 400);
+            setTimeout(function() { window.print(); }, 450);
           };
         </script>
       </body>
@@ -640,6 +652,9 @@ export const CursosTab: React.FC<CursosTabProps> = ({ initialVerifyData, onClear
     printWindow.document.close();
   };
 
+  // ============================================================================
+  // VISTA 1: VALIDADOR PÚBLICO DE CERTIFICADO (QR)
+  // ============================================================================
   if (viewMode === 'verify') {
     return (
       <section className="space-y-6">
@@ -669,6 +684,7 @@ export const CursosTab: React.FC<CursosTabProps> = ({ initialVerifyData, onClear
           </button>
         </div>
 
+        {/* Buscador por código */}
         <form
           onSubmit={handleManualVerifySearch}
           className="bg-[#092233]/90 p-4 rounded-2xl border border-[#12425a] flex flex-col sm:flex-row gap-3"
@@ -766,6 +782,9 @@ export const CursosTab: React.FC<CursosTabProps> = ({ initialVerifyData, onClear
     );
   }
 
+  // ============================================================================
+  // VISTA 2: ESTUDIO DE MÓDULOS DEL CURSO SELECCIONADO
+  // ============================================================================
   if (viewMode === 'study' && selectedCourse) {
     const currentModule = selectedCourse.modules[activeModuleIndex];
     const courseProgress = progress[selectedCourse.id]?.completedModules || [];
@@ -774,6 +793,7 @@ export const CursosTab: React.FC<CursosTabProps> = ({ initialVerifyData, onClear
 
     return (
       <section className="space-y-5">
+        {/* Barra superior de retorno y progreso */}
         <div className="bg-[#071d2b]/95 rounded-2xl p-4 sm:p-5 border border-[#12425a] flex flex-col md:flex-row items-start md:items-center justify-between gap-4 shadow-xl">
           <div className="space-y-1">
             <button
@@ -802,6 +822,7 @@ export const CursosTab: React.FC<CursosTabProps> = ({ initialVerifyData, onClear
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
+          {/* Columna Izquierda: Índice de Módulos */}
           <div className="lg:col-span-4 space-y-2.5">
             <div className="bg-[#092233]/90 p-4 rounded-2xl border border-[#12425a] space-y-3">
               <div className="flex items-center justify-between">
@@ -870,6 +891,7 @@ export const CursosTab: React.FC<CursosTabProps> = ({ initialVerifyData, onClear
             </div>
           </div>
 
+          {/* Columna Derecha: Contenido del Módulo Activo */}
           <div className="lg:col-span-8 bg-[#092233]/90 p-5 sm:p-6 rounded-2xl border border-[#12425a] space-y-5 shadow-xl">
             <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[#12425a] pb-4">
               <div>
@@ -891,6 +913,7 @@ export const CursosTab: React.FC<CursosTabProps> = ({ initialVerifyData, onClear
               {currentModule.summary}
             </p>
 
+            {/* Desarrollo teórico-clínico */}
             <div className="space-y-3 text-xs sm:text-sm text-slate-200 leading-relaxed">
               {currentModule.content.map((paragraph, i) => (
                 <p key={i} className="bg-slate-950/40 p-3.5 rounded-xl border border-slate-800/60">
@@ -899,6 +922,7 @@ export const CursosTab: React.FC<CursosTabProps> = ({ initialVerifyData, onClear
               ))}
             </div>
 
+            {/* Puntos Clave de Enfermería */}
             <div className="bg-gradient-to-br from-[#072638] to-[#061c29] p-4 rounded-2xl border border-teal-500/30 space-y-2.5">
               <h4 className="text-xs sm:text-sm font-black text-[#32d2c2] flex items-center gap-2">
                 <Sparkles className="w-4 h-4" />
@@ -914,6 +938,7 @@ export const CursosTab: React.FC<CursosTabProps> = ({ initialVerifyData, onClear
               </ul>
             </div>
 
+            {/* Perla Clínica */}
             <div className="bg-amber-950/35 border border-amber-500/40 p-4 rounded-2xl space-y-1">
               <span className="text-[11px] font-black uppercase text-amber-300 block">
                 💡 Perla Clínica de Guardia
@@ -923,6 +948,7 @@ export const CursosTab: React.FC<CursosTabProps> = ({ initialVerifyData, onClear
               </p>
             </div>
 
+            {/* Pregunta de Autoevaluación del Módulo */}
             <div className="bg-slate-950/80 p-4 sm:p-5 rounded-2xl border border-slate-800 space-y-3">
               <div className="flex items-center gap-2 text-xs font-bold text-cyan-300">
                 <HelpCircle className="w-4 h-4" />
@@ -971,6 +997,7 @@ export const CursosTab: React.FC<CursosTabProps> = ({ initialVerifyData, onClear
               )}
             </div>
 
+            {/* Botón Completar y Avanzar */}
             <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-2">
               <button
                 type="button"
@@ -1014,6 +1041,9 @@ export const CursosTab: React.FC<CursosTabProps> = ({ initialVerifyData, onClear
     );
   }
 
+  // ============================================================================
+  // VISTA 3: EXAMEN FINAL Y EMISIÓN DE CERTIFICADO CON QR
+  // ============================================================================
   if (viewMode === 'exam' && selectedCourse) {
     const allAnswered = selectedCourse.finalExam.every((q) => examAnswers[q.id] !== undefined);
     const passed = examSubmitted && examScore >= 14;
@@ -1038,6 +1068,7 @@ export const CursosTab: React.FC<CursosTabProps> = ({ initialVerifyData, onClear
           </div>
         </div>
 
+        {/* Datos del participante para el certificado */}
         <div className="bg-[#092233]/95 p-5 rounded-2xl border border-teal-500/40 space-y-3 shadow-lg">
           <h3 className="text-xs sm:text-sm font-black text-[#32d2c2] flex items-center gap-2">
             <UserCheck className="w-4 h-4" />
@@ -1083,6 +1114,7 @@ export const CursosTab: React.FC<CursosTabProps> = ({ initialVerifyData, onClear
           </div>
         </div>
 
+        {/* Resultado del examen y Certificado si aprobó */}
         {examSubmitted && (
           <div
             className={`p-6 rounded-3xl border-2 shadow-2xl space-y-5 ${
@@ -1122,70 +1154,108 @@ export const CursosTab: React.FC<CursosTabProps> = ({ initialVerifyData, onClear
             </div>
 
             {passed && activeCertificate && (
-              <div className="bg-white text-slate-900 rounded-2xl p-5 sm:p-7 border-4 border-[#179c94] shadow-2xl space-y-5">
-                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b-2 border-teal-700 pb-4">
-                  <div className="flex items-center gap-3">
-                    <img
-                      src="/icon-192.png"
-                      alt="Logo"
-                      className="w-14 h-14 rounded-full border-2 border-[#179c94]"
-                    />
-                    <div>
-                      <h4 className="font-black text-base sm:text-lg text-[#071d2b] uppercase">
-                        Enfermería Certificada
-                      </h4>
-                      <p className="text-xs font-bold text-teal-700">
-                        CERTIFICADO OFICIAL • REGISTRO N° {activeCertificate.certId}
-                      </p>
-                    </div>
-                  </div>
+              <div className="space-y-4">
+                {/* Botones de Descarga PDF, Descarga Imagen PNG y Compartir en Redes */}
+                <div className="flex flex-wrap items-center justify-end gap-2.5">
                   <button
+                    type="button"
                     onClick={() => handlePrintCertificate(activeCertificate)}
-                    className="w-full sm:w-auto px-5 py-3 rounded-xl bg-gradient-to-r from-[#071d2b] to-[#0f3852] hover:from-[#0c2d42] hover:to-[#154b6e] text-[#32d2c2] font-black text-xs sm:text-sm flex items-center justify-center gap-2 shadow-lg cursor-pointer"
+                    className="flex-1 sm:flex-none px-4 py-2.5 rounded-xl bg-gradient-to-r from-[#179c94] to-[#22b8af] hover:from-[#1eb0a7] hover:to-[#28ccc2] text-white font-black text-xs flex items-center justify-center gap-2 shadow-lg cursor-pointer"
                   >
                     <Printer className="w-4 h-4" />
-                    <span>Descargar / Imprimir Certificado en PDF (con QR)</span>
+                    <span>Descargar / Imprimir PDF</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => handleDownloadImage(activeCertificate)}
+                    className="flex-1 sm:flex-none px-4 py-2.5 rounded-xl bg-[#0c2a3d] hover:bg-[#133d57] text-[#32d2c2] border border-[#1d6387] font-black text-xs flex items-center justify-center gap-2 shadow-lg cursor-pointer"
+                  >
+                    <Download className="w-4 h-4" />
+                    <span>Descargar como Imagen HD (PNG)</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => handleShareSocial(activeCertificate)}
+                    className="flex-1 sm:flex-none px-4 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-slate-950 font-black text-xs flex items-center justify-center gap-2 shadow-lg cursor-pointer"
+                  >
+                    <Share2 className="w-4 h-4" />
+                    <span>Compartir en Redes / WhatsApp</span>
                   </button>
                 </div>
 
-                <div className="text-center space-y-2 py-2">
-                  <p className="text-xs uppercase tracking-widest text-slate-500 font-bold">
-                    Se otorga el presente Certificado a:
-                  </p>
-                  <p className="text-xl sm:text-3xl font-black text-[#071d2b] uppercase underline decoration-teal-500/50">
-                    {activeCertificate.studentName}
-                  </p>
-                  <p className="text-xs font-bold text-slate-600">
-                    {activeCertificate.studentDocType}: {activeCertificate.studentDocNumber}
-                  </p>
-                  <p className="text-xs sm:text-sm text-slate-700 max-w-2xl mx-auto pt-1">
-                    Por haber aprobado satisfactoriamente el curso de actualización clínica en:
-                  </p>
-                  <p className="text-base sm:text-xl font-black text-teal-800 uppercase">
-                    “{activeCertificate.courseTitle}”
-                  </p>
-                  <p className="text-xs font-bold text-slate-700">
-                    Valor académico: {activeCertificate.academicHours} Horas Académicas ({activeCertificate.credits} Créditos) • Nota: {activeCertificate.score}/20 • Fecha: {activeCertificate.issueDate}
-                  </p>
-                </div>
+                {/* Vista previa usando directamente tu plantilla en limpio (/plantilla-certificado.jpg) */}
+                <div className="relative max-w-4xl mx-auto aspect-[1024/722] rounded-2xl shadow-2xl overflow-hidden border border-slate-300 select-none bg-white">
+                  <img
+                    src="/plantilla-certificado.jpg"
+                    alt="Plantilla Oficial Enfermería Certificada"
+                    className="absolute inset-0 w-full h-full object-fill pointer-events-none"
+                  />
 
-                <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-4 border-t border-slate-200">
-                  <div className="flex items-center gap-3">
-                    <img
-                      src={getQrImageUrl(activeCertificate)}
-                      alt="Código QR de Verificación"
-                      className="w-20 h-20 border-2 border-slate-900 rounded-lg p-1 bg-white"
-                    />
-                    <div className="text-[11px] text-slate-600 max-w-xs">
-                      <strong className="text-slate-900 block">QR de Verificación Activo</strong>
-                      Escanea el código con tu celular para abrir el validador oficial en línea de{' '}
-                      <span className="font-bold text-teal-700">enfermeriacertificada.com</span>.
+                  {/* Contenido editado encima de la zona limpia de tu plantilla */}
+                  <div className="absolute inset-0 z-10">
+                    <div className="absolute top-[16%] left-[6%] right-[8%] text-center">
+                      <h3 className="text-2xl sm:text-5xl font-black tracking-widest text-[#16264c] uppercase leading-none">
+                        CONSTANCIA
+                      </h3>
+                      <p className="text-[11px] sm:text-lg font-medium text-[#4b5563] mt-1">
+                        de Capacitación y Aprobación Académica en Enfermería
+                      </p>
+                      <p className="text-[10px] sm:text-xs text-[#6b7280] mt-0.5">
+                        Por la presente, se hace constar que:
+                      </p>
+
+                      <div
+                        className="text-2xl sm:text-5xl text-[#16264c] py-1 sm:py-2 leading-tight"
+                        style={{ fontFamily: "'Great Vibes', 'Brush Script MT', 'Segoe Script', cursive" }}
+                      >
+                        {activeCertificate.studentName}
+                      </div>
+
+                      <p className="text-[10px] sm:text-xs text-[#475569] leading-relaxed max-w-xl mx-auto px-2">
+                        Identificado(a) con{' '}
+                        <strong className="text-[#16264c]">
+                          {activeCertificate.studentDocType} N° {activeCertificate.studentDocNumber}
+                        </strong>
+                        , ha culminado y aprobado satisfactoriamente el Curso de Actualización Clínica:
+                        <span className="block text-xs sm:text-base font-black text-teal-800 uppercase my-0.5 sm:my-1">
+                          “{activeCertificate.courseTitle}”
+                        </span>
+                        Desarrollado con una duración de{' '}
+                        <strong className="text-[#16264c]">
+                          {activeCertificate.academicHours} HORAS ACADÉMICAS ({activeCertificate.credits}{' '}
+                          CRÉDITOS)
+                        </strong>{' '}
+                        y calificación aprobatoria de{' '}
+                        <strong className="text-[#16264c]">{activeCertificate.score}/20</strong>.
+                        <span className="hidden sm:inline">
+                          <br />
+                          Reconocemos su compromiso, dedicación y esfuerzo en su actualización continua, que
+                          refleja su vocación y profesionalismo en el cuidado de la salud.
+                        </span>
+                      </p>
                     </div>
-                  </div>
 
-                  <div className="text-center sm:text-right">
-                    <p className="font-bold text-sm text-slate-900">Lic. Miguel Pantoja A.</p>
-                    <p className="text-xs text-teal-700 font-bold">Licenciado en Enfermería — CEP 120064</p>
+                    {/* Fecha ubicada justo encima de la firma de la plantilla */}
+                    <div className="absolute bottom-[23.5%] right-[8.5%] w-[26%] text-center text-[10px] sm:text-xs font-semibold text-slate-600">
+                      Lima, {activeCertificate.issueDate}
+                    </div>
+
+                    {/* Recuadro de Código QR en el espacio limpio inferior central */}
+                    <div className="absolute bottom-[5.5%] left-[31%] flex items-center gap-2 bg-white/95 border border-slate-300 rounded-xl p-1.5 sm:p-2 shadow-sm">
+                      <img
+                        src={getQrImageUrl(activeCertificate)}
+                        alt="Código QR de Verificación"
+                        className="w-10 h-10 sm:w-16 sm:h-16 block"
+                      />
+                      <div className="text-[9px] sm:text-[10px] text-slate-600 leading-tight text-left">
+                        <strong className="text-[#16264c] block">CONSTANCIA CON QR</strong>
+                        Reg. N°: <strong>{activeCertificate.certId}</strong>
+                        <br />
+                        <span className="text-teal-700 font-bold">www.enfermeriacertificada.com</span>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -1193,6 +1263,7 @@ export const CursosTab: React.FC<CursosTabProps> = ({ initialVerifyData, onClear
           </div>
         )}
 
+        {/* Lista de preguntas del examen */}
         <div className="space-y-4">
           {selectedCourse.finalExam.map((q, qIndex) => {
             const selected = examAnswers[q.id];
@@ -1273,8 +1344,12 @@ export const CursosTab: React.FC<CursosTabProps> = ({ initialVerifyData, onClear
     );
   }
 
+  // ============================================================================
+  // VISTA PRINCIPAL: CATÁLOGO DE LOS 7 CURSOS Y MIS CERTIFICADOS
+  // ============================================================================
   return (
     <section className="space-y-6">
+      {/* Cabecera del Aula Virtual */}
       <div className="bg-gradient-to-r from-[#071d2b] via-[#0b2c40] to-[#071d2b] rounded-2xl p-5 sm:p-6 border border-[#175270] flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4 shadow-xl">
         <div className="space-y-1.5">
           <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-teal-500/20 border border-teal-400/40 text-[#32d2c2] text-[11px] font-black uppercase">
@@ -1304,6 +1379,7 @@ export const CursosTab: React.FC<CursosTabProps> = ({ initialVerifyData, onClear
         </div>
       </div>
 
+      {/* Barra rápida de datos del alumno */}
       <div className="bg-[#092233]/90 p-4 rounded-2xl border border-[#12425a] flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3">
         <div className="flex items-center gap-2.5">
           <GraduationCap className="w-5 h-5 text-[#32d2c2] shrink-0" />
@@ -1332,6 +1408,7 @@ export const CursosTab: React.FC<CursosTabProps> = ({ initialVerifyData, onClear
         </div>
       </div>
 
+      {/* Grid de los 7 Cursos */}
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
         {COURSES_DATA.map((course, idx) => {
           const cProg = progress[course.id];
@@ -1346,6 +1423,7 @@ export const CursosTab: React.FC<CursosTabProps> = ({ initialVerifyData, onClear
               className="bg-[#092233]/90 rounded-2xl border border-[#12425a] hover:border-teal-500/60 transition-all flex flex-col justify-between overflow-hidden shadow-xl group"
             >
               <div>
+                {/* Franja superior de color */}
                 <div className={`h-2 w-full bg-gradient-to-r ${course.badgeColor}`} />
 
                 <div className="p-5 space-y-3">
@@ -1364,6 +1442,7 @@ export const CursosTab: React.FC<CursosTabProps> = ({ initialVerifyData, onClear
 
                   <p className="text-xs text-slate-300 leading-relaxed">{course.subtitle}</p>
 
+                  {/* Lista resumida de módulos */}
                   <div className="bg-slate-950/60 p-3 rounded-xl border border-slate-800/80 space-y-1.5">
                     <span className="text-[10px] font-bold uppercase text-slate-400 block">
                       Temario ({course.modules.length} Módulos + Examen):
@@ -1381,6 +1460,7 @@ export const CursosTab: React.FC<CursosTabProps> = ({ initialVerifyData, onClear
               </div>
 
               <div className="p-5 pt-0 space-y-3">
+                {/* Barra de progreso */}
                 <div className="space-y-1">
                   <div className="flex justify-between text-[11px]">
                     <span className="text-slate-400">Avance de módulos</span>
@@ -1422,6 +1502,7 @@ export const CursosTab: React.FC<CursosTabProps> = ({ initialVerifyData, onClear
         })}
       </div>
 
+      {/* Historial de Certificados Emitidos en este Dispositivo */}
       {certificates.length > 0 && (
         <div className="bg-[#092233]/90 p-5 rounded-2xl border border-[#12425a] space-y-4 shadow-xl">
           <div className="flex items-center justify-between">
