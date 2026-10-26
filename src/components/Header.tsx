@@ -15,7 +15,8 @@ import {
   FileSpreadsheet,
   ChevronDown,
   Layers,
-  Award
+  Award,
+  Baby
 } from 'lucide-react';
 import { DonationModal } from './DonationModal';
 import { PWAInstallButton } from './PWAInstallButton';
@@ -34,6 +35,7 @@ export type TabType =
   | 'vacunas'
   | 'crecimiento'
   | 'imc'
+  | 'hierro'
   | 'enae'
   | 'cursos';
 
@@ -45,7 +47,7 @@ interface HeaderProps {
 interface TabItem {
   id: TabType;
   label: string;
-  category: 'clinica' | 'urgencias' | 'gestion' | 'docencia';
+  category: 'clinica' | 'urgencias' | 'cred' | 'gestion' | 'docencia';
   icon: React.ComponentType<{ className?: string }>;
   color: string;
 }
@@ -66,16 +68,19 @@ export const Header: React.FC<HeaderProps> = ({ activeTab, setActiveTab }) => {
     { id: 'balance', label: 'Balance Hídrico', category: 'urgencias', icon: Activity, color: 'text-sky-300' },
     { id: 'goteo', label: 'Infusión / Goteo', category: 'urgencias', icon: Droplets, color: 'text-[#36d7cb]' },
 
+    // 👶 Crecimiento y Desarrollo (CRED) (4)
+    { id: 'vacunas', label: 'Inmunizaciones', category: 'cred', icon: Syringe, color: 'text-rose-400' },
+    { id: 'crecimiento', label: 'Curvas / TPED', category: 'cred', icon: LineChart, color: 'text-teal-300' },
+    { id: 'imc', label: 'IMC / Z-Score', category: 'cred', icon: Scale, color: 'text-cyan-400' },
+    { id: 'hierro', label: 'Suplementación con Hierro', category: 'cred', icon: Baby, color: 'text-emerald-400' },
+
     // 📋 Gestión & PLACE (2)
     { id: 'nanda', label: 'NANDA-NOC-NIC (PLACE)', category: 'gestion', icon: FileSpreadsheet, color: 'text-amber-300' },
     { id: 'soapie', label: 'SOAPIE IA', category: 'gestion', icon: Wand2, color: 'text-amber-400' },
 
-    // 📈 Docencia & Niño (5)
+    // 🎓 Docencia & Certificación (2)
     { id: 'cursos', label: 'Cursos + Certificado QR', category: 'docencia', icon: Award, color: 'text-amber-400' },
     { id: 'enae', label: 'Simulacro ENAE', category: 'docencia', icon: GraduationCap, color: 'text-amber-300' },
-    { id: 'vacunas', label: 'Inmunizaciones', category: 'docencia', icon: Syringe, color: 'text-rose-400' },
-    { id: 'crecimiento', label: 'Curvas / TPED', category: 'docencia', icon: LineChart, color: 'text-teal-300' },
-    { id: 'imc', label: 'IMC / Z-Score', category: 'docencia', icon: Scale, color: 'text-cyan-400' },
   ];
 
   // Identificar categoría activa
@@ -98,19 +103,18 @@ export const Header: React.FC<HeaderProps> = ({ activeTab, setActiveTab }) => {
     );
   };
 
-  const allCategoryIds = ['clinica', 'urgencias', 'gestion', 'docencia'];
+  const allCategoryIds = ['clinica', 'urgencias', 'cred', 'gestion', 'docencia'];
   const allOpen = allCategoryIds.every((id) => openSections.includes(id));
 
   const toggleAll = () => {
     if (allOpen) {
-      // Dejar abierta al menos la activa
       setOpenSections([activeTabCategory]);
     } else {
       setOpenSections(allCategoryIds);
     }
   };
 
-  // Grupos organizados del Acordeón
+  // Grupos organizados del Acordeón (5 Grupos Clínicos)
   const groups = [
     {
       id: 'clinica',
@@ -129,19 +133,27 @@ export const Header: React.FC<HeaderProps> = ({ activeTab, setActiveTab }) => {
       tabs: tabs.filter((t) => t.category === 'urgencias')
     },
     {
+      id: 'cred',
+      name: 'Crecimiento y Desarrollo',
+      icon: '👶',
+      badgeClass: 'text-emerald-300 bg-[#082f25] border-emerald-600/50',
+      accentColor: '#10b981',
+      tabs: tabs.filter((t) => t.category === 'cred')
+    },
+    {
       id: 'gestion',
       name: 'Gestión & PLACE',
       icon: '📋',
-      badgeClass: 'text-emerald-300 bg-[#092d1e] border-emerald-600/50',
-      accentColor: '#10b981',
+      badgeClass: 'text-cyan-300 bg-[#092d3e] border-cyan-600/50',
+      accentColor: '#06b6d4',
       tabs: tabs.filter((t) => t.category === 'gestion')
     },
     {
       id: 'docencia',
-      name: 'Docencia & Niño',
-      icon: '📈',
-      badgeClass: 'text-rose-300 bg-[#36111d] border-rose-600/50',
-      accentColor: '#fb7185',
+      name: 'Docencia & Certificación',
+      icon: '🎓',
+      badgeClass: 'text-amber-300 bg-[#36260a] border-amber-600/50',
+      accentColor: '#f59e0b',
       tabs: tabs.filter((t) => t.category === 'docencia')
     }
   ];
@@ -247,8 +259,8 @@ export const Header: React.FC<HeaderProps> = ({ activeTab, setActiveTab }) => {
           </button>
         </div>
 
-        {/* Acordeón: 4 áreas estructuradas */}
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-2">
+        {/* Acordeón: 5 áreas estructuradas */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-2">
           {groups.map((group) => {
             const isOpen = openSections.includes(group.id);
             const containsActiveTab = group.tabs.some((t) => t.id === activeTab);
@@ -309,7 +321,7 @@ export const Header: React.FC<HeaderProps> = ({ activeTab, setActiveTab }) => {
                 {/* Contenido desplegable del Acordeón con las herramientas */}
                 {isOpen && (
                   <div className="p-2 sm:p-2.5 bg-[#051522]/90 space-y-1 animate-in fade-in slide-in-from-top-1 duration-150 flex-1">
-                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-1 gap-1">
+                    <div className="grid grid-cols-1 gap-1">
                       {group.tabs.map((tab) => {
                         const Icon = tab.icon;
                         const isActive = activeTab === tab.id;
