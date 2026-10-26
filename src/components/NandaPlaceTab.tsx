@@ -626,14 +626,6 @@ export const NandaPlaceTab: React.FC = () => {
                   {copiedPlace ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
                   {copiedPlace ? 'Copiado' : 'Copiar PLACE'}
                 </button>
-                <button
-                  type="button"
-                  onClick={() => window.print()}
-                  className="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-xl text-xs font-semibold flex items-center gap-1.5 cursor-pointer shadow"
-                >
-                  <Printer className="w-3.5 h-3.5" />
-                  Imprimir
-                </button>
               </div>
             </div>
 
