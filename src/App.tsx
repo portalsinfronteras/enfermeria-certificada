@@ -7,6 +7,7 @@ import { SoapieTab } from './components/SoapieTab';
 import { PediatriaTab } from './components/PediatriaTab';
 import { ImcTab } from './components/ImcTab';
 import { CrecimientoTab } from './components/CrecimientoTab';
+import { HierroTab } from './components/HierroTab';
 import { GoteoTab } from './components/GoteoTab';
 import { VacunasTab } from './components/VacunasTab';
 import { SimulacroEnaeTab } from './components/SimulacroEnaeTab';
@@ -62,11 +63,12 @@ export default function App() {
         {activeTab === 'emergencias' && <EmergenciasTab />}
         {activeTab === 'balance' && <BalanceHidricoTab />}
         {activeTab === 'goteo' && <GoteoTab />}
-        {activeTab === 'nanda' && <NandaPlaceTab />}
-        {activeTab === 'soapie' && <SoapieTab />}
         {activeTab === 'vacunas' && <VacunasTab />}
         {activeTab === 'crecimiento' && <CrecimientoTab />}
         {activeTab === 'imc' && <ImcTab />}
+        {activeTab === 'hierro' && <HierroTab />}
+        {activeTab === 'nanda' && <NandaPlaceTab />}
+        {activeTab === 'soapie' && <SoapieTab />}
         {activeTab === 'enae' && <SimulacroEnaeTab />}
         {activeTab === 'cursos' && (
           <CursosTab
