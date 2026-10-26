@@ -23,6 +23,7 @@ import {
   Share2
 } from 'lucide-react';
 import { COURSES_DATA, ClinicalCourse } from '../data/coursesData';
+import { CERTIFICATE_TEMPLATE_DATA_URI } from '../data/certificateTemplateData';
 
 export interface IssuedCertificate {
   certId: string;
@@ -81,8 +82,8 @@ export function decodeCertificateToken(token: string): IssuedCertificate | null 
       courseId: p.c || '',
       courseCode: course?.code || 'EC-CUR',
       courseTitle: p.ct || course?.title || 'Curso de Actualización Clínica',
-      academicHours: Number(p.h) || 24,
-      credits: Number(p.cr) || 1.5,
+      academicHours: Number(p.h) || 40,
+      credits: Number(p.cr) || 2.5,
       score: Number(p.s) || 20,
       issueDate: p.d || new Date().toLocaleDateString('es-PE'),
       modules: course ? course.modules.map((m) => m.title) : [],
@@ -125,6 +126,8 @@ export const CursosTab: React.FC<CursosTabProps> = ({ initialVerifyData, onClear
   // Module self-check state
   const [moduleAnswer, setModuleAnswer] = useState<number | null>(null);
   const [moduleChecked, setModuleChecked] = useState<boolean>(false);
+  const [moduleQuizAnswers, setModuleQuizAnswers] = useState<Record<string, number>>({});
+  const [showFullModuleQuiz, setShowFullModuleQuiz] = useState<boolean>(false);
 
   // Final exam answers: { [questionId]: selectedOptionIndex }
   const [examAnswers, setExamAnswers] = useState<Record<string, number>>({});
@@ -313,8 +316,8 @@ export const CursosTab: React.FC<CursosTabProps> = ({ initialVerifyData, onClear
     canvas.height = H;
     const ctx = canvas.getContext('2d')!;
 
-    // 1. Dibujar tu plantilla limpia oficial de fondo
-    const bgImg = await loadImageElement('/plantilla-certificado.jpg');
+    // 1. Dibujar tu plantilla limpia oficial de fondo (100% embebida, sin fallos de red/CORS)
+    const bgImg = await loadImageElement(CERTIFICATE_TEMPLATE_DATA_URI);
     ctx.drawImage(bgImg, 0, 0, W, H);
 
     // 2. Título principal: CONSTANCIA
@@ -453,7 +456,7 @@ export const CursosTab: React.FC<CursosTabProps> = ({ initialVerifyData, onClear
 
   const handlePrintCertificate = (cert: IssuedCertificate) => {
     const qrUrl = getQrImageUrl(cert);
-    const tplUrl = `${window.location.origin}/plantilla-certificado.jpg`;
+    const tplUrl = CERTIFICATE_TEMPLATE_DATA_URI;
 
     const printWindow = window.open('', '_blank');
     if (!printWindow) return;
@@ -652,6 +655,393 @@ export const CursosTab: React.FC<CursosTabProps> = ({ initialVerifyData, onClear
     printWindow.document.close();
   };
 
+  // Generador e Impresor del Manual de Cátedra Oficial en PDF (A4)
+  const handlePrintManual = (course: ClinicalCourse) => {
+    const printWindow = window.open('', '_blank');
+    if (!printWindow) return;
+
+    const modulesHtml = course.modules
+      .map(
+        (mod) => `
+      <div class="module-block">
+        <div class="module-header">
+          <span class="module-badge">MÓDULO ${mod.number} (${mod.duration})</span>
+          <h2>${mod.title}</h2>
+        </div>
+
+        ${
+          mod.part1Title || mod.part2Title
+            ? `
+          <div class="parts-grid">
+            ${mod.part1Title ? `<div class="part-badge">📘 ${mod.part1Title}</div>` : ''}
+            ${mod.part2Title ? `<div class="part-badge">📗 ${mod.part2Title}</div>` : ''}
+          </div>
+        `
+            : ''
+        }
+
+        <div class="summary-box">
+          <strong>Resumen Ejecutivo:</strong> ${mod.summary}
+        </div>
+
+        <div class="content-body">
+          ${mod.content.map((p) => `<p>${p}</p>`).join('')}
+        </div>
+
+        ${
+          mod.tableData
+            ? `
+          <div class="table-container">
+            <div class="table-title">📊 ${mod.tableData.title}</div>
+            <table>
+              <thead>
+                <tr>${mod.tableData.headers.map((h) => `<th>${h}</th>`).join('')}</tr>
+              </thead>
+              <tbody>
+                ${mod.tableData.rows
+                  .map(
+                    (row) =>
+                      `<tr>${row
+                        .map(
+                          (cell, cIdx) =>
+                            `<td class="${cIdx === 0 ? 'first-col' : ''}">${cell}</td>`
+                        )
+                        .join('')}</tr>`
+                  )
+                  .join('')}
+              </tbody>
+            </table>
+          </div>
+        `
+            : ''
+        }
+
+        <div class="keypoints-box">
+          <h4>✓ Puntos Clave para la Práctica Asistencial y Examen:</h4>
+          <ul>
+            ${mod.keyPoints.map((kp) => `<li>${kp}</li>`).join('')}
+          </ul>
+        </div>
+
+        <div class="pearl-box">
+          <strong>💡 Perla Clínica de Guardia:</strong> ${mod.clinicalPearl}
+        </div>
+
+        ${
+          mod.moduleQuiz && mod.moduleQuiz.length > 0
+            ? `
+          <div class="quiz-section">
+            <h3>Evaluación de Acreditación del Módulo ${mod.number} (${mod.moduleQuiz.length} Preguntas)</h3>
+            <div class="quiz-list">
+              ${mod.moduleQuiz
+                .map(
+                  (q, idx) => `
+                <div class="question-card">
+                  <div class="question-text"><strong>${idx + 1}.</strong> ${q.question}</div>
+                  <div class="options-grid">
+                    ${q.options
+                      .map(
+                        (opt, oIdx) => `
+                      <div class="option-item ${oIdx === q.correctIndex ? 'correct-option' : ''}">
+                        <span class="opt-letter">${String.fromCharCode(97 + oIdx)})</span> ${opt}
+                        ${oIdx === q.correctIndex ? ' <strong>✓ [Correcta]</strong>' : ''}
+                      </div>
+                    `
+                      )
+                      .join('')}
+                  </div>
+                  <div class="rationale-box"><strong>Fundamento Clínico:</strong> ${q.rationale}</div>
+                </div>
+              `
+                )
+                .join('')}
+            </div>
+          </div>
+        `
+            : ''
+        }
+      </div>
+    `
+      )
+      .join('');
+
+    printWindow.document.write(`
+      <!DOCTYPE html>
+      <html lang="es">
+      <head>
+        <meta charset="UTF-8" />
+        <title>Manual_de_Catedra_${course.code}_${course.id}</title>
+        <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+        <style>
+          @page {
+            size: A4 portrait;
+            margin: 14mm 12mm 14mm 12mm;
+          }
+          * {
+            box-sizing: border-box;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+          }
+          body {
+            font-family: 'Montserrat', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            color: #1e293b;
+            background: #ffffff;
+            margin: 0;
+            padding: 0;
+            line-height: 1.5;
+            font-size: 9.5pt;
+          }
+          .cover-banner {
+            background: linear-gradient(135deg, #071d2b 0%, #0f405c 100%);
+            color: #ffffff;
+            padding: 20px 24px;
+            border-radius: 12px;
+            margin-bottom: 22px;
+            border-left: 6px solid #32d2c2;
+          }
+          .program-badge {
+            display: inline-block;
+            background: #32d2c2;
+            color: #071d2b;
+            font-size: 8pt;
+            font-weight: 800;
+            padding: 3px 10px;
+            border-radius: 9999px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+          }
+          .cover-title {
+            font-size: 17pt;
+            font-weight: 900;
+            margin: 4px 0 8px;
+            line-height: 1.2;
+          }
+          .cover-meta {
+            font-size: 8.5pt;
+            color: #cbd5e1;
+            line-height: 1.5;
+          }
+          .cover-meta strong {
+            color: #32d2c2;
+          }
+          .module-block {
+            margin-bottom: 26px;
+            page-break-inside: avoid;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            padding: 16px;
+            background: #ffffff;
+          }
+          .module-header {
+            border-bottom: 2px solid #0f766e;
+            padding-bottom: 6px;
+            margin-bottom: 10px;
+          }
+          .module-badge {
+            background: #0f766e;
+            color: white;
+            font-size: 7.5pt;
+            font-weight: 800;
+            padding: 2px 8px;
+            border-radius: 4px;
+            text-transform: uppercase;
+          }
+          .module-header h2 {
+            font-size: 12pt;
+            font-weight: 800;
+            color: #0f172a;
+            margin: 6px 0 0;
+          }
+          .parts-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-bottom: 10px;
+          }
+          .part-badge {
+            background: #f0fdfa;
+            border: 1px solid #99f6e4;
+            color: #0f766e;
+            padding: 5px 8px;
+            border-radius: 6px;
+            font-size: 8pt;
+            font-weight: 700;
+          }
+          .summary-box {
+            background: #f8fafc;
+            border-left: 3px solid #3b82f6;
+            padding: 8px 12px;
+            font-size: 8.5pt;
+            color: #334155;
+            margin-bottom: 10px;
+            border-radius: 0 6px 6px 0;
+          }
+          .content-body p {
+            margin: 0 0 7px;
+            text-align: justify;
+            font-size: 8.5pt;
+            line-height: 1.5;
+            color: #334155;
+          }
+          .table-container {
+            margin: 12px 0;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            overflow: hidden;
+          }
+          .table-title {
+            background: #0f766e;
+            color: white;
+            font-weight: 700;
+            font-size: 8pt;
+            padding: 5px 10px;
+          }
+          table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 7.5pt;
+          }
+          th {
+            background: #f1f5f9;
+            color: #0f172a;
+            font-weight: 700;
+            padding: 5px 7px;
+            border-bottom: 1px solid #cbd5e1;
+            text-align: left;
+          }
+          td {
+            padding: 5px 7px;
+            border-bottom: 1px solid #e2e8f0;
+            color: #334155;
+            vertical-align: top;
+          }
+          td.first-col {
+            font-weight: 700;
+            color: #0f172a;
+          }
+          .keypoints-box {
+            background: #f0fdf4;
+            border: 1px solid #86efac;
+            padding: 9px 12px;
+            border-radius: 8px;
+            margin: 10px 0;
+          }
+          .keypoints-box h4 {
+            margin: 0 0 5px;
+            font-size: 8pt;
+            font-weight: 800;
+            color: #166534;
+          }
+          .keypoints-box ul {
+            margin: 0;
+            padding-left: 15px;
+            font-size: 7.5pt;
+            color: #14532d;
+          }
+          .keypoints-box li {
+            margin-bottom: 3px;
+          }
+          .pearl-box {
+            background: #fefce8;
+            border: 1px solid #fde047;
+            padding: 7px 10px;
+            border-radius: 8px;
+            font-size: 8pt;
+            color: #854d0e;
+            margin-bottom: 12px;
+          }
+          .quiz-section {
+            background: #f8fafc;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            padding: 10px;
+            margin-top: 12px;
+          }
+          .quiz-section h3 {
+            margin: 0 0 8px;
+            font-size: 9pt;
+            font-weight: 800;
+            color: #0f172a;
+            border-bottom: 1px solid #e2e8f0;
+            padding-bottom: 4px;
+          }
+          .question-card {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            padding: 7px 9px;
+            margin-bottom: 6px;
+            page-break-inside: avoid;
+          }
+          .question-text {
+            font-size: 8pt;
+            font-weight: 700;
+            color: #0f172a;
+            margin-bottom: 4px;
+          }
+          .options-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 3px;
+            margin-bottom: 4px;
+          }
+          .option-item {
+            font-size: 7.5pt;
+            color: #475569;
+            padding: 2px 5px;
+            border-radius: 4px;
+          }
+          .option-item.correct-option {
+            background: #dcfce7;
+            color: #166534;
+            font-weight: 600;
+          }
+          .rationale-box {
+            background: #f1f5f9;
+            padding: 3px 6px;
+            border-radius: 4px;
+            font-size: 7pt;
+            color: #334155;
+          }
+          .footer-note {
+            text-align: center;
+            font-size: 7.5pt;
+            color: #64748b;
+            margin-top: 18px;
+            border-top: 1px solid #e2e8f0;
+            padding-top: 8px;
+          }
+        </style>
+      </head>
+      <body>
+        <div class="cover-banner">
+          <div class="program-badge">PROGRAMA DE ALTA ESPECIALIZACIÓN ACADÉMICA Y CLÍNICA (40 HORAS)</div>
+          <h1 class="cover-title">Manual de Cátedra: ${course.title}</h1>
+          <div class="cover-meta">
+            <strong>Marco Técnico Normativo:</strong> ${course.normativaBase}<br/>
+            <strong>Carga Académica:</strong> ${course.academicHours} Horas Lectivas (${course.credits} Créditos) • <strong>Código:</strong> ${course.code}<br/>
+            <strong>Dirección Académica:</strong> Lic. Miguel Pantoja Antonio (CEP 120064) • <strong>Plataforma:</strong> www.enfermeriacertificada.com
+          </div>
+        </div>
+
+        ${modulesHtml}
+
+        <div class="footer-note">
+          © 2026 Enfermería Certificada — Lic. Miguel Pantoja Antonio (CEP 120064). Material de cátedra oficial para uso de licenciados y estudiantes de enfermería.
+        </div>
+
+        <script>
+          window.onload = function() {
+            setTimeout(function() { window.print(); }, 400);
+          };
+        </script>
+      </body>
+      </html>
+    `);
+    printWindow.document.close();
+  };
+
   // ============================================================================
   // VISTA 1: VALIDADOR PÚBLICO DE CERTIFICADO (QR)
   // ============================================================================
@@ -812,13 +1202,24 @@ export const CursosTab: React.FC<CursosTabProps> = ({ initialVerifyData, onClear
             <p className="text-xs text-slate-400">{selectedCourse.normativaBase}</p>
           </div>
 
-          <button
-            onClick={startFinalExam}
-            className="w-full md:w-auto px-4 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-slate-950 font-black text-xs sm:text-sm flex items-center justify-center gap-2 shadow-lg cursor-pointer"
-          >
-            <FileCheck className="w-4 h-4" />
-            <span>Rendir Examen Final para Certificado</span>
-          </button>
+          <div className="flex flex-wrap items-center gap-2 w-full md:w-auto">
+            <button
+              type="button"
+              onClick={() => handlePrintManual(selectedCourse)}
+              className="flex-1 md:flex-none px-4 py-2.5 rounded-xl bg-[#0c2a3d] hover:bg-[#143d57] text-[#32d2c2] border border-[#1d6387] font-bold text-xs flex items-center justify-center gap-2 shadow cursor-pointer"
+              title="Descargar o Imprimir el Manual de Cátedra Oficial en PDF (40 Horas - 6 Módulos)"
+            >
+              <Download className="w-4 h-4" />
+              <span>Manual de Cátedra (PDF)</span>
+            </button>
+            <button
+              onClick={startFinalExam}
+              className="flex-1 md:flex-none px-4 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-slate-950 font-black text-xs sm:text-sm flex items-center justify-center gap-2 shadow-lg cursor-pointer"
+            >
+              <FileCheck className="w-4 h-4" />
+              <span>Rendir Examen Final para Constancia</span>
+            </button>
+          </div>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
@@ -913,6 +1314,22 @@ export const CursosTab: React.FC<CursosTabProps> = ({ initialVerifyData, onClear
               {currentModule.summary}
             </p>
 
+            {/* Subtítulos Parte 1 y Parte 2 del Manual de Cátedra */}
+            {(currentModule.part1Title || currentModule.part2Title) && (
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                {currentModule.part1Title && (
+                  <div className="bg-[#061824] px-3.5 py-2.5 rounded-xl border border-teal-500/30 text-xs font-bold text-teal-300">
+                    📘 {currentModule.part1Title}
+                  </div>
+                )}
+                {currentModule.part2Title && (
+                  <div className="bg-[#061824] px-3.5 py-2.5 rounded-xl border border-cyan-500/30 text-xs font-bold text-cyan-300">
+                    📗 {currentModule.part2Title}
+                  </div>
+                )}
+              </div>
+            )}
+
             {/* Desarrollo teórico-clínico */}
             <div className="space-y-3 text-xs sm:text-sm text-slate-200 leading-relaxed">
               {currentModule.content.map((paragraph, i) => (
@@ -921,6 +1338,42 @@ export const CursosTab: React.FC<CursosTabProps> = ({ initialVerifyData, onClear
                 </p>
               ))}
             </div>
+
+            {/* Tabla Clínica Estructurada del Manual de Cátedra */}
+            {currentModule.tableData && (
+              <div className="bg-slate-950/70 rounded-2xl border border-[#164e63] overflow-hidden shadow-lg">
+                <div className="bg-[#082f49] px-4 py-2.5 border-b border-[#164e63] text-xs sm:text-sm font-black text-[#32d2c2]">
+                  📊 {currentModule.tableData.title}
+                </div>
+                <div className="overflow-x-auto">
+                  <table className="w-full text-left border-collapse text-xs">
+                    <thead>
+                      <tr className="bg-slate-900/90 text-teal-200 border-b border-slate-800">
+                        {currentModule.tableData.headers.map((h, hIdx) => (
+                          <th key={hIdx} className="p-3 font-bold">
+                            {h}
+                          </th>
+                        ))}
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-slate-800/80 text-slate-200">
+                      {currentModule.tableData.rows.map((row, rIdx) => (
+                        <tr key={rIdx} className="hover:bg-slate-900/50">
+                          {row.map((cell, cIdx) => (
+                            <td
+                              key={cIdx}
+                              className={`p-3 align-top ${cIdx === 0 ? 'font-bold text-white' : ''}`}
+                            >
+                              {cell}
+                            </td>
+                          ))}
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            )}
 
             {/* Puntos Clave de Enfermería */}
             <div className="bg-gradient-to-br from-[#072638] to-[#061c29] p-4 rounded-2xl border border-teal-500/30 space-y-2.5">
@@ -996,6 +1449,88 @@ export const CursosTab: React.FC<CursosTabProps> = ({ initialVerifyData, onClear
                 </div>
               )}
             </div>
+
+            {/* Banco de 10 Preguntas de Acreditación del Módulo (del Manual de Cátedra) */}
+            {currentModule.moduleQuiz && currentModule.moduleQuiz.length > 0 && (
+              <div className="bg-[#061824]/90 p-4 sm:p-5 rounded-2xl border border-teal-500/40 space-y-4">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                  <div>
+                    <span className="text-xs sm:text-sm font-black text-[#32d2c2] flex items-center gap-2">
+                      <Award className="w-4 h-4 text-amber-400" />
+                      Evaluación de Certificación del Módulo {currentModule.number} ({currentModule.moduleQuiz.length} Preguntas de Acreditación)
+                    </span>
+                    <p className="text-[11px] text-slate-400 mt-0.5">
+                      Practica con las 10 preguntas oficiales del Manual de Cátedra con retroalimentación inmediata.
+                    </p>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setShowFullModuleQuiz((prev) => !prev)}
+                    className="px-3.5 py-2 rounded-xl bg-[#0c2a3d] hover:bg-[#133d57] text-[#32d2c2] border border-[#1d6387] text-xs font-bold cursor-pointer shrink-0"
+                  >
+                    {showFullModuleQuiz ? 'Ocultar 10 Preguntas' : 'Resolver las 10 Preguntas del Módulo'}
+                  </button>
+                </div>
+
+                {showFullModuleQuiz && (
+                  <div className="space-y-3 pt-2 border-t border-slate-800">
+                    {currentModule.moduleQuiz.map((mq, mqIdx) => {
+                      const picked = moduleQuizAnswers[mq.id];
+                      const answered = picked !== undefined;
+                      return (
+                        <div
+                          key={mq.id}
+                          className="bg-slate-950/80 p-3.5 rounded-xl border border-slate-800 space-y-2.5"
+                        >
+                          <p className="text-xs sm:text-sm font-bold text-white">
+                            <span className="text-amber-400 mr-1.5">{mqIdx + 1}.</span>
+                            {mq.question}
+                          </p>
+                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                            {mq.options.map((opt, oIdx) => {
+                              const isPicked = picked === oIdx;
+                              const isRight = oIdx === mq.correctIndex;
+                              let cls = 'bg-slate-900 border-slate-800 text-slate-300 hover:border-slate-600';
+                              if (answered) {
+                                if (isRight) {
+                                  cls = 'bg-emerald-950/80 border-emerald-500 text-emerald-200 font-bold';
+                                } else if (isPicked && !isRight) {
+                                  cls = 'bg-rose-950/80 border-rose-500 text-rose-200';
+                                }
+                              }
+                              return (
+                                <button
+                                  key={oIdx}
+                                  type="button"
+                                  onClick={() =>
+                                    setModuleQuizAnswers((prev) => ({
+                                      ...prev,
+                                      [mq.id]: oIdx,
+                                    }))
+                                  }
+                                  className={`text-left p-2.5 rounded-lg border text-xs transition cursor-pointer flex items-center justify-between gap-2 ${cls}`}
+                                >
+                                  <span>{opt}</span>
+                                  {answered && isRight && (
+                                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+                                  )}
+                                </button>
+                              );
+                            })}
+                          </div>
+                          {answered && (
+                            <div className="p-2.5 rounded-lg bg-slate-900/90 border border-slate-700 text-[11px] text-slate-300">
+                              <strong className="text-[#32d2c2]">Fundamento: </strong>
+                              {mq.rationale}
+                            </div>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
+            )}
 
             {/* Botón Completar y Avanzar */}
             <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-2">
@@ -1185,10 +1720,10 @@ export const CursosTab: React.FC<CursosTabProps> = ({ initialVerifyData, onClear
                   </button>
                 </div>
 
-                {/* Vista previa usando directamente tu plantilla en limpio (/plantilla-certificado.jpg) */}
+                {/* Vista previa usando directamente tu plantilla en limpio embebida */}
                 <div className="relative max-w-4xl mx-auto aspect-[1024/722] rounded-2xl shadow-2xl overflow-hidden border border-slate-300 select-none bg-white">
                   <img
-                    src="/plantilla-certificado.jpg"
+                    src={CERTIFICATE_TEMPLATE_DATA_URI}
                     alt="Plantilla Oficial Enfermería Certificada"
                     className="absolute inset-0 w-full h-full object-fill pointer-events-none"
                   />
@@ -1483,6 +2018,16 @@ export const CursosTab: React.FC<CursosTabProps> = ({ initialVerifyData, onClear
                   >
                     <BookOpen className="w-3.5 h-3.5" />
                     <span>{doneCount > 0 ? 'Continuar Curso' : 'Iniciar Curso Gratis'}</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => handlePrintManual(course)}
+                    title="Descargar o Imprimir el Manual de Cátedra Oficial en PDF (40 Horas - 6 Módulos)"
+                    className="py-2.5 px-3 rounded-xl bg-[#0c2a3d] hover:bg-[#133d57] text-[#32d2c2] border border-[#1d6387] text-xs font-bold flex items-center gap-1 cursor-pointer"
+                  >
+                    <Download className="w-4 h-4" />
+                    <span>Manual PDF</span>
                   </button>
 
                   {existingCert && (
