@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
   Pill,
   Wand2,
@@ -56,45 +56,35 @@ export const Header: React.FC<HeaderProps> = ({ activeTab, setActiveTab }) => {
   const [isDonationModalOpen, setIsDonationModalOpen] = useState(false);
 
   const tabs: TabItem[] = [
-    // 🩺 Clínica & Triaje (5)
+    // 🩺 Clínica y Triaje (4)
     { id: 'vademecum', label: 'Vademécum', category: 'clinica', icon: Pill, color: 'text-[#32d2c2]' },
     { id: 'pediatria', label: 'Dosis Pediátrica', category: 'clinica', icon: Calculator, color: 'text-[#2dd4bf]' },
     { id: 'diagnosticos', label: 'Diagnósticos Médicos', category: 'clinica', icon: Stethoscope, color: 'text-emerald-400' },
-    { id: 'escalas', label: 'Escalas & Triaje', category: 'clinica', icon: HeartPulse, color: 'text-rose-400' },
-    { id: 'examenes', label: 'AGA & Electrolitos', category: 'clinica', icon: Activity, color: 'text-cyan-400' },
+    { id: 'escalas', label: 'Escalas y Triaje', category: 'clinica', icon: HeartPulse, color: 'text-rose-400' },
 
-    // ⚡ UCI & Urgencias (3)
-    { id: 'emergencias', label: 'RCP & Vasoactivos', category: 'urgencias', icon: Zap, color: 'text-amber-400' },
+    // ⚡ UCI y Urgencias (4)
+    { id: 'examenes', label: 'AGA y Electrolitos', category: 'urgencias', icon: Activity, color: 'text-cyan-400' },
+    { id: 'emergencias', label: 'RCP y Vasoactivos', category: 'urgencias', icon: Zap, color: 'text-amber-400' },
     { id: 'balance', label: 'Balance Hídrico', category: 'urgencias', icon: Activity, color: 'text-sky-300' },
     { id: 'goteo', label: 'Infusión / Goteo', category: 'urgencias', icon: Droplets, color: 'text-[#36d7cb]' },
 
-    // 👶 Crecimiento y Desarrollo (CRED) (4)
+    // 👶 CRED (4)
     { id: 'vacunas', label: 'Inmunizaciones', category: 'cred', icon: Syringe, color: 'text-rose-400' },
     { id: 'crecimiento', label: 'Curvas / TPED', category: 'cred', icon: LineChart, color: 'text-teal-300' },
     { id: 'imc', label: 'IMC / Z-Score', category: 'cred', icon: Scale, color: 'text-cyan-400' },
-    { id: 'hierro', label: 'Suplementación con Hierro', category: 'cred', icon: Baby, color: 'text-emerald-400' },
+    { id: 'hierro', label: 'Suplementación de Hierro', category: 'cred', icon: Baby, color: 'text-emerald-400' },
 
-    // 📋 Gestión & PLACE (2)
+    // 📋 Gestión y PLACE (2)
     { id: 'nanda', label: 'NANDA-NOC-NIC (PLACE)', category: 'gestion', icon: FileSpreadsheet, color: 'text-amber-300' },
     { id: 'soapie', label: 'SOAPIE IA', category: 'gestion', icon: Wand2, color: 'text-amber-400' },
 
-    // 🎓 Docencia & Certificación (2)
+    // 🎓 Docencia y Certificación (2)
     { id: 'cursos', label: 'Cursos + Certificado QR', category: 'docencia', icon: Award, color: 'text-amber-400' },
     { id: 'enae', label: 'Simulacro ENAE', category: 'docencia', icon: GraduationCap, color: 'text-amber-300' },
   ];
 
-  // Identificar categoría activa
-  const activeTabCategory = tabs.find((t) => t.id === activeTab)?.category || 'clinica';
-
-  // Estado del Acordeón: Secciones abiertas (por defecto abre la sección de la pestaña activa)
-  const [openSections, setOpenSections] = useState<string[]>([activeTabCategory]);
-
-  // Si cambia la pestaña activa desde otro lugar, asegurar que su sección en el acordeón esté abierta
-  useEffect(() => {
-    if (!openSections.includes(activeTabCategory)) {
-      setOpenSections((prev) => [...prev, activeTabCategory]);
-    }
-  }, [activeTabCategory]);
+  // Estado del Acordeón: Al iniciar, todos los menús empiezan completamente cerrados
+  const [openSections, setOpenSections] = useState<string[]>([]);
 
   // Toggle abrir/cerrar sección del acordeón
   const toggleSection = (id: string) => {
@@ -108,7 +98,7 @@ export const Header: React.FC<HeaderProps> = ({ activeTab, setActiveTab }) => {
 
   const toggleAll = () => {
     if (allOpen) {
-      setOpenSections([activeTabCategory]);
+      setOpenSections([]);
     } else {
       setOpenSections(allCategoryIds);
     }
@@ -118,7 +108,7 @@ export const Header: React.FC<HeaderProps> = ({ activeTab, setActiveTab }) => {
   const groups = [
     {
       id: 'clinica',
-      name: 'Clínica & Triaje',
+      name: 'Clínica y Triaje',
       icon: '🩺',
       badgeClass: 'text-[#32d2c2] bg-[#0c3850] border-[#185d82]',
       accentColor: '#32d2c2',
@@ -126,7 +116,7 @@ export const Header: React.FC<HeaderProps> = ({ activeTab, setActiveTab }) => {
     },
     {
       id: 'urgencias',
-      name: 'UCI & Urgencias',
+      name: 'UCI y Urgencias',
       icon: '⚡',
       badgeClass: 'text-amber-300 bg-[#352408] border-amber-600/50',
       accentColor: '#f59e0b',
@@ -134,7 +124,7 @@ export const Header: React.FC<HeaderProps> = ({ activeTab, setActiveTab }) => {
     },
     {
       id: 'cred',
-      name: 'Crecimiento y Desarrollo',
+      name: 'CRED',
       icon: '👶',
       badgeClass: 'text-emerald-300 bg-[#082f25] border-emerald-600/50',
       accentColor: '#10b981',
@@ -142,7 +132,7 @@ export const Header: React.FC<HeaderProps> = ({ activeTab, setActiveTab }) => {
     },
     {
       id: 'gestion',
-      name: 'Gestión & PLACE',
+      name: 'Gestión y PLACE',
       icon: '📋',
       badgeClass: 'text-cyan-300 bg-[#092d3e] border-cyan-600/50',
       accentColor: '#06b6d4',
@@ -150,7 +140,7 @@ export const Header: React.FC<HeaderProps> = ({ activeTab, setActiveTab }) => {
     },
     {
       id: 'docencia',
-      name: 'Docencia & Certificación',
+      name: 'Docencia y Certificación',
       icon: '🎓',
       badgeClass: 'text-amber-300 bg-[#36260a] border-amber-600/50',
       accentColor: '#f59e0b',
