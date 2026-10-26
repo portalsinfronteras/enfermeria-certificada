@@ -284,13 +284,6 @@ export const BalanceHidricoTab: React.FC = () => {
               <RotateCcw className="w-4 h-4" />
               <span>Limpiar Campos</span>
             </button>
-            <button
-              onClick={handlePrint}
-              className="px-3.5 py-2 rounded-xl bg-gradient-to-r from-[#179c94] to-[#22b8af] hover:from-[#158881] hover:to-[#1ca49c] text-white text-xs font-bold flex items-center gap-1.5 cursor-pointer shadow-md shadow-[#22b8af]/20 transition"
-            >
-              <Printer className="w-4 h-4" />
-              <span>Imprimir</span>
-            </button>
           </div>
         </div>
 
