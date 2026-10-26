@@ -249,15 +249,6 @@ export const PediatriaTab: React.FC = () => {
             <Droplets className="w-3.5 h-3.5 text-cyan-400" />
             1 mL = 20 gotas
           </div>
-          <button
-            type="button"
-            onClick={handlePrint}
-            className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 rounded-xl text-xs font-semibold cursor-pointer transition shadow"
-            title="Imprimir cálculo pediátrico"
-          >
-            <Printer className="w-3.5 h-3.5" />
-            Imprimir
-          </button>
         </div>
       </div>
 
