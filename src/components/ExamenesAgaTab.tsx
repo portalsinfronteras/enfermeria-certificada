@@ -366,14 +366,6 @@ export const ExamenesAgaTab: React.FC = () => {
                   {copied ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
                   {copied ? 'Copiado' : 'Copiar'}
                 </button>
-                <button
-                  type="button"
-                  onClick={() => window.print()}
-                  className="p-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-lg text-xs cursor-pointer"
-                  title="Imprimir AGA"
-                >
-                  <Printer className="w-3.5 h-3.5" />
-                </button>
               </div>
             </div>
 
