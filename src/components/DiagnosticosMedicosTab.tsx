@@ -447,14 +447,6 @@ export const DiagnosticosMedicosTab: React.FC = () => {
               {/* Action Buttons in Modal Header */}
               <div className="flex items-center gap-2 shrink-0">
                 <button
-                  onClick={handlePrint}
-                  className="px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-[#179c94] to-[#22b8af] hover:from-[#158881] hover:to-[#1ca49c] text-white text-xs font-bold flex items-center gap-1.5 cursor-pointer shadow-md shadow-[#22b8af]/20 transition"
-                  title="Imprimir ficha clínica"
-                >
-                  <Printer className="w-4 h-4" />
-                  <span>Imprimir</span>
-                </button>
-                <button
                   onClick={handleCloseModal}
                   className="p-2 rounded-xl bg-[#092538] hover:bg-rose-900/60 text-slate-300 hover:text-white transition cursor-pointer border border-[#144863] hover:border-rose-500"
                   title="Cerrar ventana (Esc)"
@@ -1014,14 +1006,6 @@ export const DiagnosticosMedicosTab: React.FC = () => {
                 Presione <kbd className="px-1.5 py-0.5 rounded bg-[#092638] text-slate-300 border border-[#144863] text-[10px]">Esc</kbd> o el botón para cerrar esta ventana
               </span>
               <div className="flex items-center gap-2 ml-auto">
-                <button
-                  onClick={handlePrint}
-                  className="px-4 py-2 rounded-xl bg-[#092538] hover:bg-[#12425a] text-white text-xs font-bold flex items-center gap-1.5 cursor-pointer border border-[#144863] transition"
-                  title="Imprimir ficha clínica"
-                >
-                  <Printer className="w-4 h-4 text-[#22b8af]" />
-                  <span>Imprimir Ficha</span>
-                </button>
                 <button
                   onClick={handleCloseModal}
                   className="px-5 py-2 rounded-xl bg-gradient-to-r from-[#179c94] to-[#22b8af] hover:from-[#158881] hover:to-[#1ca49c] text-white text-xs font-bold cursor-pointer transition shadow-md shadow-[#22b8af]/20"
