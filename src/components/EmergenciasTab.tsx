@@ -792,14 +792,6 @@ export const EmergenciasTab: React.FC = () => {
                   {copiedRcp ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
                   {copiedRcp ? 'Copiado' : 'Copiar'}
                 </button>
-                <button
-                  type="button"
-                  onClick={() => window.print()}
-                  className="p-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-lg text-xs cursor-pointer"
-                  title="Imprimir informe de paro"
-                >
-                  <Printer className="w-3.5 h-3.5" />
-                </button>
               </div>
             </div>
 
