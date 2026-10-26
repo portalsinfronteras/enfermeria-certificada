@@ -231,16 +231,8 @@ Paciente queda en unidad en posición cómoda, en reposo relativo. Funciones vit
 
         <pre>${output}</pre>
 
-        <div class="signature-box">
-          <div class="signature">
-            <strong>Lic. Miguel Pantoja</strong><br>
-            Licenciado en Enfermería - CEP 120064<br>
-            Firma y Sello
-          </div>
-        </div>
-
         <div class="footer">
-          Enfermería Certificada &copy; 2026 - Documento confidencial para la Historia Clínica del Paciente.
+          Enfermería Certificada &copy; 2026 - Documento para la Historia Clínica del Paciente.
         </div>
 
         <script>
@@ -548,7 +540,7 @@ Paciente queda en unidad en posición cómoda, en reposo relativo. Funciones vit
 
           <div className="mt-4 pt-3 border-t border-slate-800 text-[11px] text-slate-400 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-1">
             <span>Estructura NANDA-I (2024-2026) - NOC - NIC</span>
-            <span className="text-slate-500">Lic. Miguel Pantoja - CEP 120064</span>
+            <span className="text-slate-500">Proceso de Atención de Enfermería (PAE)</span>
           </div>
         </div>
       </div>
