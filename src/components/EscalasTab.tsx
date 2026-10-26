@@ -269,14 +269,6 @@ export const EscalasTab: React.FC = () => {
             {copied ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
             {copied ? 'Copiado' : 'Copiar Nota'}
           </button>
-          <button
-            type="button"
-            onClick={() => window.print()}
-            className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 rounded-xl text-xs font-semibold cursor-pointer transition shadow"
-          >
-            <Printer className="w-3.5 h-3.5" />
-            Imprimir
-          </button>
         </div>
       </div>
 
