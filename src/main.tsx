@@ -7,10 +7,13 @@ import { offlineCacheService } from './services/offlineCacheService';
 // Initialize local storage clinical dataset caching
 offlineCacheService.initializeOfflineCache();
 
-// Register Service Worker for seamless offline caching
+// Register Service Worker for seamless offline caching with automatic refresh on new deployment
 if (typeof window !== 'undefined' && 'serviceWorker' in navigator) {
-  registerSW({
+  const updateSW = registerSW({
     immediate: true,
+    onNeedRefresh() {
+      updateSW(true);
+    },
   });
 }
 
