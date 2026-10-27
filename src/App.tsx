@@ -20,10 +20,13 @@ import { NandaPlaceTab } from './components/NandaPlaceTab';
 import { ExamenesAgaTab } from './components/ExamenesAgaTab';
 import { DonationModal } from './components/DonationModal';
 import { OfflineIndicator } from './components/OfflineIndicator';
+import { ShareModal } from './components/ShareModal';
+import { Share2 } from 'lucide-react';
 
 export default function App() {
   const [activeTab, setActiveTab] = useState<TabType>('vademecum');
   const [isFooterDonationOpen, setIsFooterDonationOpen] = useState(false);
+  const [isFooterShareOpen, setIsFooterShareOpen] = useState(false);
   const [qrVerifiedCert, setQrVerifiedCert] = useState<IssuedCertificate | null>(null);
 
   // Detectar automáticamente si el usuario escaneó el Código QR de un Certificado (?verificar=...&datos=...)
@@ -102,8 +105,18 @@ export default function App() {
             </div>
           </div>
 
-          {/* Quick contact and Yape buttons in footer */}
-          <div className="flex items-center gap-2 w-full md:w-auto justify-between sm:justify-end">
+          {/* Quick contact, Share & Yape buttons in footer */}
+          <div className="flex items-center gap-2 w-full md:w-auto justify-between sm:justify-end flex-wrap">
+            <button
+              type="button"
+              onClick={() => setIsFooterShareOpen(true)}
+              className="flex-1 sm:flex-none flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl bg-gradient-to-r from-[#179c94] via-[#22b8af] to-[#42edd8] hover:brightness-110 text-slate-950 text-xs font-black transition shadow cursor-pointer active:scale-95 text-center"
+              title="Compartir o recomendar la web por redes sociales"
+            >
+              <Share2 className="w-3.5 h-3.5 text-slate-950" />
+              <span>Compartir Web</span>
+            </button>
+
             <a
               href="https://wa.me/51935281052?text=Hola%20Lic.%20Miguel%20Pantoja%2C%20le%20escribo%20desde%20la%20plataforma%20de%20Enfermer%C3%ADa%20Certificada."
               target="_blank"
@@ -128,6 +141,12 @@ export default function App() {
       <DonationModal
         isOpen={isFooterDonationOpen}
         onClose={() => setIsFooterDonationOpen(false)}
+      />
+
+      {/* Footer Share Modal */}
+      <ShareModal
+        isOpen={isFooterShareOpen}
+        onClose={() => setIsFooterShareOpen(false)}
       />
     </div>
   );
