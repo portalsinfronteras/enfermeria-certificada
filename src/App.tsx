@@ -21,7 +21,7 @@ import { ExamenesAgaTab } from './components/ExamenesAgaTab';
 import { DonationModal } from './components/DonationModal';
 import { OfflineIndicator } from './components/OfflineIndicator';
 import { ShareModal } from './components/ShareModal';
-import { Share2 } from 'lucide-react';
+import { Smartphone } from 'lucide-react';
 
 export default function App() {
   const [activeTab, setActiveTab] = useState<TabType>('vademecum');
@@ -111,10 +111,10 @@ export default function App() {
               type="button"
               onClick={() => setIsFooterShareOpen(true)}
               className="flex-1 sm:flex-none flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl bg-gradient-to-r from-[#179c94] via-[#22b8af] to-[#42edd8] hover:brightness-110 text-slate-950 text-xs font-black transition shadow cursor-pointer active:scale-95 text-center"
-              title="Compartir o recomendar la web por redes sociales"
+              title="Recomendar e instalar el aplicativo clínico"
             >
-              <Share2 className="w-3.5 h-3.5 text-slate-950" />
-              <span>Compartir Web</span>
+              <Smartphone className="w-3.5 h-3.5 text-slate-950" />
+              <span>Recomendar App</span>
             </button>
 
             <a
