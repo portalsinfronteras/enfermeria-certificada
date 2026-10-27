@@ -10,8 +10,8 @@ import { diagnosticosData, DiagnosisItem } from '../data/diagnosticosData';
 
 const VADEMECUM_CACHE_KEY = 'offline_clinical_vademecum_v1';
 const PEDIATRIC_CACHE_KEY = 'offline_clinical_pediatric_v1';
-const DIAGNOSTICOS_CACHE_KEY = 'offline_clinical_diagnosticos_v1';
-const CACHE_METADATA_KEY = 'offline_clinical_cache_meta_v1';
+const DIAGNOSTICOS_CACHE_KEY = 'offline_clinical_diagnosticos_v2_600';
+const CACHE_METADATA_KEY = 'offline_clinical_cache_meta_v2';
 
 export interface CacheMetadata {
   lastUpdated: string;
