@@ -48,20 +48,44 @@ export default defineConfig(() => {
         workbox: {
           globPatterns: ['**/*.{js,css,html,ico,png,svg,jpeg,jpg,txt,woff,woff2}'],
           maximumFileSizeToCacheInBytes: 60 * 1024 * 1024,
+          cleanupOutdatedCaches: true,
+          clientsClaim: true,
+          skipWaiting: true,
           runtimeCaching: [
             {
+              urlPattern: ({ request }) => request.destination === 'document',
+              handler: 'NetworkFirst',
+              options: {
+                cacheName: 'clinical-app-html-v2',
+                networkTimeoutSeconds: 3,
+                cacheableResponse: {
+                  statuses: [0, 200],
+                },
+              },
+            },
+            {
               urlPattern: ({ request }) =>
-                request.destination === 'document' ||
                 request.destination === 'script' ||
-                request.destination === 'style' ||
+                request.destination === 'style',
+              handler: 'NetworkFirst',
+              options: {
+                cacheName: 'clinical-app-assets-v2',
+                networkTimeoutSeconds: 3,
+                cacheableResponse: {
+                  statuses: [0, 200],
+                },
+              },
+            },
+            {
+              urlPattern: ({ request }) =>
                 request.destination === 'image' ||
                 request.destination === 'font',
-              handler: 'StaleWhileRevalidate',
+              handler: 'CacheFirst',
               options: {
-                cacheName: 'clinical-app-assets-v1',
+                cacheName: 'clinical-app-media-v2',
                 expiration: {
-                  maxEntries: 120,
-                  maxAgeSeconds: 30 * 24 * 60 * 60, // 30 days
+                  maxEntries: 100,
+                  maxAgeSeconds: 30 * 24 * 60 * 60,
                 },
                 cacheableResponse: {
                   statuses: [0, 200],
