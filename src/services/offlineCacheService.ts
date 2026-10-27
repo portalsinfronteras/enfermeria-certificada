@@ -65,18 +65,6 @@ export const offlineCacheService = {
       };
     }
   },
-      return parsedMeta;
-    } catch (e) {
-      console.warn('LocalStorage offline caching warning:', e);
-      return {
-        lastUpdated: new Date().toISOString(),
-        vademecumCount: vademecumData.length,
-        pediatricCount: pediatricDrugsData.length,
-        diagnosticosCount: diagnosticosData.length,
-        isReady: true,
-      };
-    }
-  },
 
   /**
    * Retrieves cached Vademécum drugs with fallback to in-memory bundle
