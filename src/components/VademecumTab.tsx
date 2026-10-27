@@ -22,6 +22,8 @@ export const VademecumTab: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string>('Todos');
   const [selectedDrug, setSelectedDrug] = useState<Drug | null>(null);
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const ITEMS_PER_PAGE = 20;
 
   // Retrieve drugs from local storage offline cache with in-memory fallback
   const drugsList = useMemo(() => {
@@ -90,6 +92,11 @@ export const VademecumTab: React.FC = () => {
     return ['Todos', ...Array.from(set)];
   }, [drugsList]);
 
+  // Reset page when search term or category changes
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchTerm, selectedCategory]);
+
   const filteredDrugs = useMemo(() => {
     const q = searchTerm.toLowerCase().trim();
 
@@ -119,8 +126,31 @@ export const VademecumTab: React.FC = () => {
       );
     }
 
+    // Orden alfabético estricto de la A a la Z (si no está en vista por frecuencia)
+    if (selectedCategory !== 'Frecuentes') {
+      list = [...list].sort((a, b) =>
+        a.name.localeCompare(b.name, 'es', { sensitivity: 'base' })
+      );
+    }
+
     return list;
   }, [searchTerm, selectedCategory, favorites, viewCounts, drugsList]);
+
+  const totalPages = Math.ceil(filteredDrugs.length / ITEMS_PER_PAGE) || 1;
+
+  const paginatedDrugs = useMemo(() => {
+    const start = (currentPage - 1) * ITEMS_PER_PAGE;
+    return filteredDrugs.slice(start, start + ITEMS_PER_PAGE);
+  }, [filteredDrugs, currentPage]);
+
+  const handlePageChange = (newPage: number) => {
+    const target = Math.max(1, Math.min(newPage, totalPages));
+    setCurrentPage(target);
+    const container = document.getElementById('vademecum-container');
+    if (container) {
+      container.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  };
 
   return (
     <section className="space-y-4">
@@ -267,9 +297,39 @@ export const VademecumTab: React.FC = () => {
         </div>
       )}
 
-      {/* Grid of Clean Drug Cards */}
+      {/* Paginación y Resumen Alfabético Superior */}
+      <div id="vademecum-container" className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs text-slate-300 px-1 pt-1">
+        <span className="font-semibold flex items-center gap-1.5">
+          <span>Mostrando fármacos</span>
+          <strong className="text-[#42edd8]">
+            {filteredDrugs.length > 0 ? (currentPage - 1) * ITEMS_PER_PAGE + 1 : 0} - {Math.min(currentPage * ITEMS_PER_PAGE, filteredDrugs.length)}
+          </strong>
+          <span>de</span>
+          <strong className="text-white">{filteredDrugs.length}</strong>
+          <span className="text-[10px] text-teal-300 bg-[#0c2f44] px-2 py-0.5 rounded border border-[#16516f] font-mono">
+            {selectedCategory === 'Frecuentes' ? 'Orden: Más Consultados' : 'Orden Alfabético A - Z'}
+          </span>
+        </span>
+
+        {totalPages > 1 && (
+          <div className="flex items-center gap-2 self-start sm:self-auto text-[11px] text-slate-400">
+            <span>Página <strong>{currentPage}</strong> de <strong>{totalPages}</strong></span>
+            {currentPage < totalPages && (
+              <button
+                type="button"
+                onClick={() => handlePageChange(currentPage + 1)}
+                className="text-[#22b8af] hover:text-[#42edd8] font-bold underline cursor-pointer"
+              >
+                Ir a siguiente página →
+              </button>
+            )}
+          </div>
+        )}
+      </div>
+
+      {/* Grid of Clean Drug Cards (Max 20 por página) */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
-        {filteredDrugs.map((d) => {
+        {paginatedDrugs.map((d) => {
           const isFav = favorites.includes(d.id);
           const views = viewCounts[d.id] || 0;
 
@@ -378,6 +438,86 @@ export const VademecumTab: React.FC = () => {
                 setSelectedCategory('Todos');
               }}
               className="text-xs text-[#22b8af] hover:underline cursor-pointer"
+            >
+              Restablecer búsqueda
+            </button>
+          </div>
+        )}
+      </div>
+
+      {/* PESTAÑAS Y CONTROLES DE PAGINACIÓN DE 20 FÁRMACOS */}
+      {totalPages > 1 && (
+        <div className="mt-4 pt-4 border-t border-[#12425a] flex flex-col sm:flex-row items-center justify-between gap-3">
+          {/* Resumen */}
+          <div className="text-xs text-slate-400 text-center sm:text-left">
+            Página <strong className="text-white">{currentPage}</strong> de <strong className="text-white">{totalPages}</strong> (20 fármacos por página)
+          </div>
+
+          {/* Botones de Navegación */}
+          <div className="flex items-center gap-1.5 flex-wrap justify-center">
+            <button
+              type="button"
+              onClick={() => handlePageChange(currentPage - 1)}
+              disabled={currentPage === 1}
+              className="px-3 py-1.5 rounded-xl border border-[#144863] bg-[#092233] text-xs font-bold text-slate-300 hover:text-white hover:border-[#22b8af] disabled:opacity-30 disabled:pointer-events-none transition cursor-pointer"
+            >
+              ← Anterior
+            </button>
+
+            {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => {
+              if (p === 1 || p === totalPages || (p >= currentPage - 1 && p <= currentPage + 1)) {
+                return (
+                  <button
+                    key={p}
+                    type="button"
+                    onClick={() => handlePageChange(p)}
+                    className={`w-8 h-8 rounded-xl text-xs font-bold transition cursor-pointer flex items-center justify-center border ${
+                      currentPage === p
+                        ? 'bg-gradient-to-r from-[#179c94] to-[#22b8af] text-slate-950 font-black border-[#22b8af] shadow-md shadow-[#22b8af]/25'
+                        : 'bg-[#092233] text-slate-300 hover:text-white border-[#144863] hover:border-slate-500'
+                    }`}
+                  >
+                    {p}
+                  </button>
+                );
+              }
+              if (p === currentPage - 2 || p === currentPage + 2) {
+                return <span key={p} className="text-slate-600 px-1 text-xs">...</span>;
+              }
+              return null;
+            })}
+
+            <button
+              type="button"
+              onClick={() => handlePageChange(currentPage + 1)}
+              disabled={currentPage === totalPages}
+              className="px-4 py-1.5 rounded-xl border border-[#22b8af] bg-gradient-to-r from-[#179c94] to-[#22b8af] text-slate-950 font-black text-xs hover:brightness-110 disabled:opacity-30 disabled:pointer-events-none transition cursor-pointer flex items-center gap-1 shadow-md shadow-[#22b8af]/20 active:scale-95"
+            >
+              <span>Siguiente</span>
+              <span>→</span>
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Banner de Salto a la Siguiente Página */}
+      {currentPage < totalPages && (
+        <div className="mt-3 p-3 sm:p-4 rounded-2xl bg-gradient-to-r from-[#072436] via-[#09324c] to-[#072436] border border-[#175270] flex flex-col sm:flex-row items-center justify-between gap-3 text-xs shadow-lg">
+          <div className="text-slate-300 text-center sm:text-left">
+            <span>¿Deseas continuar revisando el Vademécum? Hay </span>
+            <strong className="text-[#42edd8]">{filteredDrugs.length - currentPage * ITEMS_PER_PAGE}</strong>
+            <span> fármacos más en orden alfabético.</span>
+          </div>
+          <button
+            type="button"
+            onClick={() => handlePageChange(currentPage + 1)}
+            className="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-gradient-to-r from-[#179c94] via-[#22b8af] to-[#42edd8] text-slate-950 font-black text-xs hover:brightness-110 transition shadow-md shadow-[#22b8af]/25 shrink-0 flex items-center justify-center gap-2 cursor-pointer active:scale-95"
+          >
+            <span>Ver Siguientes 20 Fármacos</span>
+            <span>→</span>
+          </button>
+        </div>
+      )}
             >
               Restablecer búsqueda
             </button>
