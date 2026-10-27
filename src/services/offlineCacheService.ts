@@ -31,10 +31,13 @@ export const offlineCacheService = {
       // 1. Check if cache exists or needs refresh
       const existingMeta = localStorage.getItem(CACHE_METADATA_KEY);
       if (!existingMeta) {
-        // First-time caching
-        localStorage.setItem(VADEMECUM_CACHE_KEY, JSON.stringify(vademecumData));
-        localStorage.setItem(PEDIATRIC_CACHE_KEY, JSON.stringify(pediatricDrugsData));
-        localStorage.setItem(DIAGNOSTICOS_CACHE_KEY, JSON.stringify(diagnosticosData));
+        // Safe caching of core light datasets
+        try {
+          localStorage.setItem(VADEMECUM_CACHE_KEY, JSON.stringify(vademecumData));
+          localStorage.setItem(PEDIATRIC_CACHE_KEY, JSON.stringify(pediatricDrugsData));
+        } catch {
+          // Quota exceeded or private browsing
+        }
 
         const meta: CacheMetadata = {
           lastUpdated: new Date().toISOString(),
@@ -43,11 +46,25 @@ export const offlineCacheService = {
           diagnosticosCount: diagnosticosData.length,
           isReady: true,
         };
-        localStorage.setItem(CACHE_METADATA_KEY, JSON.stringify(meta));
+        try {
+          localStorage.setItem(CACHE_METADATA_KEY, JSON.stringify(meta));
+        } catch {}
         return meta;
       }
 
       const parsedMeta: CacheMetadata = JSON.parse(existingMeta);
+      return parsedMeta;
+    } catch (e) {
+      console.warn('LocalStorage offline caching warning:', e);
+      return {
+        lastUpdated: new Date().toISOString(),
+        vademecumCount: vademecumData.length,
+        pediatricCount: pediatricDrugsData.length,
+        diagnosticosCount: diagnosticosData.length,
+        isReady: true,
+      };
+    }
+  },
       return parsedMeta;
     } catch (e) {
       console.warn('LocalStorage offline caching warning:', e);
