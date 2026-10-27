@@ -105,6 +105,7 @@ export const DiagnosticosMedicosTab: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string>('Todos');
   const [selectedDiagnosisModal, setSelectedDiagnosisModal] = useState<DiagnosisItem | null>(null);
+  const [visibleCount, setVisibleCount] = useState<number>(30);
 
   // Modal Calculator Parameters
   const [patientWeight, setPatientWeight] = useState<number>(70);
@@ -122,10 +123,36 @@ export const DiagnosticosMedicosTab: React.FC = () => {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
 
+  // Reset pagination count when filter or search changes
+  useEffect(() => {
+    setVisibleCount(30);
+  }, [searchTerm, selectedCategory]);
+
+  const PREFERRED_CHAPTER_ORDER = [
+    'Infecciosas y Tropicales',
+    'Respiratorias y ORL',
+    'Digestivas y Metabólicas',
+    'Cardiovasculares',
+    'Renales y Reproductor',
+    'Musculoesqueléticas y Piel',
+    'Neurológicas y Salud Mental',
+    'Oncología',
+    'Genéticas y Congénitas'
+  ];
+
   const categories = useMemo(() => {
     const set = new Set<string>();
     diagnosticosData.forEach((item) => set.add(item.category));
-    return ['Todos', ...Array.from(set)];
+    const list = Array.from(set);
+    list.sort((a, b) => {
+      const idxA = PREFERRED_CHAPTER_ORDER.indexOf(a);
+      const idxB = PREFERRED_CHAPTER_ORDER.indexOf(b);
+      if (idxA !== -1 && idxB !== -1) return idxA - idxB;
+      if (idxA !== -1) return -1;
+      if (idxB !== -1) return 1;
+      return a.localeCompare(b);
+    });
+    return ['Todos', ...list];
   }, []);
 
   const filteredItems = useMemo(() => {
@@ -150,6 +177,10 @@ export const DiagnosticosMedicosTab: React.FC = () => {
       return matchesCategory && matchesSearch;
     });
   }, [searchTerm, selectedCategory]);
+
+  const displayedItems = useMemo(() => {
+    return filteredItems.slice(0, visibleCount);
+  }, [filteredItems, visibleCount]);
 
   const handleOpenModal = (diagnosis: DiagnosisItem) => {
     setSelectedDiagnosisModal(diagnosis);
@@ -329,9 +360,9 @@ export const DiagnosticosMedicosTab: React.FC = () => {
 
       {/* DIAGNOSES BUTTONS GRID */}
       <div>
-        <div className="flex items-center justify-between mb-3 px-1">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 mb-3 px-1">
           <span className="text-xs font-bold text-slate-300">
-            Mostrando <span className="text-[#42edd8]">{filteredItems.length}</span> diagnósticos (haga clic en cualquiera para abrir la ventana con su información):
+            Mostrando <span className="text-[#42edd8]">{displayedItems.length}</span> de <span className="text-white font-extrabold">{filteredItems.length}</span> diagnósticos (haga clic en cualquiera para abrir el protocolo clínico completo):
           </span>
           <span className="text-[11px] text-slate-400">
             Toque o clic para abrir ventana modal
@@ -339,7 +370,7 @@ export const DiagnosticosMedicosTab: React.FC = () => {
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {filteredItems.map((item) => (
+          {displayedItems.map((item) => (
             <button
               key={item.id}
               onClick={() => handleOpenModal(item)}
@@ -349,9 +380,9 @@ export const DiagnosticosMedicosTab: React.FC = () => {
 
               <div className="space-y-2.5">
                 {/* Top Badges */}
-                <div className="flex items-center justify-between gap-2">
+                <div className="flex items-center justify-between gap-2 flex-wrap">
                   <span className="text-xs font-black px-2.5 py-0.5 rounded-lg bg-[#092b3d] text-[#42edd8] border border-[#17577a]">
-                    CIE-10: {item.cie10}
+                    {item.number ? `#${item.number} • ` : ''}CIE-10: {item.cie10}
                   </span>
                   <span className="text-[11px] font-semibold text-slate-400 truncate max-w-[150px]">
                     {item.category}
@@ -370,6 +401,11 @@ export const DiagnosticosMedicosTab: React.FC = () => {
 
                 {/* Mini Features Chips */}
                 <div className="flex flex-wrap gap-1 pt-1">
+                  {item.chapter && (
+                    <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-[#0e3b52] text-teal-200 border border-[#17577a] truncate max-w-[200px]">
+                      {item.chapter.split('(')[0].trim()}
+                    </span>
+                  )}
                   {item.redFlags && item.redFlags.length > 0 && (
                     <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-rose-950/60 text-rose-300 border border-rose-500/40">
                       ⚠️ Banderas Rojas
@@ -395,6 +431,27 @@ export const DiagnosticosMedicosTab: React.FC = () => {
             </button>
           ))}
         </div>
+
+        {/* PROGRESSIVE PAGINATION CONTROLS */}
+        {visibleCount < filteredItems.length && (
+          <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3">
+            <button
+              onClick={() => setVisibleCount((prev) => Math.min(prev + 30, filteredItems.length))}
+              className="w-full sm:w-auto px-6 py-3 rounded-xl bg-gradient-to-r from-[#179c94] to-[#22b8af] text-white text-xs sm:text-sm font-bold shadow-lg shadow-[#22b8af]/25 hover:brightness-110 active:scale-95 transition cursor-pointer flex items-center justify-center gap-2"
+            >
+              <span>Cargar más diagnósticos (+30)</span>
+              <span className="text-[11px] bg-black/25 px-2 py-0.5 rounded-full font-black">
+                {Math.min(visibleCount, filteredItems.length)} de {filteredItems.length}
+              </span>
+            </button>
+            <button
+              onClick={() => setVisibleCount(filteredItems.length)}
+              className="w-full sm:w-auto px-5 py-3 rounded-xl bg-[#09263a] hover:bg-[#0c314b] text-slate-300 hover:text-white border border-[#175270] text-xs font-semibold transition cursor-pointer"
+            >
+              Mostrar los {filteredItems.length} diagnósticos
+            </button>
+          </div>
+        )}
 
         {filteredItems.length === 0 && (
           <div className="bg-[#071d2b] border border-[#12425a] rounded-2xl p-10 text-center space-y-3">
@@ -432,11 +489,16 @@ export const DiagnosticosMedicosTab: React.FC = () => {
                 <div className="min-w-0">
                   <div className="flex items-center gap-2 flex-wrap">
                     <span className="text-xs font-extrabold px-2.5 py-0.5 rounded-lg bg-[#0c3850] text-[#42edd8] border border-[#1b6287]">
-                      CIE-10: {selectedDiagnosisModal.cie10}
+                      {selectedDiagnosisModal.number ? `#${selectedDiagnosisModal.number} • ` : ''}CIE-10: {selectedDiagnosisModal.cie10}
                     </span>
                     <span className="text-xs font-semibold px-2.5 py-0.5 rounded-lg bg-[#082233] text-slate-300 border border-[#144863]">
                       {selectedDiagnosisModal.category}
                     </span>
+                    {selectedDiagnosisModal.chapter && (
+                      <span className="text-[11px] font-semibold px-2.5 py-0.5 rounded-lg bg-[#0e3b52] text-teal-200 border border-[#17577a]">
+                        {selectedDiagnosisModal.chapter}
+                      </span>
+                    )}
                   </div>
                   <h2 className="text-base sm:text-xl font-black text-white truncate mt-0.5">
                     {selectedDiagnosisModal.title}
