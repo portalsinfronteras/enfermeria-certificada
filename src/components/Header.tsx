@@ -223,15 +223,15 @@ export const Header: React.FC<HeaderProps> = ({ activeTab, setActiveTab }) => {
             <span>Contáctanos</span>
           </a>
 
-          {/* Compartir / Recomendar en Redes */}
+          {/* Compartir / Recomendar Aplicativo */}
           <button
             type="button"
             onClick={() => setIsShareModalOpen(true)}
             className="flex-1 sm:flex-none flex items-center justify-center gap-1.5 px-3 py-1.5 sm:py-2 rounded-xl bg-gradient-to-r from-[#179c94] via-[#22b8af] to-[#42edd8] hover:brightness-110 text-slate-950 text-xs font-black transition shadow-md shadow-[#22b8af]/25 cursor-pointer whitespace-nowrap border border-[#42edd8]/40 active:scale-95"
-            title="Compartir o recomendar esta web por WhatsApp, Facebook y redes sociales"
+            title="Recomendar e instalar el aplicativo clínico en Android, iPhone o PC"
           >
-            <Share2 className="w-3.5 h-3.5 text-slate-950" />
-            <span>Compartir</span>
+            <Smartphone className="w-3.5 h-3.5 text-slate-950" />
+            <span>Recomendar App</span>
           </button>
 
           {/* Donar con Yape */}
