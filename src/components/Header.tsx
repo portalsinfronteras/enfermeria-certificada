@@ -16,10 +16,12 @@ import {
   ChevronDown,
   Layers,
   Award,
-  Baby
+  Baby,
+  Share2
 } from 'lucide-react';
 import { DonationModal } from './DonationModal';
 import { PWAInstallButton } from './PWAInstallButton';
+import { ShareModal } from './ShareModal';
 
 export type TabType =
   | 'vademecum'
@@ -54,6 +56,7 @@ interface TabItem {
 
 export const Header: React.FC<HeaderProps> = ({ activeTab, setActiveTab }) => {
   const [isDonationModalOpen, setIsDonationModalOpen] = useState(false);
+  const [isShareModalOpen, setIsShareModalOpen] = useState(false);
 
   const tabs: TabItem[] = [
     // 🩺 Clínica y Triaje (4)
@@ -220,6 +223,17 @@ export const Header: React.FC<HeaderProps> = ({ activeTab, setActiveTab }) => {
             <span>Contáctanos</span>
           </a>
 
+          {/* Compartir / Recomendar en Redes */}
+          <button
+            type="button"
+            onClick={() => setIsShareModalOpen(true)}
+            className="flex-1 sm:flex-none flex items-center justify-center gap-1.5 px-3 py-1.5 sm:py-2 rounded-xl bg-gradient-to-r from-[#179c94] via-[#22b8af] to-[#42edd8] hover:brightness-110 text-slate-950 text-xs font-black transition shadow-md shadow-[#22b8af]/25 cursor-pointer whitespace-nowrap border border-[#42edd8]/40 active:scale-95"
+            title="Compartir o recomendar esta web por WhatsApp, Facebook y redes sociales"
+          >
+            <Share2 className="w-3.5 h-3.5 text-slate-950" />
+            <span>Compartir</span>
+          </button>
+
           {/* Donar con Yape */}
           <button
             type="button"
@@ -348,6 +362,12 @@ export const Header: React.FC<HeaderProps> = ({ activeTab, setActiveTab }) => {
       <DonationModal
         isOpen={isDonationModalOpen}
         onClose={() => setIsDonationModalOpen(false)}
+      />
+
+      {/* Share / Recommend Modal */}
+      <ShareModal
+        isOpen={isShareModalOpen}
+        onClose={() => setIsShareModalOpen(false)}
       />
     </header>
   );
