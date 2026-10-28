@@ -1,7 +1,7 @@
 /**
- * BASE DE DATOS OFICIAL DE INTERRELACIONES NANDA - NOC - NIC (2024 - 2026)
- * Cuaderno de Interrelaciones NANDA-NOC-NIC (L.E. Alex Santiago / yoamoenfermeriablog.com)
+ * BASE DE DATOS DE INTERRELACIONES NANDA - NOC - NIC (2024 - 2026)
  * Taxonomía NANDA-I 2024-2026 • NOC 6ta/7ma Edición • NIC 7ma/8va Edición
+ * Enfermería Certificada — Lic. Miguel Pantoja A.
  */
 
 export interface NocIndicatorItem {
