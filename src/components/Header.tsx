@@ -305,7 +305,7 @@ export const Header: React.FC<HeaderProps> = ({ activeTab, setActiveTab }) => {
               type="button"
               onClick={openAuthModal}
               className="flex items-center gap-1.5 px-3 py-1.5 sm:py-2 rounded-xl bg-gradient-to-r from-[#0b334a] to-[#0e405d] hover:brightness-110 text-teal-200 hover:text-white border border-[#206994] text-xs font-bold transition shadow-md cursor-pointer whitespace-nowrap active:scale-95"
-              title="Iniciar sesión con Gmail, Facebook o correo para guardar información"
+              title="Iniciar sesión o registrarte para guardar información clínica"
             >
               <User className="w-3.5 h-3.5 text-[#32d2c2]" />
               <span>Ingresar / Registro</span>
