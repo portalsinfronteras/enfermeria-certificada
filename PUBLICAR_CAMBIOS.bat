@@ -23,7 +23,7 @@ echo [1/3] Preparando archivos modificados...
 
 echo.
 echo [2/3] Registrando cambios...
-"%GIT_CMD%" commit -m "Solucion integral de build: correccion sintaxis en catalogo, vademecum, eliminacion conflicto stash y actualizacion Vercel"
+"%GIT_CMD%" commit -m "Correccion definitiva de comillas en los 600 diagnosticos para build exitoso en Vercel"
 
 echo.
 echo [3/3] Enviando a GitHub y Vercel...
@@ -37,3 +37,4 @@ echo    https://www.enfermeriacertificada.com
 echo    https://enfermeria-certificada-omuj.vercel.app
 echo ======================================================================
 echo FIN: %DATE% %TIME%
+pause
