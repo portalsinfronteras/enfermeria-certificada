@@ -21,9 +21,12 @@ import { ExamenesAgaTab } from './components/ExamenesAgaTab';
 import { DonationModal } from './components/DonationModal';
 import { OfflineIndicator } from './components/OfflineIndicator';
 import { ShareModal } from './components/ShareModal';
+import { AuthProvider } from './context/AuthContext';
+import { AuthModal } from './components/AuthModal';
+import { SavedDataModal } from './components/SavedDataModal';
 import { Smartphone } from 'lucide-react';
 
-export default function App() {
+function AppContent() {
   const [activeTab, setActiveTab] = useState<TabType>('vademecum');
   const [isFooterDonationOpen, setIsFooterDonationOpen] = useState(false);
   const [isFooterShareOpen, setIsFooterShareOpen] = useState(false);
@@ -148,6 +151,20 @@ export default function App() {
         isOpen={isFooterShareOpen}
         onClose={() => setIsFooterShareOpen(false)}
       />
+
+      {/* Global Authentication & Register Modal */}
+      <AuthModal />
+
+      {/* Global Saved Data & Clinical Notebook Modal */}
+      <SavedDataModal />
     </div>
+  );
+}
+
+export default function App() {
+  return (
+    <AuthProvider>
+      <AppContent />
+    </AuthProvider>
   );
 }
