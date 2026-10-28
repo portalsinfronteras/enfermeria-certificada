@@ -23,7 +23,10 @@ import {
   Share2
 } from 'lucide-react';
 import { COURSES_DATA, ClinicalCourse } from '../data/coursesData';
+<<<<<<< Updated upstream
 import { CERTIFICATE_TEMPLATE_DATA_URI } from '../data/certificateTemplateData';
+=======
+>>>>>>> Stashed changes
 
 export interface IssuedCertificate {
   certId: string;
@@ -82,8 +85,13 @@ export function decodeCertificateToken(token: string): IssuedCertificate | null 
       courseId: p.c || '',
       courseCode: course?.code || 'EC-CUR',
       courseTitle: p.ct || course?.title || 'Curso de Actualización Clínica',
+<<<<<<< Updated upstream
       academicHours: Number(p.h) || 40,
       credits: Number(p.cr) || 2.5,
+=======
+      academicHours: Number(p.h) || 24,
+      credits: Number(p.cr) || 1.5,
+>>>>>>> Stashed changes
       score: Number(p.s) || 20,
       issueDate: p.d || new Date().toLocaleDateString('es-PE'),
       modules: course ? course.modules.map((m) => m.title) : [],
@@ -126,8 +134,11 @@ export const CursosTab: React.FC<CursosTabProps> = ({ initialVerifyData, onClear
   // Module self-check state
   const [moduleAnswer, setModuleAnswer] = useState<number | null>(null);
   const [moduleChecked, setModuleChecked] = useState<boolean>(false);
+<<<<<<< Updated upstream
   const [moduleQuizAnswers, setModuleQuizAnswers] = useState<Record<string, number>>({});
   const [showFullModuleQuiz, setShowFullModuleQuiz] = useState<boolean>(false);
+=======
+>>>>>>> Stashed changes
 
   // Final exam answers: { [questionId]: selectedOptionIndex }
   const [examAnswers, setExamAnswers] = useState<Record<string, number>>({});
@@ -316,8 +327,13 @@ export const CursosTab: React.FC<CursosTabProps> = ({ initialVerifyData, onClear
     canvas.height = H;
     const ctx = canvas.getContext('2d')!;
 
+<<<<<<< Updated upstream
     // 1. Dibujar tu plantilla limpia oficial de fondo (100% embebida, sin fallos de red/CORS)
     const bgImg = await loadImageElement(CERTIFICATE_TEMPLATE_DATA_URI);
+=======
+    // 1. Dibujar tu plantilla limpia oficial de fondo
+    const bgImg = await loadImageElement('/plantilla-certificado.jpg');
+>>>>>>> Stashed changes
     ctx.drawImage(bgImg, 0, 0, W, H);
 
     // 2. Título principal: CONSTANCIA
@@ -456,7 +472,11 @@ export const CursosTab: React.FC<CursosTabProps> = ({ initialVerifyData, onClear
 
   const handlePrintCertificate = (cert: IssuedCertificate) => {
     const qrUrl = getQrImageUrl(cert);
+<<<<<<< Updated upstream
     const tplUrl = CERTIFICATE_TEMPLATE_DATA_URI;
+=======
+    const tplUrl = `${window.location.origin}/plantilla-certificado.jpg`;
+>>>>>>> Stashed changes
 
     const printWindow = window.open('', '_blank');
     if (!printWindow) return;
@@ -655,6 +675,7 @@ export const CursosTab: React.FC<CursosTabProps> = ({ initialVerifyData, onClear
     printWindow.document.close();
   };
 
+<<<<<<< Updated upstream
   // Generador e Impresor del Manual de Cátedra Oficial en PDF (A4) - Deshabilitado para evitar descargas
   const handlePrintManual = (_course: ClinicalCourse) => {
     return;
@@ -1043,6 +1064,8 @@ export const CursosTab: React.FC<CursosTabProps> = ({ initialVerifyData, onClear
     printWindow.document.close();
   };
 
+=======
+>>>>>>> Stashed changes
   // ============================================================================
   // VISTA 1: VALIDADOR PÚBLICO DE CERTIFICADO (QR)
   // ============================================================================
@@ -1203,6 +1226,7 @@ export const CursosTab: React.FC<CursosTabProps> = ({ initialVerifyData, onClear
             <p className="text-xs text-slate-400">{selectedCourse.normativaBase}</p>
           </div>
 
+<<<<<<< Updated upstream
           <div className="flex flex-wrap items-center gap-2 w-full md:w-auto">
             <button
               onClick={startFinalExam}
@@ -1212,6 +1236,15 @@ export const CursosTab: React.FC<CursosTabProps> = ({ initialVerifyData, onClear
               <span>Rendir Examen Final para Constancia</span>
             </button>
           </div>
+=======
+          <button
+            onClick={startFinalExam}
+            className="w-full md:w-auto px-4 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-slate-950 font-black text-xs sm:text-sm flex items-center justify-center gap-2 shadow-lg cursor-pointer"
+          >
+            <FileCheck className="w-4 h-4" />
+            <span>Rendir Examen Final para Certificado</span>
+          </button>
+>>>>>>> Stashed changes
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
@@ -1306,6 +1339,7 @@ export const CursosTab: React.FC<CursosTabProps> = ({ initialVerifyData, onClear
               {currentModule.summary}
             </p>
 
+<<<<<<< Updated upstream
             {/* Subtítulos Parte 1 y Parte 2 del Manual de Cátedra */}
             {(currentModule.part1Title || currentModule.part2Title) && (
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
@@ -1322,6 +1356,8 @@ export const CursosTab: React.FC<CursosTabProps> = ({ initialVerifyData, onClear
               </div>
             )}
 
+=======
+>>>>>>> Stashed changes
             {/* Desarrollo teórico-clínico */}
             <div className="space-y-3 text-xs sm:text-sm text-slate-200 leading-relaxed">
               {currentModule.content.map((paragraph, i) => (
@@ -1331,6 +1367,7 @@ export const CursosTab: React.FC<CursosTabProps> = ({ initialVerifyData, onClear
               ))}
             </div>
 
+<<<<<<< Updated upstream
             {/* Tabla Clínica Estructurada del Manual de Cátedra */}
             {currentModule.tableData && (
               <div className="bg-slate-950/70 rounded-2xl border border-[#164e63] overflow-hidden shadow-lg">
@@ -1367,6 +1404,8 @@ export const CursosTab: React.FC<CursosTabProps> = ({ initialVerifyData, onClear
               </div>
             )}
 
+=======
+>>>>>>> Stashed changes
             {/* Puntos Clave de Enfermería */}
             <div className="bg-gradient-to-br from-[#072638] to-[#061c29] p-4 rounded-2xl border border-teal-500/30 space-y-2.5">
               <h4 className="text-xs sm:text-sm font-black text-[#32d2c2] flex items-center gap-2">
@@ -1442,6 +1481,7 @@ export const CursosTab: React.FC<CursosTabProps> = ({ initialVerifyData, onClear
               )}
             </div>
 
+<<<<<<< Updated upstream
             {/* Banco de 10 Preguntas de Acreditación del Módulo (del Manual de Cátedra) */}
             {currentModule.moduleQuiz && currentModule.moduleQuiz.length > 0 && (
               <div className="bg-[#061824]/90 p-4 sm:p-5 rounded-2xl border border-teal-500/40 space-y-4">
@@ -1524,6 +1564,8 @@ export const CursosTab: React.FC<CursosTabProps> = ({ initialVerifyData, onClear
               </div>
             )}
 
+=======
+>>>>>>> Stashed changes
             {/* Botón Completar y Avanzar */}
             <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-2">
               <button
@@ -1712,10 +1754,17 @@ export const CursosTab: React.FC<CursosTabProps> = ({ initialVerifyData, onClear
                   </button>
                 </div>
 
+<<<<<<< Updated upstream
                 {/* Vista previa usando directamente tu plantilla en limpio embebida */}
                 <div className="relative max-w-4xl mx-auto aspect-[1024/722] rounded-2xl shadow-2xl overflow-hidden border border-slate-300 select-none bg-white">
                   <img
                     src={CERTIFICATE_TEMPLATE_DATA_URI}
+=======
+                {/* Vista previa usando directamente tu plantilla en limpio (/plantilla-certificado.jpg) */}
+                <div className="relative max-w-4xl mx-auto aspect-[1024/722] rounded-2xl shadow-2xl overflow-hidden border border-slate-300 select-none bg-white">
+                  <img
+                    src="/plantilla-certificado.jpg"
+>>>>>>> Stashed changes
                     alt="Plantilla Oficial Enfermería Certificada"
                     className="absolute inset-0 w-full h-full object-fill pointer-events-none"
                   />

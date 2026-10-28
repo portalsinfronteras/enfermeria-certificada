@@ -4,15 +4,17 @@ import './index.css';
 import { registerSW } from 'virtual:pwa-register';
 import { offlineCacheService } from './services/offlineCacheService';
 
-// Initialize local storage clinical dataset caching
+// Initialize and purge outdated local storage caches
 offlineCacheService.initializeOfflineCache();
 
-// Register Service Worker for seamless offline caching with automatic refresh on new deployment
+// Register Service Worker with automatic update reload
 if (typeof window !== 'undefined' && 'serviceWorker' in navigator) {
   const updateSW = registerSW({
     immediate: true,
     onNeedRefresh() {
-      updateSW(true);
+      updateSW(true).then(() => {
+        window.location.reload();
+      });
     },
   });
 }

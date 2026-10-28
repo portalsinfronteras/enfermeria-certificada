@@ -1,17 +1,11 @@
 /**
  * Offline Cache Service for Core Clinical Reference Tools
- * Provides local storage persistence and cache validation for Vademécum,
- * Pediatric Dosing, Medical Diagnoses and Clinical Scales.
+ * Provides direct, instantaneous access to bundled datasets and cleans legacy storage.
  */
 
 import { vademecumData, Drug } from '../data/vademecumData';
 import { pediatricDrugsData, PediatricDrug } from '../data/pediatricDrugsData';
 import { diagnosticosData, DiagnosisItem } from '../data/diagnosticosData';
-
-const VADEMECUM_CACHE_KEY = 'offline_clinical_vademecum_v1';
-const PEDIATRIC_CACHE_KEY = 'offline_clinical_pediatric_v1';
-const DIAGNOSTICOS_CACHE_KEY = 'offline_clinical_diagnosticos_v2_600';
-const CACHE_METADATA_KEY = 'offline_clinical_cache_meta_v2';
 
 export interface CacheMetadata {
   lastUpdated: string;
@@ -23,100 +17,48 @@ export interface CacheMetadata {
 
 export const offlineCacheService = {
   /**
-   * Initializes local storage cache with core clinical reference datasets.
-   * Runs seamlessly on app startup.
+   * Initializes cache and clears any outdated browser storage keys from earlier versions.
    */
   initializeOfflineCache(): CacheMetadata {
     try {
-      // 1. Check if cache exists or needs refresh
-      const existingMeta = localStorage.getItem(CACHE_METADATA_KEY);
-      if (!existingMeta) {
-        // Safe caching of core light datasets
-        try {
-          localStorage.setItem(VADEMECUM_CACHE_KEY, JSON.stringify(vademecumData));
-          localStorage.setItem(PEDIATRIC_CACHE_KEY, JSON.stringify(pediatricDrugsData));
-        } catch {
-          // Quota exceeded or private browsing
-        }
-
-        const meta: CacheMetadata = {
-          lastUpdated: new Date().toISOString(),
-          vademecumCount: vademecumData.length,
-          pediatricCount: pediatricDrugsData.length,
-          diagnosticosCount: diagnosticosData.length,
-          isReady: true,
-        };
-        try {
-          localStorage.setItem(CACHE_METADATA_KEY, JSON.stringify(meta));
-        } catch {}
-        return meta;
+      if (typeof window !== 'undefined' && window.localStorage) {
+        localStorage.removeItem('offline_clinical_vademecum_v1');
+        localStorage.removeItem('offline_clinical_pediatric_v1');
+        localStorage.removeItem('offline_clinical_diagnosticos_v2_600');
+        localStorage.removeItem('offline_clinical_diagnosticos');
+        localStorage.removeItem('clinical_diagnosticos_cache');
       }
-
-      const parsedMeta: CacheMetadata = JSON.parse(existingMeta);
-      return parsedMeta;
     } catch (e) {
-      console.warn('LocalStorage offline caching warning:', e);
-      return {
-        lastUpdated: new Date().toISOString(),
-        vademecumCount: vademecumData.length,
-        pediatricCount: pediatricDrugsData.length,
-        diagnosticosCount: diagnosticosData.length,
-        isReady: true,
-      };
+      console.warn('LocalStorage cleanup warning:', e);
     }
+
+    return {
+      lastUpdated: new Date().toISOString(),
+      vademecumCount: vademecumData.length,
+      pediatricCount: pediatricDrugsData.length,
+      diagnosticosCount: diagnosticosData.length,
+      isReady: true,
+    };
   },
 
   /**
-   * Retrieves cached Vademécum drugs with fallback to in-memory bundle
+   * Retrieves Vademécum drugs directly from memory (100% offline, immediate, zero stale cache)
    */
   getCachedVademecum(): Drug[] {
-    try {
-      const cached = localStorage.getItem(VADEMECUM_CACHE_KEY);
-      if (cached) {
-        const parsed = JSON.parse(cached);
-        if (Array.isArray(parsed) && parsed.length > 0) {
-          return parsed;
-        }
-      }
-    } catch {
-      // Fallback
-    }
     return vademecumData;
   },
 
   /**
-   * Retrieves cached Pediatric drugs with fallback to in-memory bundle
+   * Retrieves Pediatric drugs directly from memory
    */
   getCachedPediatric(): PediatricDrug[] {
-    try {
-      const cached = localStorage.getItem(PEDIATRIC_CACHE_KEY);
-      if (cached) {
-        const parsed = JSON.parse(cached);
-        if (Array.isArray(parsed) && parsed.length > 0) {
-          return parsed;
-        }
-      }
-    } catch {
-      // Fallback
-    }
     return pediatricDrugsData;
   },
 
   /**
-   * Retrieves cached Medical Diagnoses with fallback to in-memory bundle
+   * Retrieves Medical Diagnoses directly from memory
    */
   getCachedDiagnosticos(): DiagnosisItem[] {
-    try {
-      const cached = localStorage.getItem(DIAGNOSTICOS_CACHE_KEY);
-      if (cached) {
-        const parsed = JSON.parse(cached);
-        if (Array.isArray(parsed) && parsed.length > 0) {
-          return parsed;
-        }
-      }
-    } catch {
-      // Fallback
-    }
     return diagnosticosData;
   },
 
@@ -124,14 +66,6 @@ export const offlineCacheService = {
    * Returns cache status metadata
    */
   getCacheStatus(): CacheMetadata {
-    try {
-      const meta = localStorage.getItem(CACHE_METADATA_KEY);
-      if (meta) {
-        return JSON.parse(meta);
-      }
-    } catch {
-      // Fallback
-    }
     return {
       lastUpdated: new Date().toISOString(),
       vademecumCount: vademecumData.length,
