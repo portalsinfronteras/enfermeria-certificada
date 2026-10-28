@@ -10,10 +10,16 @@ import {
   HeartPulse,
   Activity,
   Layers,
-  AlertCircle
+  AlertCircle,
+  Bookmark,
+  BookOpen
 } from 'lucide-react';
+import { NANDA_INTERRELACIONES_2024_2026 } from '../data/nandaInterrelacionesData';
+import { useAuth } from '../context/AuthContext';
 
 export const SoapieTab: React.FC = () => {
+  const { user, saveItem } = useAuth();
+  const [selectedNandaCode, setSelectedNandaCode] = useState<string>('auto');
   const [edad, setEdad] = useState('');
   const [sexo, setSexo] = useState('M');
   const [dx, setDx] = useState('');
@@ -495,6 +501,26 @@ Paciente queda en unidad en posición cómoda, en reposo relativo. Funciones vit
                       <span>Copiar</span>
                     </>
                   )}
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (!output) return;
+                    saveItem({
+                      id: 'soapie_' + Date.now(),
+                      type: 'soapie',
+                      title: `Nota SOAPIE: ${dx || 'Caso Clínico'}`,
+                      subtitle: `Paciente ${edad || 'adulto'} años (${sexo}). PA: ${pa || 'N/A'}`,
+                      notes: output
+                    });
+                  }}
+                  disabled={!output}
+                  className="px-2.5 py-1.5 bg-[#0b334d] hover:bg-[#0e405e] text-teal-200 border border-[#1b6287] text-xs rounded-lg transition flex items-center gap-1.5 cursor-pointer disabled:opacity-40"
+                  title="Guardar nota en mi libreta clínica"
+                >
+                  <Bookmark className="w-3.5 h-3.5 text-[#22b8af]" />
+                  <span className="hidden sm:inline">Guardar en mi Cuenta</span>
                 </button>
 
                 <button
