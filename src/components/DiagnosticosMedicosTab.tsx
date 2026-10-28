@@ -22,8 +22,10 @@ import {
   UserCheck,
   ExternalLink,
   ShieldCheck,
-  AlertOctagon
+  AlertOctagon,
+  Bookmark
 } from 'lucide-react';
+import { useAuth } from '../context/AuthContext';
 
 // Clinical maximum daily dose reference table (anti-toxicity thresholds)
 const DRUG_MAX_DOSES: Record<string, number> = {
@@ -102,6 +104,7 @@ interface CalculatedDose {
 }
 
 export const DiagnosticosMedicosTab: React.FC = () => {
+  const { saveItem, isItemSaved } = useAuth();
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string>('Todos');
   const [selectedDiagnosisModal, setSelectedDiagnosisModal] = useState<DiagnosisItem | null>(null);
@@ -491,6 +494,31 @@ export const DiagnosticosMedicosTab: React.FC = () => {
 
               {/* Action Buttons in Modal Header */}
               <div className="flex items-center gap-2 shrink-0">
+                <button
+                  type="button"
+                  onClick={() => {
+                    saveItem({
+                      id: selectedDiagnosisModal.id,
+                      type: 'diagnostico',
+                      title: selectedDiagnosisModal.title,
+                      subtitle: selectedDiagnosisModal.definition,
+                      category: selectedDiagnosisModal.category,
+                      cie10: selectedDiagnosisModal.cie10,
+                    });
+                  }}
+                  className={`px-3 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5 border cursor-pointer active:scale-95 ${
+                    isItemSaved(selectedDiagnosisModal.id)
+                      ? 'bg-amber-500/20 text-amber-300 border-amber-500/60 shadow-sm'
+                      : 'bg-[#092538] hover:bg-[#0d3650] text-slate-300 hover:text-white border-[#144863]'
+                  }`}
+                  title={isItemSaved(selectedDiagnosisModal.id) ? 'Guardado en tu cuenta (clic para retirar)' : 'Guardar en mi cuenta'}
+                >
+                  <Bookmark className={`w-4 h-4 ${isItemSaved(selectedDiagnosisModal.id) ? 'fill-amber-400 text-amber-400' : ''}`} />
+                  <span className="hidden sm:inline">
+                    {isItemSaved(selectedDiagnosisModal.id) ? 'Guardado' : 'Guardar'}
+                  </span>
+                </button>
+
                 <button
                   onClick={handleCloseModal}
                   className="p-2 rounded-xl bg-[#092538] hover:bg-rose-900/60 text-slate-300 hover:text-white transition cursor-pointer border border-[#144863] hover:border-rose-500"
