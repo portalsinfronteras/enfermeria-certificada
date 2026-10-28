@@ -17,7 +17,8 @@ import {
   Layers,
   Award,
   Baby,
-  Share2
+  Share2,
+  Smartphone
 } from 'lucide-react';
 import { DonationModal } from './DonationModal';
 import { PWAInstallButton } from './PWAInstallButton';
