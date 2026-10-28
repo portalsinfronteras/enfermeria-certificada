@@ -52,7 +52,7 @@ export const capitulo3Raw: CatalogoEntry[] = [
     category: 'Digestivas y Metabólicas',
     chapter: 'III. Enfermedades del Aparato Digestivo y Metabólicas (136-210)',
     definition: 'Infección inflamatoria crónica destructiva del periodonto de inserción que causa pérdida irreversible de hueso alveolar y soporte dental.',
-    symptoms: ['Movilidad dental progresiva y migración de piezas dentarias', 'Retracción gingival con exposición radicular ('dientes más largos')', 'Halitosis fétida crónica', 'Sangrado gingival profuso y exudado purulento en bolsas periodontales'],
+    symptoms: ['Movilidad dental progresiva y migración de piezas dentarias', 'Retracción gingival con exposición radicular (\'dientes más largos\')', 'Halitosis fétida crónica', 'Sangrado gingival profuso y exudado purulento en bolsas periodontales'],
     redFlags: ['Pérdida dentaria múltiple que compromete la masticación y nutrición', 'Abscesos periodontales recidivantes'],
     criteria: 'Pérdida de inserción clínica interdental detectable en ≥ 2 dientes no adyacentes + bolsas periodontales ≥ 4 mm con sangrado.',
     labTests: ['Periodontograma completo', 'Control glucémico estricto (la diabetes descompensada triplica el riesgo de periodontitis)'],
@@ -163,7 +163,7 @@ export const capitulo3Raw: CatalogoEntry[] = [
     category: 'Digestivas y Metabólicas',
     chapter: 'III. Enfermedades del Aparato Digestivo y Metabólicas (136-210)',
     definition: 'Inflamación aguda o subaguda limitada a la lámina propia superior de la mucosa gástrica, comúnmente desencadenada por AINEs, alcohol o H. pylori inicial.',
-    symptoms: ['Dolor epigástrico urente o sensación de 'vacío ardiente' que alivia o empeora con alimentos', 'Náuseas y plenitud gástrica postprandial precoz', 'Eructos frecuentes y pirosis'],
+    symptoms: ['Dolor epigástrico urente o sensación de "vacío ardiente" que alivia o empeora con alimentos', 'Náuseas y plenitud gástrica postprandial precoz', 'Eructos frecuentes y pirosis'],
     redFlags: ['Hematemesis (vómitos con sangre o en posos de café)', 'Melena (heces negras brillantes pegajosas con olor fétido)'],
     criteria: 'Diagnóstico histológico por biopsia endoscópica con infiltrado de neutrófilos en la lámina propia superficial sin atrofia glandular.',
     labTests: ['Test de ureasa o biopsia para Helicobacter pylori', 'Hemograma (descarte de anemia aguda)'],
@@ -229,7 +229,7 @@ export const capitulo3Raw: CatalogoEntry[] = [
     category: 'Digestivas y Metabólicas',
     chapter: 'III. Enfermedades del Aparato Digestivo y Metabólicas (136-210)',
     definition: 'Pérdida de sustancia mucosa en la primera porción del duodeno (bulbo duodenal), atribuible en > 90% a infección por Helicobacter pylori.',
-    symptoms: ['Dolor epigástrico urente característico que aparece de 2 a 3 horas después de comer ('hambre dolorosa')', 'Dolor que ALIVIA típicamente con la ingesta de alimentos o antiácidos', 'Dolor que despierta al paciente a medianoche (dolor nocturno típico)'],
+    symptoms: ['Dolor epigástrico urente característico que aparece de 2 a 3 horas después de comer (\'hambre dolorosa\')', 'Dolor que ALIVIA típicamente con la ingesta de alimentos o antiácidos', 'Dolor que despierta al paciente a medianoche (dolor nocturno típico)'],
     redFlags: ['Hemorragia digestiva alta masiva por erosión de la arteria gastroduodenal', 'Perforación anterior con peritonitis química aguda'],
     criteria: 'Visualización endoscópica de úlcera en bulbo duodenal (las úlceras duodenales son benignas en > 99% y no requieren biopsias rutinarias de bordes).',
     labTests: ['Pruebas para H. pylori (test de aliento o ureasa)', 'Hemograma completo'],
@@ -259,7 +259,7 @@ export const capitulo3Raw: CatalogoEntry[] = [
     differential: ['Cardiopatía isquémica (descartar siempre origen coronario)', 'Acalasia', 'Espasmo esofágico difuso'],
     firstLine: [
       { drug: 'Esomeprazol u Omeprazol', dose: 'Esomeprazol 40 mg o Omeprazol 20-40 mg una vez al día en ayunas por 8 semanas', route: 'VO', freq: 'c/24h en ayunas', notes: 'Doble dosis si hay esofagitis severa grados C o D de Los Ángeles' },
-      { drug: 'Alginato de Sodio', dose: '10 a 20 mL después de las comidas y antes de acostarse', route: 'VO', freq: 'Postprandial', notes: 'Forma una barrera mecánica flotante ('balsa') que impide el reflujo ácido y no ácido' }
+      { drug: 'Alginato de Sodio', dose: '10 a 20 mL después de las comidas y antes de acostarse', route: 'VO', freq: 'Postprandial', notes: 'Forma una barrera mecánica flotante (\'balsa\') que impide el reflujo ácido y no ácido' }
     ],
     alternatives: [],
     nonPharm: ['ELEVACIÓN DE LA CABECERA DE LA CAMA 15 A 20 CM mediante calzos en las patas', 'Evitar acostarse antes de 2 a 3 horas tras cenar', 'Reducción de peso corporal en sobrepeso/obesidad', 'Eliminar grasas, chocolate, menta, café, cítricos y bebidas carbonatadas'],
@@ -277,7 +277,7 @@ export const capitulo3Raw: CatalogoEntry[] = [
     redFlags: ['Impactación alimentaria esofágica aguda con imposibilidad de deglutir saliva', 'Perforación esofágica espontánea (Síndrome de Boerhaave) tras esfuerzo por vomitar'],
     criteria: 'Biopsia esofágica que demuestra ≥ 15 eosinófilos por campo de gran aumento (CGA) persistentes tras tratamiento con IBP.',
     labTests: ['Biopsias múltiples de esófago proximal y distal (≥ 6 tomas)', 'Pruebas alérgicas a alimentos'],
-    imaging: ['Endoscopía digestiva alta (anillos concéntricos traquealizados 'esófago felino', surcos longitudinales y exudados blanquecinos punteados)'],
+    imaging: ['Endoscopía digestiva alta (anillos concéntricos traquealizados "esófago felino", surcos longitudinales y exudados blanquecinos punteados)'],
     differential: ['ERGE con esofagitis péptica', 'Acalasia', 'Estenosis esofágica péptica'],
     firstLine: [
       { drug: 'Budesonida orodispersible (Jorveza) o Fluticasona deglutida', dose: 'Budesonida 1 mg dos veces al día después del desayuno y cena por 6 a 12 semanas', route: 'Tópica esofágica deglutida', freq: 'c/12h', notes: 'Comprimido orodispersible o suspensión viscosa deglutida' },
@@ -298,7 +298,7 @@ export const capitulo3Raw: CatalogoEntry[] = [
     symptoms: ['Síndrome de Malestar Postprandial: plenitud molesta precoz que impide terminar una comida regular', 'Síndrome de Dolor Epigástrico: dolor o quemazón epigástrica no irradiada', 'Distensión abdominal alta y eructos'],
     redFlags: ['Cualquier signo de alarma (pérdida de peso, anemia, vómitos, masa palpable, edad > 50 años) obliga a endoscopía'],
     criteria: 'Criterios de Roma IV: síntomas presentes por al menos 3 meses con inicio hace ≥ 6 meses sin lesión estructural en endoscopía.',
-    labTests: ['Test para Helicobacter pylori (estrategia 'Test and Treat')', 'Hemograma y bioquímica básica'],
+    labTests: ['Test para Helicobacter pylori (estrategia "Test and Treat")', 'Hemograma y bioquímica básica'],
     imaging: ['Endoscopía digestiva alta normal'],
     differential: ['Úlcera péptica', 'Gastroparesia diabética', 'Litiasis vesicular sintomática', 'Cáncer gástrico'],
     firstLine: [
@@ -404,7 +404,7 @@ export const capitulo3Raw: CatalogoEntry[] = [
     category: 'Digestivas y Metabólicas',
     chapter: 'III. Enfermedades del Aparato Digestivo y Metabólicas (136-210)',
     definition: 'Inflamación aguda del apéndice cecal por obstrucción de su luz (por fecalito, hiperplasia linfoide o parásito), causa más común de abdomen agudo quirúrgico.',
-    symptoms: ['Cronología de Murphy: dolor inicial sordo periumbilical o epigástrico que a las 4-6 horas migra y se localiza en fosa ilíaca derecha', 'Anorexia constante ('el signo más sensible')', 'Náuseas y vómitos posteriores al dolor', 'Fiebre moderada y taquicardia'],
+    symptoms: ['Cronología de Murphy: dolor inicial sordo periumbilical o epigástrico que a las 4-6 horas migra y se localiza en fosa ilíaca derecha', 'Anorexia constante (\'el signo más sensible\')', 'Náuseas y vómitos posteriores al dolor', 'Fiebre moderada y taquicardia'],
     redFlags: ['Perforación apendicular (alivio transitorio súbito del dolor seguido de dolor difuso y peritonitis generalizada)', 'Plastrón apendicular', 'Choque séptico'],
     criteria: 'Puntuación de Alvarado ≥ 7/10 o Escala de AIR (Appendicitis Inflammatory Response) de alto riesgo + hallazgos ecográficos/tomográficos.',
     labTests: ['Hemograma completo (leucocitosis > 10,000/uL con neutrofilia > 75% y bastones)', 'Proteína C Reactiva (PCR) elevada', 'Examen de orina (descarte de infección urinaria o litiasis)'],
@@ -470,7 +470,7 @@ export const capitulo3Raw: CatalogoEntry[] = [
     category: 'Digestivas y Metabólicas',
     chapter: 'III. Enfermedades del Aparato Digestivo y Metabólicas (136-210)',
     definition: 'Desgarro longitudinal lineal de la mucosa del canal anal por debajo de la línea dentada (90% en línea media posterior) asociado a hipertonía del esfínter anal interno.',
-    symptoms: ['Dolor anal lacerante lancinante intensísimo al momento de la defecación ('como cortar con vidrio') que persiste como ardor sordo durante horas', 'Rectorragia de escasa cuantía en estría roja fresca sobre las heces o el papel higiénico', 'Miedo fóbico a defecar que perpetúa el estreñimiento'],
+    symptoms: ['Dolor anal lacerante lancinante intensísimo al momento de la defecación (\'como cortar con vidrio\') que persiste como ardor sordo durante horas', 'Rectorragia de escasa cuantía en estría roja fresca sobre las heces o el papel higiénico', 'Miedo fóbico a defecar que perpetúa el estreñimiento'],
     redFlags: ['Fisura anal lateral o múltiple (DESCARTE OBLIGATORIO de Enfermedad de Crohn, tuberculosis, sífilis o VIH)'],
     criteria: 'Separación suave de los glúteos que visualiza la hendidura lineal; en fisura crónica se observa la tríada de Brodie (papila hipertrófica, úlcera y colgajo cutáneo centinela).',
     labTests: ['No indicados en fisura típica de línea media'],
@@ -594,7 +594,7 @@ export const capitulo3Raw: CatalogoEntry[] = [
       { drug: 'Infliximab o Tofacitinib', dose: 'Según protocolos biológicos', route: 'EV/VO', freq: 'Según esquema', notes: 'Terapia de rescate en fallo de corticoides al 3er-5to día' }
     ],
     alternatives: [],
-    nonPharm: ['Colectomía total restauradora con reservorio ileoanal en 'J' (curativa en colitis refractaria o displasia)', 'Reposo digestivo en brotes severos'],
+    nonPharm: ['Colectomía total restauradora con reservorio ileoanal en \'J\' (curativa en colitis refractaria o displasia)', 'Reposo digestivo en brotes severos'],
     nursingCare: ['Monitorización horaria de signos vitales, perímetro abdominal y número de deposiciones sanguinolentas (evaluación con Criterios de Truelove-Witts)', 'Vigilancia estrecha de distensión abdominal aguda por riesgo de megacolon tóxico', 'Administración correcta de enemas de mesalazina reteniéndolos toda la noche en decúbito lateral izquierdo', 'Tamizaje endoscópico regular a partir de los 8 años de diagnóstico para detección precoz de cáncer de colon']
   },
   {
@@ -704,7 +704,7 @@ export const capitulo3Raw: CatalogoEntry[] = [
     ],
     alternatives: [],
     nonPharm: ['Reanimación hemodinámica agresiva con cristaloides en Shock Trauma / UCI', 'Soporte vasopresor con Noradrenalina si la PAM < 65 mmHg'],
-    nursingCare: ['Activación inmediata del protocolo de sepsis y preparación para CPRE de emergencia', 'Canalización de 2 vías periféricas gruesas e inicio inmediato de hidratación EV y antibióticos en la primera hora ('hora de oro')', 'Monitoreo horario estricto de funciones vitales, escala de Glasgow y diuresis por sonda Foley', 'Vigilancia de signos de sangrado o perforación post-drenaje biliar']
+    nursingCare: ['Activación inmediata del protocolo de sepsis y preparación para CPRE de emergencia', 'Canalización de 2 vías periféricas gruesas e inicio inmediato de hidratación EV y antibióticos en la primera hora (\'hora de oro\')', 'Monitoreo horario estricto de funciones vitales, escala de Glasgow y diuresis por sonda Foley', 'Vigilancia de signos de sangrado o perforación post-drenaje biliar']
   },
   {
     number: 168,
@@ -714,7 +714,7 @@ export const capitulo3Raw: CatalogoEntry[] = [
     category: 'Digestivas y Metabólicas',
     chapter: 'III. Enfermedades del Aparato Digestivo y Metabólicas (136-210)',
     definition: 'Proceso inflamatorio agudo del páncreas por activación prematura intraacinar de enzimas digestivas, causado principalmente por litiasis biliar (80% en Perú) o alcohol.',
-    symptoms: ['Dolor epigástrico transfictivo severo de inicio súbito que irradia 'en cinturón' o en barra hacia la espalda', 'Alivio parcial del dolor al inclinarse hacia adelante (posición mahometana)', 'Vómitos alimentarios y biliosos repetidos que no alivian el dolor', 'Distensión abdominal con íleo paralítico'],
+    symptoms: ['Dolor epigástrico transfictivo severo de inicio súbito que irradia "en cinturón" o en barra hacia la espalda', 'Alivio parcial del dolor al inclinarse hacia adelante (posición mahometana)', 'Vómitos alimentarios y biliosos repetidos que no alivian el dolor', 'Distensión abdominal con íleo paralítico'],
     redFlags: ['Signos de pancreatitis necrotizante grave: Signo de Cullen (equimosis periumbilical) o Signo de Grey-Turner (equimosis en flancos)', 'Falla orgánica persistente > 48h (Score de Marshall modificado: renal, respiratoria o cardiovascular)'],
     criteria: 'Criterios de Atlanta (≥ 2 de 3): 1. Dolor abdominal epigástrico típico; 2. Lipasa o amilasa sérica ≥ 3 veces el límite superior normal; 3. Hallazgos característicos en imágenes.',
     labTests: ['Lipasa sérica (más sensible y específica que la amilasa; permanece elevada más días)', 'Amilasa sérica', 'Hematocrito (hemoconcentración > 44% indica necrosis)', 'Calcio sérico (hipocalcemia es signo de mal pronóstico)', 'Perfil lipídico (hipertrigliceridemia)'],
@@ -762,7 +762,7 @@ export const capitulo3Raw: CatalogoEntry[] = [
     redFlags: ['Progresión a esteatohepatitis no alcohólica (EHNA) con fibrosis hepática avanzada (Score FIB-4 > 2.67)'],
     criteria: 'Evidencia de esteatosis hepática por imagen o biopsia en paciente con al menos un factor de riesgo cardiometabólico (obesidad, diabetes tipo 2, dislipidemia o HTA).',
     labTests: ['Transaminasas (TGO/TGP discretamente elevadas o normales)', 'Cálculo del Score FIB-4 (Edad, TGO, TGP y Plaquetas) para estratificar riesgo de fibrosis', 'Perfil lipídico, glucemia basal e insulina (HOMA-IR)'],
-    imaging: ['Ecografía abdominal superior (hiperecogenicidad hepática difusa en 'hígado brillante' con atenuación posterior)', 'Elastografía hepática de transición (FibroScan / CAP)'],
+    imaging: ['Ecografía abdominal superior (hiperecogenicidad hepática difusa en \'hígado brillante\' con atenuación posterior)', 'Elastografía hepática de transición (FibroScan / CAP)'],
     differential: ['Hepatopatía alcohólica', 'Hepatitis viral B o C crónica', 'Enfermedad de Wilson'],
     firstLine: [
       { drug: 'Pioglitazona (en pacientes con DM2 o EHNA comprobada)', dose: '30 a 45 mg una vez al día VO', route: 'VO', freq: 'c/24h', notes: 'Mejora la esteatosis y resolución histológica' },
@@ -803,7 +803,7 @@ export const capitulo3Raw: CatalogoEntry[] = [
     category: 'Digestivas y Metabólicas',
     chapter: 'III. Enfermedades del Aparato Digestivo y Metabólicas (136-210)',
     definition: 'Estadio terminal de la hepatopatía por consumo crónico y perjudicial de alcohol caracterizado por nódulos de regeneración rodeados de bandas fibrosas e hipertensión portal.',
-    symptoms: ['Estigmas hepáticos: arañas vasculares (spider nevi), eritema palmar, ginecomastia, contractura de Dupuytren y atrofia testicular', 'Ictericia conjuntival, coluria y astenia severa', 'Distensión abdominal por ascitis y circulación colateral en 'cabeza de medusa'', 'Pérdida de masa muscular y desnutrición proteica'],
+    symptoms: ['Estigmas hepáticos: arañas vasculares (spider nevi), eritema palmar, ginecomastia, contractura de Dupuytren y atrofia testicular', 'Ictericia conjuntival, coluria y astenia severa', 'Distensión abdominal por ascitis y circulación colateral en \'cabeza de medusa\'', 'Pérdida de masa muscular y desnutrición proteica'],
     redFlags: ['Hemorragia por várices esofágicas exanguinante', 'Encefalopatía hepática aguda', 'Peritonitis bacteriana espontánea (PBE)', 'Síndrome hepatorrenal'],
     criteria: 'Datos clínicos, analíticos y ecográficos de cirrosis hepática con hipertensión portal en paciente con historia de consumo de alcohol > 40-60 g/día por > 10 años.',
     labTests: ['Perfil hepático: cociente TGO/TGP > 2 (típico de alcohol), bilirrubina elevada, albúmina disminuida', 'Tiempo de protrombina prolongado (INR elevado)', 'Plaquetopenia por hiperesplenismo'],
