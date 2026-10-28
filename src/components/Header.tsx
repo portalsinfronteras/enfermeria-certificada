@@ -21,8 +21,10 @@ import {
   Smartphone,
   User,
   Bookmark,
-  LogOut
+  LogOut,
+  Bell,
 } from 'lucide-react';
+import { useNotifications } from '../context/NotificationContext';
 import { useAuth } from '../context/AuthContext';
 import { DonationModal } from './DonationModal';
 import { PWAInstallButton } from './PWAInstallButton';
@@ -63,6 +65,7 @@ export const Header: React.FC<HeaderProps> = ({ activeTab, setActiveTab }) => {
   const [isDonationModalOpen, setIsDonationModalOpen] = useState(false);
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
   const { user, openAuthModal, openSavedModal, logout } = useAuth();
+  const { unreadCount, toggleNotifications } = useNotifications();
   const [userMenuOpen, setUserMenuOpen] = useState(false);
 
   const tabs: TabItem[] = [
@@ -217,6 +220,22 @@ export const Header: React.FC<HeaderProps> = ({ activeTab, setActiveTab }) => {
             title="Donar con Yape al +51 935 281 052"
           >
             <span>💜 Donar con Yape</span>
+          </button>
+
+          {/* Centro de Notificaciones */}
+          <button
+            type="button"
+            onClick={toggleNotifications}
+            className="relative flex items-center justify-center p-2 sm:px-3 sm:py-2 rounded-xl bg-[#092b3d] hover:bg-[#0c3850] text-slate-200 hover:text-white transition border border-[#1a628a] shadow-md cursor-pointer active:scale-95 whitespace-nowrap"
+            title="Centro de Notificaciones y Alertas Sanitarias"
+          >
+            <Bell className="w-4 h-4 text-[#42edd8]" />
+            <span className="hidden lg:inline text-xs font-bold ml-1.5">Avisos</span>
+            {unreadCount > 0 && (
+              <span className="absolute -top-1 -right-1 px-1.5 py-0.2 rounded-full text-[9px] font-black bg-rose-500 text-white shadow-sm shadow-rose-950 animate-pulse">
+                {unreadCount}
+              </span>
+            )}
           </button>
 
           {/* Botón de Acceso / Usuario y Guardados */}
