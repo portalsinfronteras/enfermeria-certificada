@@ -831,5 +831,322 @@ export const NANDA_INTERRELACIONES_2024_2026: NandaInterrelationItem[] = [
         ]
       }
     ]
+  },
+  // 11. RIESGO DE INFECCIÓN
+  {
+    id: 'nanda_00004',
+    code: '00004',
+    label: 'Riesgo de infección',
+    domain: 'Dominio 11: Seguridad / Protección',
+    domainNumber: 11,
+    classType: 'Clase 1: Infección',
+    classNumber: 1,
+    type: 'De riesgo',
+    definition: 'Vulnerable a una invasión y multiplicación de organismos patógenos que pueden comprometer la salud.',
+    relatedFactors: [
+      'Procedimientos invasivos (catéter venoso central, sonda vesical, tubo endotraqueal)',
+      'Defensas primarias inadecuadas (rotura de la piel, traumatismo de los tejidos)',
+      'Inmunosupresión o leucopenia secundaria a quimioterapia o corticoides',
+      'Enfermedad crónica (diabetes mellitus, insuficiencia renal)',
+      'Ruptura prematura de membranas amnióticas'
+    ],
+    definingCharacteristics: [
+      'Presencia de dispositivos invasivos',
+      'Herida quirúrgica abierta o drenajes activos',
+      'Exposición a patógenos nosocomiales en unidad hospitalaria'
+    ],
+    riskPopulations: ['Pacientes postoperados', 'Pacientes en UCI', 'Recién nacidos y adultos mayores'],
+    associatedConditions: ['Sepsis', 'Cateterismo venoso central', 'Cirugía mayor', 'Inmunodeficiencias'],
+    nocList: [
+      {
+        code: '1902',
+        label: 'Control del riesgo: Proceso infeccioso',
+        definition: 'Acciones personales para prevenir, eliminar o reducir la amenaza de adquirir una infección.',
+        targetScore: 'Mantener en 2 (Raramente demostrado) y Aumentar a 5 (Siempre demostrado)',
+        scaleDescription: 'Escala de 1 a 5: 1 (Nunca) a 5 (Siempre)',
+        indicators: [
+          '190201 Reconoce factores de riesgo individuales de infección',
+          '190207 Mantiene un entorno limpio',
+          '190214 Practica la higiene de manos frecuente según los 5 momentos de la OMS',
+          '190220 Monitoriza cambios en el estado de salud o herida'
+        ]
+      },
+      {
+        code: '0703',
+        label: 'Severidad de la infección',
+        definition: 'Gravedad de los signos y síntomas de infección.',
+        targetScore: 'Mantener en 5 (Ninguno)',
+        scaleDescription: 'Escala de 1 a 5: 1 (Grave) a 5 (Ninguno)',
+        indicators: [
+          '070305 Supuración fétida o purulenta ausente',
+          '070307 Fiebre e hipertermia ausentes',
+          '070333 Leucocitosis ausente'
+        ]
+      }
+    ],
+    nicList: [
+      {
+        code: '6550',
+        label: 'Protección contra las infecciones',
+        definition: 'Prevención y detección precoz de la infección en un paciente de riesgo.',
+        priority: 'Prioritaria',
+        activities: [
+          'Observar los signos y síntomas de infección sistémica y localizada (eritema, calor, edema, secreción purulenta).',
+          'Mantener las normas de asepsia estricta para el paciente de riesgo y en la manipulación de accesos venosos.',
+          'Inspeccionar el estado de cualquier incisión o herida quirúrgica en cada turno.',
+          'Fomentar una ingesta nutricional suficiente rica en proteínas y líquidos para optimizar las defensas.'
+        ]
+      },
+      {
+        code: '6540',
+        label: 'Control de infecciones',
+        definition: 'Minimizar el contagio y transmisión de agentes infecciosos.',
+        priority: 'Prioritaria',
+        activities: [
+          'Lavarse las manos antes y después de cada actividad de cuidados del paciente (5 momentos de la OMS).',
+          'Garantizar una técnica de vendaje estéril en curaciones de heridas.',
+          'Cambiar los sistemas de infusión endovenosa cada 72-96 horas según norma institucional.'
+        ]
+      }
+    ]
+  },
+
+  // 12. RIESGO DE CAÍDAS
+  {
+    id: 'nanda_00155',
+    code: '00155',
+    label: 'Riesgo de caídas en adultos',
+    domain: 'Dominio 11: Seguridad / Protección',
+    domainNumber: 11,
+    classType: 'Clase 2: Lesión física',
+    classNumber: 2,
+    type: 'De riesgo',
+    definition: 'Vulnerable a caídas que pueden causar daño físico y comprometer la salud.',
+    relatedFactors: [
+      'Edad ≥ 65 años',
+      'Antecedentes de caídas previas en los últimos 6 meses',
+      'Deterioro de la movilidad física, marcha inestable o debilidad en extremidades inferiores',
+      'Uso de medicación de alto riesgo (sedantes, benzodiacepinas, antihipertensivos, diuréticos)',
+      'Hipotensión ortostática o mareos',
+      'Alteración del estado mental (delírium, confusión, demencia)',
+      'Entorno poco iluminado o suelo resbaladizo'
+    ],
+    definingCharacteristics: [
+      'Puntuación en Escala de Downton ≥ 2 puntos (alto riesgo)',
+      'Puntuación en Escala de J.H. Downton o Morse alterada'
+    ],
+    riskPopulations: ['Adultos mayores hospitalizados', 'Pacientes en postoperatorio con efecto residual anestésico'],
+    associatedConditions: ['Accidente cerebrovascular', 'Enfermedad de Parkinson', 'Artritis severa', 'Demencia'],
+    nocList: [
+      {
+        code: '1912',
+        label: 'Caídas caídas',
+        definition: 'Acciones personales o del cuidador para minimizar los factores de riesgo que podrían precipitar caídas.',
+        targetScore: 'Mantener en 2 y Aumentar a 5',
+        scaleDescription: 'Escala de 1 a 5: 1 (Nunca) a 5 (Siempre demostrado)',
+        indicators: [
+          '191201 Uso correcto de dispositivos de ayuda para la deambulación',
+          '191203 Colocación de barreras para prevenir caídas (barandas elevadas)',
+          '191207 Pide ayuda al personal de enfermería para movilizarse',
+          '191219 Utiliza calzado antideslizante adecuado'
+        ]
+      }
+    ],
+    nicList: [
+      {
+        code: '6490',
+        label: 'Prevención de caídas',
+        definition: 'Establecer precauciones especiales en pacientes con alto riesgo de lesiones por caídas.',
+        priority: 'Prioritaria',
+        activities: [
+          'Identificar conductas y factores de riesgo que afectan al potencial de caídas (Escala de Downton/Morse).',
+          'Colocar cartel identificador de "Riesgo de Caídas" en la cabecera y brazalete amarillo.',
+          'Mantener las barandas de la cama siempre elevadas a ambos lados.',
+          'Mantener la cama en la posición más baja posible y con las ruedas frenadas.',
+          'Asegurar que el timbre de llamada esté siempre accesible a la mano del paciente e instruir que no se levante solo.'
+        ]
+      }
+    ]
+  },
+
+  // 13. DETERIORO DE LA MOVILIDAD FÍSICA
+  {
+    id: 'nanda_00085',
+    code: '00085',
+    label: 'Deterioro de la movilidad física',
+    domain: 'Dominio 4: Actividad / Reposo',
+    domainNumber: 4,
+    classType: 'Clase 2: Actividad / Ejercicio',
+    classNumber: 2,
+    type: 'Focalizado en el problema',
+    definition: 'Limitación del movimiento independiente e intencionado del cuerpo o de una o más extremidades.',
+    relatedFactors: [
+      'Disminución de la fuerza muscular o sarcopenia',
+      'Dolor no controlado al movimiento',
+      'Prescripción de reposo estricto en cama',
+      'Contracturas articulares o rigidez musculoesquelética',
+      'Deterioro neuromuscular (hemiplejía, paraplejía)'
+    ],
+    definingCharacteristics: [
+      'Inestabilidad postural o marcha descoordinada',
+      'Dificultad para girar en la cama o realizar transferencias',
+      'Disminución del rango de movimiento articular',
+      'Disminución de la masa o fuerza muscular en extremidades'
+    ],
+    riskPopulations: ['Pacientes con fractura de cadera', 'Pacientes con ictus', 'Adultos mayores institucionalizados'],
+    associatedConditions: ['Traumatismo medular', 'Fracturas óseas', 'ACV isquémico / hemorrágico', 'Artritis reumatoide'],
+    nocList: [
+      {
+        code: '0208',
+        label: 'Movilidad',
+        definition: 'Capacidad para moverse con resolución en el entorno independientemente con o sin mecanismo de ayuda.',
+        targetScore: 'Mantener en 2 (Sustancialmente comprometido) y Aumentar a 4 (Levemente comprometido)',
+        scaleDescription: 'Escala de 1 a 5: 1 (Gravemente) a 5 (No comprometido)',
+        indicators: [
+          '020801 Mantenimiento del equilibrio postural',
+          '020803 Movimiento muscular simétrico',
+          '020805 Realización de transferencias cama-sillón',
+          '020809 Deambulación coordinada'
+        ]
+      }
+    ],
+    nicList: [
+      {
+        code: '0180',
+        label: 'Manejo de la energía',
+        definition: 'Regulación del uso de la energía para tratar o evitar la fatiga y mejorar las funciones.',
+        priority: 'Prioritaria',
+        activities: [
+          'Determinar los déficits del estado fisiológico del paciente que producen fatiga según su edad y desarrollo.',
+          'Animar la realización de ejercicios pasivos o activos asistidos en cama para conservar el tono muscular.',
+          'Planificar las actividades diarias en los momentos en que el paciente tenga más energía.',
+          'Realizar cambios posturales reglados cada 2 horas para prevenir complicaciones asociadas al encamamiento.'
+        ]
+      },
+      {
+        code: '0221',
+        label: 'Terapia de ejercicios: Deambulación',
+        definition: 'Estímulo y asistencia en la deambulación para mantener o restablecer las funciones corporales voluntarias.',
+        priority: 'Sugerida',
+        activities: [
+          'Aconsejar al paciente que use calzado que facilite la deambulación y evite lesiones.',
+          'Ayudar al paciente en el traslado cuando sea necesario (cama a silla de ruedas).',
+          'Aplicar cinturón de traslado/seguridad para sujetar firmemente al paciente durante la marcha.'
+        ]
+      }
+    ]
+  },
+
+  // 14. RIESGO DE DETERIORO DE LA INTEGRIDAD CUTÁNEA (UPP)
+  {
+    id: 'nanda_00047',
+    code: '00047',
+    label: 'Riesgo de deterioro de la integridad cutánea',
+    domain: 'Dominio 11: Seguridad / Protección',
+    domainNumber: 11,
+    classType: 'Clase 2: Lesión física',
+    classNumber: 2,
+    type: 'De riesgo',
+    definition: 'Vulnerable a una alteración en la epidermis y/o dermis que puede comprometer la salud (úlceras por presión, dermatitis por humedad, cizallamiento).',
+    relatedFactors: [
+      'Inmovilidad física prolongada en cama o silla de ruedas',
+      'Humedad constante por incontinencia urinaria o fecal',
+      'Fricción y fuerzas de cizallamiento al deslizarse en la cama',
+      'Hipoalbuminemia o desnutrición proteico-calórica',
+      'Edemas periféricos marcados y alteración de la microcirculación',
+      'Sensibilidad disminuida en extremidades'
+    ],
+    definingCharacteristics: [
+      'Puntuación en Escala de Braden ≤ 14 (alto riesgo de úlceras por presión)',
+      'Eritema en zonas de prominencias óseas (sacro, talones, trocánteres)'
+    ],
+    riskPopulations: ['Pacientes encamados en UCI o traumatología', 'Adultos mayores con fragilidad'],
+    associatedConditions: ['Lesión medular', 'Fractura de fémur o pelvis', 'Coma / Sedación profunda', 'Caquexia'],
+    nocList: [
+      {
+        code: '1101',
+        label: 'Integridad tisular: Piel y membranas mucosas',
+        definition: 'Indemnidad estructural y función fisiológica normal de la piel y las membranas mucosas.',
+        targetScore: 'Mantener en 3 (Moderadamente comprometido) y Aumentar a 5 (No comprometido)',
+        scaleDescription: 'Escala de 1 a 5: 1 (Gravemente) a 5 (No comprometido)',
+        indicators: [
+          '110101 Temperatura de la piel en rango normal',
+          '110104 Hidratación cutánea elástica',
+          '110113 Piel intacta sobre prominencias óseas',
+          '110115 Ausencia de lesiones por presión o maceración'
+        ]
+      }
+    ],
+    nicList: [
+      {
+        code: '3540',
+        label: 'Prevención de úlceras por presión',
+        definition: 'Prevención de la formación de úlceras por presión en un individuo con alto riesgo de desarrollarlas.',
+        priority: 'Prioritaria',
+        activities: [
+          'Valorar el riesgo de UPP mediante la escala de Braden al ingreso y en cada turno.',
+          'Realizar cambios posturales sistemáticos cada 2 horas (decúbito supino, lateral derecho 30°, lateral izquierdo 30°).',
+          'Aplicar ácidos grasos hiperoxigenados (AGHO) en sacro, talones y trocánteres sin masajear sobre prominencias óseas.',
+          'Utilizar superficies especiales para el manejo de la presión (SEMP): colchón de aire alternante con motor.',
+          'Evitar elevar el cabezal de la cama a más de 30 grados para minimizar fuerzas de cizallamiento.'
+        ]
+      }
+    ]
+  },
+
+  // 15. ANSIEDAD
+  {
+    id: 'nanda_00146',
+    code: '00146',
+    label: 'Ansiedad',
+    domain: 'Dominio 9: Afrontamiento / Tolerancia al estrés',
+    domainNumber: 9,
+    classType: 'Clase 2: Respuestas de afrontamiento',
+    classNumber: 2,
+    type: 'Focalizado en el problema',
+    definition: 'Respuesta emocional a una amenaza difusa en la que el individuo anticipa un peligro inminente, catástrofe o desgracia; señal de alerta que advierte de un peligro inminente y permite a la persona adoptar medidas para afrontarlo.',
+    relatedFactors: [
+      'Amenaza de muerte o cambio importante en el estado de salud',
+      'Entorno hospitalario desconocido y procedimientos invasivos',
+      'Separación de la familia y pérdida de control',
+      'Crisis situacional o estrés agudo'
+    ],
+    definingCharacteristics: [
+      'Inquietud motora, temblores o tensión muscular',
+      'Insomnio o dificultad para conciliar el sueño',
+      'Taquicardia, palpitaciones o sudoración palmar',
+      'Verbalización de temor o preocupación constante',
+      'Dificultad para concentrarse'
+    ],
+    riskPopulations: ['Pacientes prequirúrgicos', 'Pacientes con diagnóstico reciente de enfermedad grave'],
+    associatedConditions: ['Infarto agudo de miocardio', 'Cáncer', 'Cirugía programada'],
+    nocList: [
+      {
+        code: '1402',
+        label: 'Autocontrol de la ansiedad',
+        definition: 'Acciones personales para eliminar o reducir sentimientos de aprensión, tensión o inquietud.',
+        targetScore: 'Mantener en 2 y Aumentar a 4',
+        scaleDescription: 'Escala de 1 a 5: 1 (Nunca) a 5 (Siempre)',
+        indicators: [
+          '140204 Busca información para reducir la ansiedad',
+          '140207 Utiliza técnicas de relajación para reducir la ansiedad',
+          '140217 Controla la respuesta de ansiedad'
+        ]
+      }
+    ],
+    nicList: [
+      {
+        code: '5820',
+        label: 'Disminución de la ansiedad',
+        definition: 'Minimizar la aprensión, temor, presagios o inquietud relacionados con una fuente no identificada de peligro previsto.',
+        priority: 'Prioritaria',
+        activities: [
+          'Utilizar un enfoque sereno de seguridad que inspire confianza al paciente.',
+          'Explicar todos los procedimientos clínicos que se le van a realizar, incluyendo posibles sensaciones que experimentará.',
+          'Animar la manifestación de sentimientos, percepciones y miedos sin emitir juicios.',
+          'Instruir al paciente sobre el uso de técnicas de relajación (respiración profunda lenta con exhalación prolongada).'
+        ]
+      }
+    ]
   }
 ];
