@@ -13,378 +13,153 @@ import {
   Target,
   Layers,
   ChevronRight,
-  Info
+  Info,
+  Bookmark,
+  ExternalLink,
+  ShieldAlert,
+  ArrowRight,
+  BookMarked,
+  Activity,
+  HeartPulse,
+  Award
 } from 'lucide-react';
+import {
+  NANDA_INTERRELACIONES_2024_2026,
+  NandaInterrelationItem
+} from '../data/nandaInterrelacionesData';
+import { useAuth } from '../context/AuthContext';
 
-interface NandaItem {
-  code: string;
-  label: string;
-  domain: string;
-  classType: string;
-  definition: string;
-  symptoms: string[];
-  noc: {
-    code: string;
-    label: string;
-    indicators: string[];
-    targetScore: string;
-  }[];
-  nic: {
-    code: string;
-    label: string;
-    activities: string[];
-  }[];
-}
-
-interface PlaceTemplate {
-  id: string;
-  title: string;
-  category: string;
-  patientProfile: string;
-  nandaCode: string;
-  nandaLabel: string;
-  relatedFactors: string;
-  definingCharacteristics: string;
-  nocLabel: string;
-  nocIndicators: string[];
-  nicLabel: string;
-  nicActivities: string[];
-  evaluation: string;
-}
-
-const NANDA_DATABASE: NandaItem[] = [
-  {
-    code: '00032',
-    label: 'Patrón respiratorio ineficaz',
-    domain: 'Dominio 4: Actividad / Reposo',
-    classType: 'Clase 4: Respuestas cardiovasculares / pulmonares',
-    definition: 'Inspiración o espiración que no proporciona una ventilación adecuada.',
-    symptoms: ['Disnea', 'Taquipnea (>20 rpm)', 'Uso de músculos accesorios', 'Aleteo nasal', 'Tirajes intercostales'],
-    noc: [
-      {
-        code: '0415',
-        label: 'Estado respiratorio',
-        indicators: ['Frecuencia respiratoria en rango normal', 'Ritmo respiratorio regular', 'Profundidad de la respiración', 'Ausencia de tirajes'],
-        targetScore: 'Mantener en 2 (Sustancialmente comprometido) y Aumentar a 4 (Levemente comprometido)'
-      },
-      {
-        code: '0402',
-        label: 'Estado respiratorio: Intercambio gaseoso',
-        indicators: ['Saturación de oxígeno ≥ 94%', 'PaO2 y PaCO2 en límites gasométricos'],
-        targetScore: 'Mantener en 3 y Aumentar a 5'
-      }
-    ],
-    nic: [
-      {
-        code: '3350',
-        label: 'Monitorización respiratoria',
-        activities: [
-          'Vigilar frecuencia, ritmo, profundidad y esfuerzo de las respiraciones.',
-          'Evaluar la saturación de oxígeno continua por pulsioximetría.',
-          'Auscultar sonidos respiratorios para detectar sibilancias, crepitantes o estridor.',
-          'Colocar al paciente en posición semi-Fowler o Fowler para maximizar la expansión torácica.'
-        ]
-      },
-      {
-        code: '3320',
-        label: 'Oxigenoterapia',
-        activities: [
-          'Administrar oxígeno suplementario según prescripción médica (cánula binasal, máscara Venturi).',
-          'Vigilar la posición del dispositivo de oxígeno y evitar fugas o lesiones por presión.'
-        ]
-      }
-    ]
-  },
-  {
-    code: '00031',
-    label: 'Limpieza ineficaz de las vías aéreas',
-    domain: 'Dominio 11: Seguridad / Protección',
-    classType: 'Clase 2: Lesión física',
-    definition: 'Incapacidad para eliminar las secreciones u obstrucciones del tracto respiratorio para mantener las vías aéreas permeables.',
-    symptoms: ['Tos ineficaz o ausente', 'Sonidos respiratorios adventicios (roncus, estertores)', 'Secreciones abundantes o espesas', 'Disnea'],
-    noc: [
-      {
-        code: '0410',
-        label: 'Estado respiratorio: Permeabilidad de las vías respiratorias',
-        indicators: ['Capacidad para eliminar secreciones', 'Ausencia de ruidos adventicios', 'Frecuencia respiratoria normal'],
-        targetScore: 'Mantener en 2 y Aumentar a 5'
-      }
-    ],
-    nic: [
-      {
-        code: '3160',
-        label: 'Aspiración de las vías aéreas',
-        activities: [
-          'Hiperoxigenar con O2 al 100% antes y después de aspirar.',
-          'Utilizar técnica estéril y catéter de calibre adecuado (no ocluir > 50% de la luz del tubo).',
-          'Limitar la duración de cada aspiración a un máximo de 10-15 segundos.',
-          'Monitorear la frecuencia cardíaca y SpO2 durante todo el procedimiento.'
-        ]
-      },
-      {
-        code: '3230',
-        label: 'Fisioterapia respiratoria',
-        activities: [
-          'Fomentar la tos asistida y respiraciones profundas diafragmáticas.',
-          'Asegurar hidratación adecuada para fluidificar secreciones bronquiales.'
-        ]
-      }
-    ]
-  },
-  {
-    code: '00132',
-    label: 'Dolor agudo',
-    domain: 'Dominio 12: Confort',
-    classType: 'Clase 1: Confort físico',
-    definition: 'Experiencia sensitiva y emocional desagradable ocasionada por una lesión tisular real o potencial, de inicio súbito o lento y duración < 3 meses.',
-    symptoms: ['Información verbal del dolor (EVA > 4)', 'Conducta de protección o defensa', 'Facies de dolor', 'Taquicardia, diaforesis, hipertensión reactiva'],
-    noc: [
-      {
-        code: '1605',
-        label: 'Control del dolor',
-        indicators: ['Reconoce el comienzo del dolor', 'Utiliza medidas de alivio no farmacológicas', 'Refiere dolor controlado (EVA ≤ 3/10)'],
-        targetScore: 'Mantener en 2 y Aumentar a 5'
-      },
-      {
-        code: '2102',
-        label: 'Nivel del dolor',
-        indicators: ['Dolor referido', 'Expresiones faciales de dolor', 'Tensión muscular'],
-        targetScore: 'Mantener en 2 y Aumentar a 4'
-      }
-    ],
-    nic: [
-      {
-        code: '2210',
-        label: 'Administración de analgésicos',
-        activities: [
-          'Verificar la prescripción médica, dosis, vía y horario (10 correctos).',
-          'Evaluar la eficacia del analgésico a los 30 minutos de la administración EV u oral.',
-          'Registrar el nivel de dolor previo y posterior en la escala EVA.'
-        ]
-      },
-      {
-        code: '1400',
-        label: 'Manejo del dolor',
-        activities: [
-          'Proporcionar un ambiente tranquilo, luz tenue y posición antiálgica.',
-          'Aplicar técnicas de relajación, distracción o compresas según indicación.'
-        ]
-      }
-    ]
-  },
-  {
-    code: '00027',
-    label: 'Déficit de volumen de líquidos',
-    domain: 'Dominio 2: Nutrición',
-    classType: 'Clase 5: Hidratación',
-    definition: 'Disminución del líquido intravascular, intersticial o intracelular. Se refiere a deshidratación o pérdida hídrica.',
-    symptoms: ['Hipotensión arterial', 'Taquicardia compensatoria', 'Oliguria (<0.5 mL/kg/h)', 'Mucosas secas', 'Signo del pliegue cutáneo positivo', 'Sed intensa'],
-    noc: [
-      {
-        code: '0601',
-        label: 'Equilibrio hídrico',
-        indicators: ['Presión arterial en límites normales', 'Diuresis horaria adecuada (≥ 0.5 mL/kg/h)', 'Turgencia cutánea elástica', 'Mucosas orales húmedas'],
-        targetScore: 'Mantener en 2 y Aumentar a 4'
-      }
-    ],
-    nic: [
-      {
-        code: '4120',
-        label: 'Manejo de líquidos',
-        activities: [
-          'Canalizar vía venosa periférica de grueso calibre (18G o 16G) e iniciar fluidoterapia rápida.',
-          'Realizar balance hídrico estricto por turno anotando ingresos y egresos con diuresis horaria.',
-          'Vigilar signos de sobrecarga hídrica (ingurgitación yugular, estertores pulmonares).'
-        ]
-      }
-    ]
-  },
-  {
-    code: '00205',
-    label: 'Riesgo de shock',
-    domain: 'Dominio 11: Seguridad / Protección',
-    classType: 'Clase 2: Lesión física',
-    definition: 'Vulnerable a un aporte sanguíneo inadecuado a los tejidos que puede conducir a una disfunción celular potencialmente mortal.',
-    symptoms: ['Hipotensión refractaria', 'Lactato sérico elevado (> 2 mmol/L)', 'Llenado capilar lento (> 2 seg)', 'Oliguria', 'Piel fría o moteada'],
-    noc: [
-      {
-        code: '0400',
-        label: 'Efectividad de la bomba cardíaca',
-        indicators: ['Presión arterial media (PAM) ≥ 65 mmHg', 'Frecuencia cardíaca en rango normal', 'Gasto urinario adecuado'],
-        targetScore: 'Mantener en 2 y Aumentar a 4'
-      }
-    ],
-    nic: [
-      {
-        code: '4260',
-        label: 'Manejo del shock',
-        activities: [
-          'Optimizar volemia con cristaloides a 30 mL/kg en las primeras 3 horas en shock séptico.',
-          'Iniciar noradrenalina precozmente para mantener PAM ≥ 65 mmHg si no responde a fluidos.',
-          'Tomar hemocultivos x 2 sets antes de iniciar antibióticos de amplio espectro en la 1ra hora.'
-        ]
-      }
-    ]
-  },
-  {
-    code: '00047',
-    label: 'Riesgo de deterioro de la integridad cutánea',
-    domain: 'Dominio 11: Seguridad / Protección',
-    classType: 'Clase 2: Lesión física',
-    definition: 'Vulnerable a una alteración en la epidermis y/o dermis que puede comprometer la salud (UPP, maceración, cizallamiento).',
-    symptoms: ['Inmovilidad en cama', 'Braden ≤ 14', 'Incontinencia urinaria o fecal', 'Edema periférico'],
-    noc: [
-      {
-        code: '1101',
-        label: 'Integridad tisular: piel y membranas mucosas',
-        indicators: ['Piel intacta sobre prominencias óseas', 'Ausencia de eritema no blanqueable', 'Hidratación cutánea adecuada'],
-        targetScore: 'Mantener en 3 y Aumentar a 5'
-      }
-    ],
-    nic: [
-      {
-        code: '3540',
-        label: 'Prevención de úlceras por presión',
-        activities: [
-          'Realizar cambios posturales reglados cada 2 horas en decúbito lateral y supino.',
-          'Aplicar ácidos grasos hiperoxigenados (AGHO) en sacro, talones y trocánteres sin frotar.',
-          'Colocar colchón de aire con presión alternante.',
-          'Mantener sábanas secas, limpias y libres de arrugas.'
-        ]
-      }
-    ]
-  }
-];
-
-const PLACE_TEMPLATES: PlaceTemplate[] = [
-  {
-    id: 'cad',
-    title: 'Cetoacidosis Diabética (CAD)',
-    category: 'Endocrino / Urgencias',
-    patientProfile: 'Paciente con hiperglucemia >300 mg/dL, cetonuria/cetonemia, respiración de Kussmaul y deshidratación moderada a severa.',
-    nandaCode: '00027',
-    nandaLabel: 'Déficit de volumen de líquidos r/c diuresis osmótica secundaria a hiperglucemia m/p mucosas secas, taquicardia e hipotensión',
-    relatedFactors: 'Diuresis osmótica glucosúrica, vómitos, acidosis metabólica.',
-    definingCharacteristics: 'Deshidratación severa, hipotensión arterial, taquicardia, letargia.',
-    nocLabel: 'Equilibrio hídrico y Severidad de la hiperglucemia (NOC 0601 & 2111)',
-    nocIndicators: ['Glicemia capilar en descenso progresivo (50-75 mg/dL/h)', 'Diuresis horaria ≥ 0.5 mL/kg/h', 'Electrolitos séricos (K+, Na+) en rango seguro'],
-    nicLabel: 'Manejo de la cetoacidosis diabética & Manejo de líquidos (NIC 2120 & 4120)',
-    nicActivities: [
-      'Infundir Cloruro de Sodio 0.9% 1000 mL en la primera hora, seguido según balance hemodinámico.',
-      'Iniciar bomba de infusión de Insulina Regular a 0.1 UI/kg/h cuando K+ > 3.3 mEq/L.',
-      'Control horario de HGT (glucemia capilar) y control gasométrico/electrolitos cada 2 a 4 horas.',
-      'Cambiar solución a Dextrosa 5% al llegar la glucemia a 200-250 mg/dL para evitar hipoglucemia.'
-    ],
-    evaluation: 'Paciente logra corrección gradual de la deshidratación y acidosis metabólica sin complicaciones de hipopotasemia ni edema cerebral.'
-  },
-  {
-    id: 'preeclampsia',
-    title: 'Preeclampsia Severa con Criterios de Severidad',
-    category: 'Gineco-Obstetricia',
-    patientProfile: 'Gestante >20 semanas o puerperio con PA ≥ 160/110 mmHg, cefalea intensa, escotomas, hiperreflexia o proteinuria.',
-    nandaCode: '00029',
-    nandaLabel: 'Disminución del gasto cardíaco / Riesgo de perfusión tisular fetal ineficaz r/c vasoespasmo arteriolar generalizado',
-    relatedFactors: 'Disfunción endotelial, vasoespasmo materno placentario.',
-    definingCharacteristics: 'Cifras tensionales ≥ 160/110 mmHg, reflejos osteotendinosos exaltados, cefalea pulsátil.',
-    nocLabel: 'Control de la hipertensión & Estado materno: Preeclampsia (NOC 2510)',
-    nocIndicators: ['Presión arterial sistólica 130-150 mmHg y diastólica 80-100 mmHg', 'Reflejos patelares normales (+2/4)', 'Ausencia de convulsiones (eclampsia)'],
-    nicLabel: 'Manejo de la preeclampsia & Administración de Sulfato de Magnesio (NIC 6830)',
-    nicActivities: [
-      'Iniciar esquema Zuspan con Sulfato de Magnesio: Impregnación 4g EV en 20 min, seguido de infusión a 1-2 g/h.',
-      'Vigilancia estricta de toxicidad por magnesio: Reflejo rotuliano presente, FR ≥ 16 rpm, diuresis ≥ 30 mL/h.',
-      'Tener a la mano el antídoto: Gluconato de Calcio al 10% (1 ampolla de 1g EV en 10 min).',
-      'Monitoreo hemodinámico estricto cada 15 min durante la crisis y reposo en decúbito lateral izquierdo.'
-    ],
-    evaluation: 'Se estabilizan cifras tensionales con hipotensores (Nifedipino / Labetalol) y se previene eclampsia sin toxicidad por magnesio.'
-  },
-  {
-    id: 'shock_septico',
-    title: 'Shock Séptico (Campaña Sobrevivir a la Sepsis)',
-    category: 'Cuidados Críticos / UCI',
-    patientProfile: 'Paciente con sospecha de infección, hipotensión persistente que requiere vasopresores para PAM ≥65 mmHg y lactato >2 mmol/L.',
-    nandaCode: '00205',
-    nandaLabel: 'Riesgo de shock / Disminución del gasto cardíaco r/c vasodilatación masiva y fuga capilar secundaria a respuesta inflamatoria sistémica',
-    relatedFactors: 'Foco infeccioso activo, liberación de citoquinas proinflamatorias, vasodilatación.',
-    definingCharacteristics: 'PAM < 65 mmHg pese a fluidos, taquicardia, oliguria, llenado capilar > 3 segundos.',
-    nocLabel: 'Perfusión tisular: Celular y Efectividad de la bomba cardíaca (NOC 0416 & 0400)',
-    nocIndicators: ['PAM mantenida ≥ 65 mmHg con noradrenalina', 'Lactato sérico en aclaramiento (>20% en 2-4 horas)', 'Diuresis horaria ≥ 0.5 mL/kg/h'],
-    nicLabel: 'Manejo del shock séptico & Terapia de reanimación precoz (NIC 4260)',
-    nicActivities: [
-      'Cumplir el Paquete de la 1ra Hora (Hour-1 Bundle): medir lactato sérico, obtener hemocultivos x 2 antes de ATB.',
-      'Iniciar antibiótico de amplio espectro en los primeros 60 minutos.',
-      'Administrar carga de cristaloides balanceados a 30 mL/kg en las primeras 3 horas.',
-      'Iniciar Noradrenalina por vía central para mantener PAM ≥ 65 mmHg si persiste hipotensión.'
-    ],
-    evaluation: 'Estabilización de PAM y reversión de hipoperfusión tisular con monitoreo hemodinámico invasivo en UCI.'
-  },
-  {
-    id: 'postop',
-    title: 'Postoperatorio Mediato (Cirugía Abdominal Mayor)',
-    category: 'Quirúrgica / Hospitalización',
-    patientProfile: 'Paciente intervenido de laparotomía exploradora, con herida quirúrgica, drenajes activos y restricción de movilidad.',
-    nandaCode: '00132',
-    nandaLabel: 'Dolor agudo r/c agresión quirúrgica tisular y manipulación visceral m/p EVA 7/10 y contractura muscular',
-    relatedFactors: 'Incisión quirúrgica, drenajes, procedimiento anestésico en resolución.',
-    definingCharacteristics: 'Refiere dolor moderado a severo, taquicardia, respiración superficial por dolor.',
-    nocLabel: 'Nivel del dolor y Recuperación quirúrgica: Convalecencia (NOC 2102 & 2300)',
-    nocIndicators: ['Dolor controlado EVA ≤ 3/10', 'Deambulación precoz asistida a las 24 horas', 'Herida quirúrgica sin signos de dehiscencia o infección'],
-    nicLabel: 'Manejo del dolor & Cuidados de la herida quirúrgica (NIC 1400 & 3660)',
-    nicActivities: [
-      'Administrar analgesia multimodal pautada (no condicional) según prescripción médica.',
-      'Evaluar apósitos de la herida operatoria y cuantificar el débito y características de los drenajes.',
-      'Estimular ejercicios de respiración profunda y espirometría incentivada para prevenir atelectasias.',
-      'Fomentar sedestación y movilización precoz para estimular peristaltismo (prevención de íleo).'
-    ],
-    evaluation: 'Evolución postoperatoria favorable, analgesia efectiva, inicio de tolerancia oral y drenajes con gasto en descenso.'
-  }
-];
+type SubTab = 'buscador' | 'place' | 'metodologia';
 
 export const NandaPlaceTab: React.FC = () => {
-  const [activeSubTab, setActiveSubTab] = useState<'buscador' | 'place'>('buscador');
-  const [searchQuery, setSearchQuery] = useState<string>('');
-  const [selectedNanda, setSelectedNanda] = useState<NandaItem>(NANDA_DATABASE[0]);
+  const { user, saveItem, isItemSaved } = useAuth();
 
-  // PLACE Editor State
-  const [selectedTemplateId, setSelectedTemplateId] = useState<string>('cad');
-  const [placePatientName, setPlacePatientName] = useState<string>('Paciente Adulto / Cama 304');
-  const [placeService, setPlaceService] = useState<string>('Medicina Interna / UCI');
-  const [placeNanda, setPlaceNanda] = useState<string>(PLACE_TEMPLATES[0].nandaLabel);
-  const [placeNoc, setPlaceNoc] = useState<string>(PLACE_TEMPLATES[0].nocLabel);
-  const [placeNic, setPlaceNic] = useState<string>(PLACE_TEMPLATES[0].nicActivities.join('\n• '));
-  const [placeEvaluation, setPlaceEvaluation] = useState<string>(PLACE_TEMPLATES[0].evaluation);
+  const [activeSubTab, setActiveSubTab] = useState<SubTab>('buscador');
+  const [searchQuery, setSearchQuery] = useState<string>('');
+  const [selectedDomain, setSelectedDomain] = useState<string>('todos');
+  const [selectedDiagnosisId, setSelectedDiagnosisId] = useState<string>(
+    NANDA_INTERRELACIONES_2024_2026[0].id
+  );
+  const [copiedItem, setCopiedItem] = useState<string | null>(null);
+
+  // Estados del Generador de PLACE
+  const [placePatientName, setPlacePatientName] = useState<string>('Paciente Adulto (Caso Clínico)');
+  const [placeService, setPlaceService] = useState<string>('Medicina Interna / Hospitalización');
+  const [placeNanda, setPlaceNanda] = useState<string>(
+    `${NANDA_INTERRELACIONES_2024_2026[0].code} - ${NANDA_INTERRELACIONES_2024_2026[0].label}`
+  );
+  const [placeNoc, setPlaceNoc] = useState<string>(
+    `${NANDA_INTERRELACIONES_2024_2026[0].nocList[0].code} - ${NANDA_INTERRELACIONES_2024_2026[0].nocList[0].label}\nMeta: ${NANDA_INTERRELACIONES_2024_2026[0].nocList[0].targetScore}`
+  );
+  const [placeNic, setPlaceNic] = useState<string>(
+    NANDA_INTERRELACIONES_2024_2026[0].nicList[0].activities.slice(0, 4).join('\n• ')
+  );
+  const [placeEvaluation, setPlaceEvaluation] = useState<string>(
+    'Paciente evoluciona favorablemente con mejoría de los parámetros fisiológicos y alivio de síntomas tras intervenciones de enfermería.'
+  );
   const [copiedPlace, setCopiedPlace] = useState<boolean>(false);
 
-  // Filtered Nanda items
-  const filteredNanda = useMemo(() => {
-    if (!searchQuery.trim()) return NANDA_DATABASE;
-    const q = searchQuery.toLowerCase().trim();
-    return NANDA_DATABASE.filter(
-      (item) =>
-        item.label.toLowerCase().includes(q) ||
-        item.code.includes(q) ||
-        item.domain.toLowerCase().includes(q) ||
-        item.symptoms.some((s) => s.toLowerCase().includes(q))
-    );
-  }, [searchQuery]);
+  // Lista filtrada de diagnósticos
+  const filteredDiagnoses = useMemo(() => {
+    return NANDA_INTERRELACIONES_2024_2026.filter((item) => {
+      // Filtro de Dominio
+      if (selectedDomain !== 'todos' && !item.domain.toLowerCase().includes(selectedDomain.toLowerCase())) {
+        return false;
+      }
 
-  const handleSelectTemplate = (tplId: string) => {
-    setSelectedTemplateId(tplId);
-    const tpl = PLACE_TEMPLATES.find((x) => x.id === tplId);
-    if (tpl) {
-      setPlaceNanda(tpl.nandaLabel);
-      setPlaceNoc(tpl.nocLabel);
-      setPlaceNic(tpl.nicActivities.join('\n• '));
-      setPlaceEvaluation(tpl.evaluation);
+      // Filtro de Búsqueda
+      if (searchQuery.trim()) {
+        const q = searchQuery.toLowerCase().trim();
+        const matchesCode = item.code.includes(q);
+        const matchesLabel = item.label.toLowerCase().includes(q);
+        const matchesDomain = item.domain.toLowerCase().includes(q);
+        const matchesNoc = item.nocList.some(
+          (n) => n.code.includes(q) || n.label.toLowerCase().includes(q)
+        );
+        const matchesNic = item.nicList.some(
+          (n) => n.code.includes(q) || n.label.toLowerCase().includes(q)
+        );
+        const matchesSymptoms = item.definingCharacteristics.some((s) => s.toLowerCase().includes(q));
+
+        return matchesCode || matchesLabel || matchesDomain || matchesNoc || matchesNic || matchesSymptoms;
+      }
+
+      return true;
+    });
+  }, [searchQuery, selectedDomain]);
+
+  // Diagnóstico seleccionado actualmente
+  const selectedItem: NandaInterrelationItem = useMemo(() => {
+    const found = NANDA_INTERRELACIONES_2024_2026.find((x) => x.id === selectedDiagnosisId);
+    return found || NANDA_INTERRELACIONES_2024_2026[0];
+  }, [selectedDiagnosisId]);
+
+  // Cargar diagnóstico en el Generador de PLACE
+  const handleLoadIntoPlace = (item: NandaInterrelationItem) => {
+    setPlaceNanda(`${item.code} - ${item.label} r/c ${item.relatedFactors[0] || 'proceso patológico'} e/p ${item.definingCharacteristics[0] || 'signos clínicos'}`);
+    
+    if (item.nocList.length > 0) {
+      const noc1 = item.nocList[0];
+      setPlaceNoc(`${noc1.code} - ${noc1.label}\nMeta: ${noc1.targetScore}\nIndicadores: ${noc1.indicators.slice(0, 3).join(', ')}`);
     }
+
+    if (item.nicList.length > 0) {
+      const nic1 = item.nicList[0];
+      setPlaceNic(nic1.activities.slice(0, 4).join('\n• '));
+    }
+
+    setPlaceEvaluation('Paciente en unidad hemodinámicamente estable, buena respuesta al plan de cuidados de enfermería.');
+    setActiveSubTab('place');
   };
 
+  // Copiar Ficha N-N-N completa
+  const handleCopyInterrelation = (item: NandaInterrelationItem) => {
+    let text = `========================================================\n`;
+    text += `INTERRELACIÓN NANDA - NOC - NIC (Actualización 2024-2026)\n`;
+    text += `========================================================\n\n`;
+    text += `DIAGNÓSTICO NANDA: ${item.code} - ${item.label}\n`;
+    text += `Dominio: ${item.domain} | ${item.classType}\n`;
+    text += `Tipo: ${item.type}\n`;
+    text += `Definición: ${item.definition}\n\n`;
+    
+    text += `FACTORES RELACIONADOS (Etiología):\n• ${item.relatedFactors.join('\n• ')}\n\n`;
+    text += `CARACTERÍSTICAS DEFINITORIAS (Signos/Síntomas):\n• ${item.definingCharacteristics.join('\n• ')}\n\n`;
+
+    if (item.riskPopulations.length > 0) {
+      text += `POBLACIONES DE RIESGO:\n• ${item.riskPopulations.join('\n• ')}\n\n`;
+    }
+    if (item.associatedConditions.length > 0) {
+      text += `CONDICIONES ASOCIADAS:\n• ${item.associatedConditions.join('\n• ')}\n\n`;
+    }
+
+    text += `RESULTADOS NOC:\n`;
+    item.nocList.forEach((noc) => {
+      text += `\n[NOC ${noc.code}] ${noc.label}\n`;
+      text += `Definición: ${noc.definition}\n`;
+      text += `Meta / Puntuación Diana: ${noc.targetScore}\n`;
+      text += `Indicadores:\n  - ${noc.indicators.join('\n  - ')}\n`;
+    });
+
+    text += `\nINTERVENCIONES NIC:\n`;
+    item.nicList.forEach((nic) => {
+      text += `\n[NIC ${nic.code}] ${nic.label} (${nic.priority})\n`;
+      text += `Definición: ${nic.definition}\n`;
+      text += `Actividades Principales:\n  • ${nic.activities.join('\n  • ')}\n`;
+    });
+
+    navigator.clipboard.writeText(text);
+    setCopiedItem(item.id);
+    setTimeout(() => setCopiedItem(null), 2500);
+  };
+
+  // Copiar PLACE
   const handleCopyPlace = () => {
-    let text = `PLAN DE CUIDADOS DE ENFERMERÍA (PLACE)\n`;
+    let text = `PLAN DE CUIDADOS DE ENFERMERÍA (PLACE OFICIAL)\n`;
     text += `Paciente: ${placePatientName} | Servicio: ${placeService}\n\n`;
     text += `1. DIAGNÓSTICO ENFERMERO (NANDA-I):\n${placeNanda}\n\n`;
     text += `2. CRITERIOS DE RESULTADO (NOC):\n${placeNoc}\n\n`;
     text += `3. INTERVENCIONES Y ACTIVIDADES (NIC):\n• ${placeNic}\n\n`;
-    text += `4. EVALUACIÓN DEL RESULTADO:\n${placeEvaluation}\n`;
+    text += `4. EVALUACIÓN:\n${placeEvaluation}\n`;
 
     navigator.clipboard.writeText(text);
     setCopiedPlace(true);
@@ -392,174 +167,512 @@ export const NandaPlaceTab: React.FC = () => {
   };
 
   return (
-    <section className="space-y-6">
-      {/* Header */}
+    <section className="space-y-5">
+      {/* Cabecera Principal */}
       <div className="bg-[#071d2b]/95 rounded-2xl p-4 sm:p-5 border border-[#12425a] flex flex-col md:flex-row gap-4 items-start md:items-center justify-between shadow-xl">
         <div>
-          <div className="flex items-center gap-2 mb-1">
-            <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-teal-500/10 text-teal-300 border border-teal-500/30">
-              Taxonomía Internacional
+          <div className="flex items-center gap-2 mb-1 flex-wrap">
+            <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-teal-500/20 text-[#42edd8] border border-teal-500/40">
+              Actualización Oficial 2024 – 2026
             </span>
-            <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-amber-500/10 text-amber-300 border border-amber-500/30">
-              NANDA-I • NOC • NIC
+            <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-amber-500/20 text-amber-300 border border-amber-500/40">
+              NANDA-I • NOC 6ta/7ma • NIC 7ma/8va
+            </span>
+            <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-[#092b3d] text-slate-300 border border-[#144863]">
+              L.E. Alex Santiago
             </span>
           </div>
-          <h2 className="text-lg sm:text-xl font-bold text-white flex items-center gap-2">
-            <BookOpen className="w-5 h-5 text-teal-400" />
-            Estandarización NANDA - NIC - NOC & Generador de PLACE
+          <h2 className="text-lg sm:text-xl font-black text-white flex items-center gap-2">
+            <BookOpen className="w-5 h-5 text-[#22b8af]" />
+            Interrelaciones NANDA - NOC - NIC & Generador de PLACE
           </h2>
           <p className="text-xs text-slate-300 mt-1">
-            Buscador rápido de diagnósticos con cruce de intervenciones y plantillas oficiales de Planes de Cuidados de Enfermería.
+            Buscador clínico de taxonomías enlazadas con indicadores diana, actividades priorizadas y creador de planes de cuidado.
           </p>
         </div>
 
-        {/* Subtabs */}
-        <div className="flex bg-[#092233] p-1 rounded-xl border border-slate-800 text-xs font-semibold">
+        {/* Selector de Pestañas Superiores */}
+        <div className="flex bg-[#051522] p-1 rounded-xl border border-[#11405c] text-xs font-bold shrink-0 flex-wrap sm:flex-nowrap">
           <button
             type="button"
             onClick={() => setActiveSubTab('buscador')}
             className={`px-3 py-1.5 rounded-lg transition cursor-pointer flex items-center gap-1.5 ${
-              activeSubTab === 'buscador' ? 'bg-teal-600 text-white shadow' : 'text-slate-400 hover:text-white'
+              activeSubTab === 'buscador' ? 'bg-[#179c94] text-white shadow-md' : 'text-slate-400 hover:text-white'
             }`}
           >
             <Search className="w-3.5 h-3.5" />
-            Buscador NANDA/NIC/NOC
+            <span>Buscador N-N-N</span>
           </button>
           <button
             type="button"
             onClick={() => setActiveSubTab('place')}
             className={`px-3 py-1.5 rounded-lg transition cursor-pointer flex items-center gap-1.5 ${
-              activeSubTab === 'place' ? 'bg-amber-600 text-white shadow' : 'text-slate-400 hover:text-white'
+              activeSubTab === 'place' ? 'bg-amber-600 text-white shadow-md' : 'text-slate-400 hover:text-white'
             }`}
           >
             <FileSpreadsheet className="w-3.5 h-3.5" />
-            Generador de PLACE
+            <span>Generador PLACE</span>
+          </button>
+          <button
+            type="button"
+            onClick={() => setActiveSubTab('metodologia')}
+            className={`px-3 py-1.5 rounded-lg transition cursor-pointer flex items-center gap-1.5 ${
+              activeSubTab === 'metodologia' ? 'bg-cyan-600 text-white shadow-md' : 'text-slate-400 hover:text-white'
+            }`}
+          >
+            <BookMarked className="w-3.5 h-3.5" />
+            <span>Metodología PAE</span>
           </button>
         </div>
       </div>
 
       {/* ========================================================= */}
-      {/* 1. BUSCADOR RÁPIDO NANDA / NIC / NOC */}
+      {/* 1. BUSCADOR INTERACTIVO NANDA / NOC / NIC 2024-2026 */}
       {/* ========================================================= */}
       {activeSubTab === 'buscador' && (
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-          {/* Left: Search & Drug list */}
-          <div className="lg:col-span-5 bg-[#092233]/90 p-5 rounded-2xl border border-[#12425a] shadow-xl space-y-4">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
+          {/* Panel Izquierdo: Buscador y Lista de Diagnósticos (5 cols) */}
+          <div className="lg:col-span-5 bg-[#071d2b] p-4 sm:p-5 rounded-2xl border border-[#12425a] shadow-xl space-y-3.5 flex flex-col max-h-[820px]">
+            {/* Buscador en Vivo */}
             <div className="relative">
               <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
               <input
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Buscar por etiqueta, síntoma (ej. disnea, dolor, shock)..."
-                className="w-full bg-slate-950 border border-slate-800 rounded-xl pl-9 pr-3 py-2 text-xs sm:text-sm text-white focus:outline-none focus:border-teal-400"
+                placeholder="Buscar por código (ej. 00132), término (Dolor, Glucemia, Respiratorio, Sueño)..."
+                className="w-full bg-[#05141f] border border-[#175270] rounded-xl pl-9 pr-3 py-2 text-xs text-white placeholder-slate-400 focus:outline-none focus:border-[#22b8af]"
               />
             </div>
 
-            <div className="space-y-2 max-h-[500px] overflow-y-auto pr-1">
-              {filteredNanda.map((item) => (
+            {/* Filtros Rápidos de Dominio */}
+            <div className="flex items-center gap-1 overflow-x-auto pb-1 custom-scrollbar text-[11px]">
+              {[
+                { id: 'todos', label: 'Todos' },
+                { id: 'dominio 1', label: 'D1: Promoción' },
+                { id: 'dominio 2', label: 'D2: Nutrición' },
+                { id: 'dominio 4', label: 'D4: Actividad' },
+                { id: 'dominio 5', label: 'D5: Percepción' },
+                { id: 'dominio 11', label: 'D11: Seguridad' },
+                { id: 'dominio 12', label: 'D12: Confort' }
+              ].map((d) => (
                 <button
-                  key={item.code}
+                  key={d.id}
                   type="button"
-                  onClick={() => setSelectedNanda(item)}
-                  className={`w-full p-3 rounded-xl border text-left transition cursor-pointer flex flex-col gap-1 ${
-                    selectedNanda.code === item.code
-                      ? 'bg-teal-950/70 border-teal-500 shadow-md ring-1 ring-teal-400/40'
-                      : 'bg-slate-950/80 border-slate-800 hover:bg-slate-900 text-slate-300'
+                  onClick={() => setSelectedDomain(d.id)}
+                  className={`px-2.5 py-1 rounded-lg font-bold whitespace-nowrap cursor-pointer transition ${
+                    selectedDomain === d.id
+                      ? 'bg-[#179c94] text-white shadow'
+                      : 'bg-[#092233] text-slate-400 hover:text-white border border-[#134866]'
                   }`}
                 >
-                  <div className="flex items-center justify-between text-[11px]">
-                    <span className="font-mono text-teal-400 font-bold">[{item.code}]</span>
-                    <span className="text-slate-500 text-[10px] truncate max-w-[150px]">
-                      {item.domain.split(':')[1] || item.domain}
-                    </span>
-                  </div>
-                  <h4 className="text-xs sm:text-sm font-bold text-white leading-snug">{item.label}</h4>
-                  <p className="text-[11px] text-slate-400 line-clamp-1">{item.definition}</p>
+                  {d.label}
                 </button>
               ))}
             </div>
+
+            {/* Resumen de Resultados */}
+            <div className="text-[11px] text-slate-400 flex items-center justify-between px-1">
+              <span>Mostrando <strong className="text-[#42edd8]">{filteredDiagnoses.length}</strong> diagnósticos oficiales:</span>
+              <span className="text-[10px] text-teal-300">NANDA 2024–2026</span>
+            </div>
+
+            {/* Lista Scrollable */}
+            <div className="flex-1 overflow-y-auto custom-scrollbar space-y-2 pr-1">
+              {filteredDiagnoses.map((dx) => {
+                const isSelected = selectedDiagnosisId === dx.id;
+                const saved = isItemSaved(dx.id);
+
+                return (
+                  <div
+                    key={dx.id}
+                    onClick={() => setSelectedDiagnosisId(dx.id)}
+                    className={`p-3 rounded-xl border text-left cursor-pointer transition-all ${
+                      isSelected
+                        ? 'bg-gradient-to-r from-[#0c344d] to-[#0e3f5e] border-[#22b8af] shadow-md shadow-[#22b8af]/20'
+                        : 'bg-[#061824] border-[#12425a] hover:border-[#1a5b80] hover:bg-[#082233]'
+                    }`}
+                  >
+                    <div className="flex items-center justify-between gap-1 mb-1">
+                      <span className="text-[10px] font-black px-2 py-0.5 rounded bg-[#092b3d] text-[#42edd8] border border-[#16567a]">
+                        NANDA {dx.code}
+                      </span>
+                      <span className="text-[10px] font-bold text-amber-300">
+                        {dx.type}
+                      </span>
+                    </div>
+
+                    <h4 className="text-xs sm:text-sm font-bold text-white leading-tight">
+                      {dx.label}
+                    </h4>
+
+                    <p className="text-[11px] text-slate-400 mt-0.5 line-clamp-1">
+                      {dx.domain}
+                    </p>
+
+                    <div className="flex items-center justify-between gap-2 mt-2 pt-1.5 border-t border-[#103b54] text-[10px]">
+                      <span className="text-teal-300 font-semibold">
+                        {dx.nocList.length} NOC • {dx.nicList.length} NIC
+                      </span>
+                      {saved && (
+                        <span className="text-amber-400 font-bold flex items-center gap-1">
+                          <Bookmark className="w-3 h-3 fill-amber-400" /> Guardado
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
           </div>
 
-          {/* Right: Detailed Cruce NIC / NOC */}
-          <div className="lg:col-span-7 bg-[#092233]/90 p-5 rounded-2xl border border-[#12425a] shadow-xl space-y-5">
-            <div className="border-b border-slate-800 pb-3">
-              <div className="flex items-center gap-2 text-xs text-teal-400 font-mono mb-1">
-                <span>CÓDIGO NANDA-I {selectedNanda.code}</span>
-                <span>•</span>
-                <span>{selectedNanda.domain}</span>
-              </div>
-              <h3 className="text-base sm:text-lg font-bold text-white">{selectedNanda.label}</h3>
-              <p className="text-xs text-slate-300 mt-1 leading-relaxed">{selectedNanda.definition}</p>
-            </div>
+          {/* Panel Derecho: Ficha Completa de Interrelación N-N-N (7 cols) */}
+          <div className="lg:col-span-7 space-y-4">
+            <div className="bg-[#071d2b] p-5 sm:p-6 rounded-2xl border border-[#155478] shadow-2xl space-y-5">
+              {/* Encabezado del Diagnóstico Seleccionado */}
+              <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3 pb-4 border-b border-[#12425a]">
+                <div className="space-y-1">
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <span className="text-xs font-black px-2.5 py-0.5 rounded-lg bg-[#0e3b54] text-[#42edd8] border border-[#1b6287]">
+                      NANDA: {selectedItem.code}
+                    </span>
+                    <span className="text-xs font-bold px-2.5 py-0.5 rounded-lg bg-amber-500/20 text-amber-300 border border-amber-500/40">
+                      {selectedItem.type}
+                    </span>
+                  </div>
+                  <h3 className="text-base sm:text-xl font-black text-white leading-tight">
+                    {selectedItem.label}
+                  </h3>
+                  <p className="text-xs text-teal-200">
+                    {selectedItem.domain} • <span className="text-slate-400">{selectedItem.classType}</span>
+                  </p>
+                </div>
 
-            {/* Symptoms */}
-            <div>
-              <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wide block mb-1.5">
-                Características Definitorias / Signos & Síntomas:
-              </span>
-              <div className="flex flex-wrap gap-1.5">
-                {selectedNanda.symptoms.map((s, idx) => (
-                  <span
-                    key={idx}
-                    className="px-2.5 py-1 rounded-lg bg-slate-950 text-slate-200 border border-slate-800 text-xs"
+                {/* Acciones de Cabecera */}
+                <div className="flex items-center gap-1.5 shrink-0 flex-wrap">
+                  {/* Guardar en Cuenta */}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      saveItem({
+                        id: selectedItem.id,
+                        type: 'diagnostico',
+                        title: `${selectedItem.code} - ${selectedItem.label}`,
+                        subtitle: selectedItem.definition,
+                        category: selectedItem.domain,
+                      });
+                    }}
+                    className={`px-3 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5 border cursor-pointer active:scale-95 ${
+                      isItemSaved(selectedItem.id)
+                        ? 'bg-amber-500/20 text-amber-300 border-amber-500/60 shadow-sm'
+                        : 'bg-[#092538] hover:bg-[#0d3650] text-slate-300 hover:text-white border-[#144863]'
+                    }`}
+                    title={isItemSaved(selectedItem.id) ? 'Guardado en tu cuenta (haz clic para quitar)' : 'Guardar en mi cuenta'}
                   >
-                    • {s}
+                    <Bookmark className={`w-3.5 h-3.5 ${isItemSaved(selectedItem.id) ? 'fill-amber-400 text-amber-400' : ''}`} />
+                    <span>{isItemSaved(selectedItem.id) ? 'Guardado' : 'Guardar'}</span>
+                  </button>
+
+                  {/* Cargar en PLACE */}
+                  <button
+                    type="button"
+                    onClick={() => handleLoadIntoPlace(selectedItem)}
+                    className="px-3 py-1.5 rounded-xl bg-gradient-to-r from-amber-600 to-orange-500 hover:brightness-110 text-white text-xs font-bold transition flex items-center gap-1.5 shadow cursor-pointer active:scale-95"
+                    title="Cargar esta correlación en el Generador de PLACE"
+                  >
+                    <FileSpreadsheet className="w-3.5 h-3.5" />
+                    <span>Generar PLACE</span>
+                  </button>
+
+                  {/* Copiar Ficha */}
+                  <button
+                    type="button"
+                    onClick={() => handleCopyInterrelation(selectedItem)}
+                    className="p-2 rounded-xl bg-[#092638] hover:bg-[#0d3852] text-slate-300 hover:text-white transition border border-[#144863] cursor-pointer"
+                    title="Copiar Ficha N-N-N completa"
+                  >
+                    {copiedItem === selectedItem.id ? (
+                      <Check className="w-4 h-4 text-emerald-400" />
+                    ) : (
+                      <Copy className="w-4 h-4" />
+                    )}
+                  </button>
+                </div>
+              </div>
+
+              {/* Definición NANDA */}
+              <div className="bg-[#05141f] p-3.5 rounded-xl border border-[#113a52] text-xs text-slate-200 leading-relaxed">
+                <span className="font-bold text-[#42edd8] block mb-0.5">Definición Diagnóstica:</span>
+                {selectedItem.definition}
+              </div>
+
+              {/* Formato PES y Factores */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
+                <div className="bg-[#061824] p-3.5 rounded-xl border border-[#103c57] space-y-1.5">
+                  <h5 className="font-bold text-amber-300 flex items-center gap-1.5">
+                    <Target className="w-3.5 h-3.5" /> Factores Relacionados (Etiología):
+                  </h5>
+                  <ul className="list-disc list-inside space-y-1 text-slate-300 text-[11px]">
+                    {selectedItem.relatedFactors.map((rf, idx) => (
+                      <li key={idx}>{rf}</li>
+                    ))}
+                  </ul>
+                </div>
+
+                <div className="bg-[#061824] p-3.5 rounded-xl border border-[#103c57] space-y-1.5">
+                  <h5 className="font-bold text-teal-300 flex items-center gap-1.5">
+                    <CheckCircle2 className="w-3.5 h-3.5" /> Características Definitorias (Signos):
+                  </h5>
+                  <ul className="list-disc list-inside space-y-1 text-slate-300 text-[11px]">
+                    {selectedItem.definingCharacteristics.map((dc, idx) => (
+                      <li key={idx}>{dc}</li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+
+              {/* Población de Riesgo y Condiciones Asociadas (Novedad 2024-2026) */}
+              {(selectedItem.riskPopulations.length > 0 || selectedItem.associatedConditions.length > 0) && (
+                <div className="p-3 bg-gradient-to-r from-[#092233] to-[#071c2b] border border-[#134b6e] rounded-xl text-xs space-y-2">
+                  <div className="flex items-center gap-2 font-bold text-slate-200">
+                    <Info className="w-3.5 h-3.5 text-cyan-400" />
+                    <span>Factores Taxonómicos Adicionales (NANDA 2024–2026):</span>
+                  </div>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-[11px] text-slate-300">
+                    {selectedItem.riskPopulations.length > 0 && (
+                      <div>
+                        <strong className="text-cyan-300">Población en riesgo:</strong> {selectedItem.riskPopulations.join(', ')}.
+                      </div>
+                    )}
+                    {selectedItem.associatedConditions.length > 0 && (
+                      <div>
+                        <strong className="text-amber-300">Condiciones asociadas:</strong> {selectedItem.associatedConditions.join(', ')}.
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
+
+              {/* RESULTADOS NOC VINCULADOS */}
+              <div className="space-y-3 pt-1">
+                <div className="flex items-center justify-between">
+                  <h4 className="text-sm font-black text-white flex items-center gap-2">
+                    <Target className="w-4 h-4 text-[#22b8af]" />
+                    Resultados de Enfermería (NOC Vinculados):
+                  </h4>
+                  <span className="text-[11px] text-teal-300 font-bold">
+                    {selectedItem.nocList.length} Resultados Específicos
                   </span>
-                ))}
+                </div>
+
+                <div className="space-y-3">
+                  {selectedItem.nocList.map((noc) => (
+                    <div
+                      key={noc.code}
+                      className="p-4 rounded-xl bg-[#061824] border border-[#144863] space-y-2.5"
+                    >
+                      <div className="flex items-start justify-between gap-2 flex-wrap">
+                        <div>
+                          <div className="flex items-center gap-2">
+                            <span className="text-xs font-black px-2 py-0.5 rounded bg-[#0b334d] text-[#42edd8] border border-[#17577a]">
+                              NOC {noc.code}
+                            </span>
+                            <h5 className="text-xs sm:text-sm font-bold text-white">
+                              {noc.label}
+                            </h5>
+                          </div>
+                          <p className="text-[11px] text-slate-400 mt-0.5">
+                            {noc.definition}
+                          </p>
+                        </div>
+                      </div>
+
+                      {/* Puntuación Diana y Escala */}
+                      <div className="p-2.5 rounded-lg bg-[#082233] border border-[#124563] text-xs flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                        <span className="text-amber-300 font-semibold">
+                          🎯 Puntuación Diana: <strong>{noc.targetScore}</strong>
+                        </span>
+                        <span className="text-[10px] text-slate-400">
+                          {noc.scaleDescription}
+                        </span>
+                      </div>
+
+                      {/* Indicadores Clínicos */}
+                      <div className="space-y-1">
+                        <span className="text-[11px] font-bold text-slate-300 block">
+                          Indicadores Específicos para Evaluación:
+                        </span>
+                        <div className="grid grid-cols-1 gap-1 text-[11px] text-slate-300">
+                          {noc.indicators.map((ind, i) => (
+                            <div key={i} className="flex items-center gap-1.5 bg-[#04131d] px-2.5 py-1 rounded-md border border-[#0d344d]">
+                              <span className="w-1.5 h-1.5 rounded-full bg-[#22b8af]" />
+                              <span>{ind}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* INTERVENCIONES NIC VINCULADAS */}
+              <div className="space-y-3 pt-1">
+                <div className="flex items-center justify-between">
+                  <h4 className="text-sm font-black text-white flex items-center gap-2">
+                    <Activity className="w-4 h-4 text-amber-400" />
+                    Intervenciones de Enfermería (NIC Vinculadas):
+                  </h4>
+                  <span className="text-[11px] text-amber-300 font-bold">
+                    {selectedItem.nicList.length} Intervenciones
+                  </span>
+                </div>
+
+                <div className="space-y-3">
+                  {selectedItem.nicList.map((nic) => (
+                    <div
+                      key={nic.code}
+                      className="p-4 rounded-xl bg-[#061824] border border-[#144863] space-y-2.5"
+                    >
+                      <div className="flex items-start justify-between gap-2">
+                        <div>
+                          <div className="flex items-center gap-2">
+                            <span className="text-xs font-black px-2 py-0.5 rounded bg-[#35250a] text-amber-300 border border-amber-600/50">
+                              NIC {nic.code}
+                            </span>
+                            <h5 className="text-xs sm:text-sm font-bold text-white">
+                              {nic.label}
+                            </h5>
+                          </div>
+                          <p className="text-[11px] text-slate-400 mt-0.5">
+                            {nic.definition}
+                          </p>
+                        </div>
+                        <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#092b3d] text-teal-300 border border-[#15567a] shrink-0">
+                          {nic.priority}
+                        </span>
+                      </div>
+
+                      {/* Actividades Prioritarias */}
+                      <div className="space-y-1">
+                        <span className="text-[11px] font-bold text-slate-300 block">
+                          Actividades de Enfermería Paso a Paso:
+                        </span>
+                        <ul className="list-disc list-inside space-y-1 text-[11px] text-slate-300 bg-[#04131d] p-3 rounded-lg border border-[#0d344d]">
+                          {nic.activities.map((act, i) => (
+                            <li key={i}>{act}</li>
+                          ))}
+                        </ul>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ========================================================= */}
+      {/* 2. GENERADOR Y PLANTILLAS DE PLACE OFICIAL */}
+      {/* ========================================================= */}
+      {activeSubTab === 'place' && (
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+          <div className="lg:col-span-12 bg-[#071d2b] p-5 sm:p-6 rounded-2xl border border-[#12425a] shadow-xl space-y-4">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-[#12425a]">
+              <div>
+                <h3 className="text-base sm:text-lg font-bold text-white flex items-center gap-2">
+                  <FileSpreadsheet className="w-5 h-5 text-amber-400" />
+                  Plan de Cuidados de Enfermería (PLACE) — Formato Oficial
+                </h3>
+                <p className="text-xs text-slate-300">
+                  Edita los datos del paciente o el diagnóstico seleccionado para generar el plan listo para imprimir o copiar.
+                </p>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={handleCopyPlace}
+                  className="px-3.5 py-2 rounded-xl bg-[#092638] hover:bg-[#0d3852] text-white text-xs font-bold transition flex items-center gap-1.5 border border-[#175270] cursor-pointer"
+                >
+                  {copiedPlace ? <Check className="w-4 h-4 text-emerald-400" /> : <Copy className="w-4 h-4" />}
+                  <span>{copiedPlace ? '¡Copiado!' : 'Copiar PLACE'}</span>
+                </button>
               </div>
             </div>
 
-            {/* NOC Results */}
-            <div className="space-y-3">
-              <span className="text-xs font-bold text-cyan-400 uppercase tracking-wide flex items-center gap-1.5">
-                <Target className="w-4 h-4" />
-                Resultados Sugeridos (NOC - Criterios de Evaluación):
-              </span>
-              <div className="space-y-2">
-                {selectedNanda.noc.map((noc) => (
-                  <div key={noc.code} className="p-3 bg-slate-950 rounded-xl border border-cyan-900/40 space-y-1.5">
-                    <div className="flex items-center justify-between text-xs">
-                      <strong className="text-white font-semibold">
-                        [{noc.code}] {noc.label}
-                      </strong>
-                      <span className="text-[11px] text-cyan-300 font-mono">Diana / Escala Likert</span>
-                    </div>
-                    <ul className="text-xs text-slate-300 space-y-0.5 list-disc list-inside">
-                      {noc.indicators.map((ind, i) => (
-                        <li key={i}>{ind}</li>
-                      ))}
-                    </ul>
-                    <div className="text-[11px] text-cyan-400/90 font-medium pt-1">
-                      Puntaje diana: {noc.targetScore}
-                    </div>
-                  </div>
-                ))}
+            {/* Formulario editable */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label className="text-xs font-bold text-slate-300 block mb-1">Nombre del Paciente / Iniciales:</label>
+                <input
+                  type="text"
+                  value={placePatientName}
+                  onChange={(e) => setPlacePatientName(e.target.value)}
+                  className="w-full bg-[#05141f] border border-[#175270] rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-[#22b8af]"
+                />
+              </div>
+
+              <div>
+                <label className="text-xs font-bold text-slate-300 block mb-1">Servicio / Unidad:</label>
+                <input
+                  type="text"
+                  value={placeService}
+                  onChange={(e) => setPlaceService(e.target.value)}
+                  className="w-full bg-[#05141f] border border-[#175270] rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-[#22b8af]"
+                />
               </div>
             </div>
 
-            {/* NIC Interventions */}
             <div className="space-y-3">
-              <span className="text-xs font-bold text-teal-400 uppercase tracking-wide flex items-center gap-1.5">
-                <ClipboardList className="w-4 h-4" />
-                Intervenciones y Actividades (NIC):
-              </span>
-              <div className="space-y-2">
-                {selectedNanda.nic.map((nic) => (
-                  <div key={nic.code} className="p-3 bg-slate-950 rounded-xl border border-teal-900/40 space-y-1.5">
-                    <div className="text-xs font-bold text-teal-300">
-                      [{nic.code}] {nic.label}
-                    </div>
-                    <ul className="text-xs text-slate-300 space-y-1">
-                      {nic.activities.map((act, i) => (
-                        <li key={i} className="flex items-start gap-1.5">
-                          <CheckCircle2 className="w-3.5 h-3.5 text-teal-400 shrink-0 mt-0.5" />
-                          <span>{act}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                ))}
+              <div>
+                <label className="text-xs font-bold text-amber-300 block mb-1">
+                  1. Diagnóstico de Enfermería (NANDA-I con Formato PES):
+                </label>
+                <textarea
+                  rows={2}
+                  value={placeNanda}
+                  onChange={(e) => setPlaceNanda(e.target.value)}
+                  className="w-full bg-[#05141f] border border-[#175270] rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-[#22b8af]"
+                />
+              </div>
+
+              <div>
+                <label className="text-xs font-bold text-teal-300 block mb-1">
+                  2. Criterios de Resultado (NOC, Indicadores y Meta):
+                </label>
+                <textarea
+                  rows={2}
+                  value={placeNoc}
+                  onChange={(e) => setPlaceNoc(e.target.value)}
+                  className="w-full bg-[#05141f] border border-[#175270] rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-[#22b8af]"
+                />
+              </div>
+
+              <div>
+                <label className="text-xs font-bold text-cyan-300 block mb-1">
+                  3. Intervenciones y Actividades de Enfermería (NIC):
+                </label>
+                <textarea
+                  rows={4}
+                  value={placeNic}
+                  onChange={(e) => setPlaceNic(e.target.value)}
+                  className="w-full bg-[#05141f] border border-[#175270] rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-[#22b8af]"
+                />
+              </div>
+
+              <div>
+                <label className="text-xs font-bold text-emerald-300 block mb-1">
+                  4. Evaluación del Resultado Esperado:
+                </label>
+                <textarea
+                  rows={2}
+                  value={placeEvaluation}
+                  onChange={(e) => setPlaceEvaluation(e.target.value)}
+                  className="w-full bg-[#05141f] border border-[#175270] rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-[#22b8af]"
+                />
               </div>
             </div>
           </div>
@@ -567,142 +680,69 @@ export const NandaPlaceTab: React.FC = () => {
       )}
 
       {/* ========================================================= */}
-      {/* 2. GENERADOR DE PLANES DE CUIDADOS (PLACE) */}
+      {/* 3. METODOLOGÍA DEL PROCESO ENFERMERO (PAE 2024-2026) */}
       {/* ========================================================= */}
-      {activeSubTab === 'place' && (
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-          {/* Template Selection */}
-          <div className="lg:col-span-4 bg-[#092233]/90 p-5 rounded-2xl border border-[#12425a] shadow-xl space-y-4">
-            <span className="text-xs font-bold text-amber-300 uppercase tracking-wide block">
-              Plantillas Clínicas por Patología Frecuente:
+      {activeSubTab === 'metodologia' && (
+        <div className="bg-[#071d2b] p-5 sm:p-7 rounded-2xl border border-[#12425a] shadow-xl space-y-6">
+          <div className="border-b border-[#12425a] pb-4">
+            <span className="text-xs font-bold text-[#42edd8] uppercase tracking-wider block mb-1">
+              Guía Metodológica Oficial • L.E. Alex Santiago
             </span>
-
-            <div className="space-y-2">
-              {PLACE_TEMPLATES.map((tpl) => (
-                <button
-                  key={tpl.id}
-                  type="button"
-                  onClick={() => handleSelectTemplate(tpl.id)}
-                  className={`w-full p-3 rounded-xl border text-left transition cursor-pointer ${
-                    selectedTemplateId === tpl.id
-                      ? 'bg-amber-950/60 border-amber-500 shadow-md ring-1 ring-amber-400/40'
-                      : 'bg-slate-950 border-slate-800 text-slate-300 hover:bg-slate-900'
-                  }`}
-                >
-                  <span className="text-[10px] text-amber-400 uppercase font-semibold block">
-                    {tpl.category}
-                  </span>
-                  <h4 className="text-xs sm:text-sm font-bold text-white mt-0.5">{tpl.title}</h4>
-                  <p className="text-[11px] text-slate-400 line-clamp-2 mt-1">{tpl.patientProfile}</p>
-                </button>
-              ))}
-            </div>
-
-            <div className="p-3 bg-slate-950 rounded-xl border border-slate-800 text-xs text-slate-300 space-y-1">
-              <span className="text-teal-400 font-bold block text-[11px]">Estructura del PLACE:</span>
-              <p className="text-[11px] text-slate-400">
-                El PLACE sigue la metodología científica del Proceso de Atención de Enfermería (PAE): Diagnóstico, Planificación (NOC), Ejecución (NIC) y Evaluación.
-              </p>
-            </div>
+            <h3 className="text-lg sm:text-xl font-black text-white">
+              Estructura y Fases del Proceso de Atención de Enfermería (PAE) 2024–2026
+            </h3>
+            <p className="text-xs text-slate-300 mt-1">
+              Fundamentos científicos de la formulación diagnóstica NANDA-I, medición de resultados NOC e intervenciones NIC.
+            </p>
           </div>
 
-          {/* Interactive Editable PLACE Sheet */}
-          <div className="lg:col-span-8 bg-[#092233]/90 p-5 sm:p-6 rounded-2xl border border-[#12425a] shadow-xl space-y-5">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-800 pb-3">
-              <div>
-                <h3 className="text-base font-bold text-white flex items-center gap-2">
-                  <FileSpreadsheet className="w-5 h-5 text-amber-400" />
-                  Formato Oficial de Plan de Cuidados (PLACE)
-                </h3>
-                <span className="text-xs text-slate-400">Editable e imprimible para la historia clínica</span>
+          <div className="grid grid-cols-1 md:grid-cols-5 gap-3 text-xs">
+            {[
+              { num: '1', title: 'Valoración', desc: 'Recolección sistemática de datos subjetivos y objetivos mediante anamnesis y exploración física.' },
+              { num: '2', title: 'Diagnóstico', desc: 'Juicio clínico sobre las respuestas de la persona o comunidad a problemas de salud reales o potenciales.' },
+              { num: '3', title: 'Planificación', desc: 'Establecimiento de prioridades, resultados esperados (NOC) y selección de intervenciones (NIC).' },
+              { num: '4', title: 'Ejecución', desc: 'Puesta en marcha práctica del plan de cuidados y registro en notas de enfermería (SOAPIE).' },
+              { num: '5', title: 'Evaluación', desc: 'Comparación del estado del paciente con los resultados NOC previstos para reajustar el plan.' }
+            ].map((f) => (
+              <div key={f.num} className="p-3.5 rounded-xl bg-[#05141f] border border-[#113a52] space-y-1">
+                <span className="w-6 h-6 rounded-full bg-[#179c94] text-white font-black text-xs flex items-center justify-center">
+                  {f.num}
+                </span>
+                <h4 className="font-bold text-white text-sm">{f.title}</h4>
+                <p className="text-[11px] text-slate-300 leading-snug">{f.desc}</p>
               </div>
+            ))}
+          </div>
 
-              <div className="flex gap-2">
-                <button
-                  type="button"
-                  onClick={handleCopyPlace}
-                  className="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-xl text-xs font-semibold flex items-center gap-1.5 cursor-pointer shadow"
-                >
-                  {copiedPlace ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
-                  {copiedPlace ? 'Copiado' : 'Copiar PLACE'}
-                </button>
+          {/* Componentes de la Etiqueta Diagnóstica */}
+          <div className="bg-[#05141f] p-5 rounded-xl border border-[#113a52] space-y-4">
+            <h4 className="text-sm font-bold text-amber-300 uppercase tracking-wide">
+              Componentes de la Etiqueta Diagnóstica NANDA-I:
+            </h4>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 text-xs text-slate-300">
+              <div className="space-y-1">
+                <strong className="text-white block">1. Etiqueta Diagnóstica:</strong>
+                <p className="text-[11px] leading-relaxed">Describe el problema de salud del sujeto de atención o la respuesta para la cual se administra la terapia de enfermería.</p>
               </div>
-            </div>
-
-            {/* Patient Header */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 bg-slate-950 p-3.5 rounded-xl border border-slate-800 text-xs">
-              <div>
-                <label className="text-slate-400 block text-[11px] mb-1 font-semibold">Paciente / Cama:</label>
-                <input
-                  type="text"
-                  value={placePatientName}
-                  onChange={(e) => setPlacePatientName(e.target.value)}
-                  className="w-full bg-slate-900 border border-slate-800 rounded-lg px-2.5 py-1.5 text-white focus:outline-none focus:border-amber-400 font-semibold"
-                />
+              <div className="space-y-1">
+                <strong className="text-white block">2. Factores Relacionados (r/c):</strong>
+                <p className="text-[11px] leading-relaxed">Identifican una o más causas probables del problema de salud. Orientan la terapia de enfermería requerida.</p>
               </div>
-              <div>
-                <label className="text-slate-400 block text-[11px] mb-1 font-semibold">Servicio / Especialidad:</label>
-                <input
-                  type="text"
-                  value={placeService}
-                  onChange={(e) => setPlaceService(e.target.value)}
-                  className="w-full bg-slate-900 border border-slate-800 rounded-lg px-2.5 py-1.5 text-white focus:outline-none focus:border-amber-400 font-semibold"
-                />
+              <div className="space-y-1">
+                <strong className="text-white block">3. Características Definitorias (e/p):</strong>
+                <p className="text-[11px] leading-relaxed">Son los grupos de signos y síntomas que indican la presencia de una etiqueta de diagnóstico en particular.</p>
               </div>
-            </div>
-
-            {/* Form Table */}
-            <div className="space-y-4 text-xs">
-              {/* NANDA */}
-              <div className="space-y-1.5">
-                <label className="font-bold text-teal-300 uppercase tracking-wide block">
-                  1. Diagnóstico de Enfermería (NANDA-I):
-                </label>
-                <textarea
-                  rows={2}
-                  value={placeNanda}
-                  onChange={(e) => setPlaceNanda(e.target.value)}
-                  className="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-white focus:outline-none focus:border-teal-400 font-mono text-xs leading-relaxed"
-                />
+              <div className="space-y-1">
+                <strong className="text-white block">4. Poblaciones de Riesgo:</strong>
+                <p className="text-[11px] leading-relaxed">Grupos de individuos que comparten características que los hacen más susceptibles (extremos de vida, posparto, ancianos).</p>
               </div>
-
-              {/* NOC */}
-              <div className="space-y-1.5">
-                <label className="font-bold text-cyan-300 uppercase tracking-wide block">
-                  2. Criterios de Resultado (NOC) y Puntaje Diana:
-                </label>
-                <textarea
-                  rows={2}
-                  value={placeNoc}
-                  onChange={(e) => setPlaceNoc(e.target.value)}
-                  className="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-white focus:outline-none focus:border-cyan-400 font-mono text-xs leading-relaxed"
-                />
+              <div className="space-y-1">
+                <strong className="text-white block">5. Condiciones Asociadas:</strong>
+                <p className="text-[11px] leading-relaxed">Diagnósticos médicos, procedimientos quirúrgicos, aparatos o fármacos que intervienen en el desarrollo del cuadro.</p>
               </div>
-
-              {/* NIC */}
-              <div className="space-y-1.5">
-                <label className="font-bold text-amber-300 uppercase tracking-wide block">
-                  3. Intervenciones y Actividades de Enfermería (NIC):
-                </label>
-                <textarea
-                  rows={5}
-                  value={placeNic}
-                  onChange={(e) => setPlaceNic(e.target.value)}
-                  className="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-white focus:outline-none focus:border-amber-400 font-mono text-xs leading-relaxed"
-                />
-              </div>
-
-              {/* Evaluation */}
-              <div className="space-y-1.5">
-                <label className="font-bold text-emerald-300 uppercase tracking-wide block">
-                  4. Evaluación del Resultado Obtenido:
-                </label>
-                <textarea
-                  rows={2}
-                  value={placeEvaluation}
-                  onChange={(e) => setPlaceEvaluation(e.target.value)}
-                  className="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-white focus:outline-none focus:border-emerald-400 font-mono text-xs leading-relaxed"
-                />
+              <div className="space-y-1">
+                <strong className="text-white block">6. Puntuación Diana (NOC):</strong>
+                <p className="text-[11px] leading-relaxed">Escala Likert de 1 a 5 con objetivo de Mantener a X y Aumentar a Y para evaluar la eficacia de los cuidados.</p>
               </div>
             </div>
           </div>
