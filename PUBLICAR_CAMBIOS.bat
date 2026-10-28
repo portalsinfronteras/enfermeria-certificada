@@ -17,15 +17,19 @@ if not exist "%GIT_CMD%" (
 
 echo Usando ejecutable: %GIT_CMD%
 echo.
-echo [1/3] Preparando archivos modificados...
+
+echo [1/4] Restaurando bun.lock...
+"%GIT_CMD%" checkout 9e9257a1 -- bun.lock
+
+echo [2/4] Preparando archivos modificados...
 "%GIT_CMD%" add -A
 
 echo.
-echo [2/3] Registrando cambios...
-"%GIT_CMD%" commit -m "Actualizacion completa: Vademecum 20 por pagina A-Z, 600 diagnosticos, Recomendar App y purga de cache"
+echo [3/4] Registrando cambios...
+"%GIT_CMD%" commit -m "Restaurar bun.lock y vercel.json para compilacion limpia en Vercel"
 
 echo.
-echo [3/3] Enviando a GitHub y Vercel...
+echo [4/4] Enviando a GitHub y Vercel...
 "%GIT_CMD%" push origin main
 
 echo.
@@ -35,5 +39,4 @@ echo    Vercel esta compilando y publicando tu pagina web en vivo:
 echo    https://www.enfermeriacertificada.com
 echo    https://enfermeria-certificada-omuj.vercel.app
 echo ======================================================================
-echo.
-pause
+echo FIN: %DATE% %TIME%
