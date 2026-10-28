@@ -341,23 +341,6 @@ export const DiagnosticosMedicosTab: React.FC = () => {
         </div>
       </div>
 
-      {/* CATEGORY QUICK FILTER PILLS */}
-      <div className="flex items-center gap-1.5 overflow-x-auto pb-1 custom-scrollbar">
-        {categories.map((cat) => (
-          <button
-            key={cat}
-            onClick={() => setSelectedCategory(cat)}
-            className={`px-3 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap cursor-pointer transition border ${
-              selectedCategory === cat
-                ? 'bg-gradient-to-r from-[#179c94] to-[#22b8af] text-white border-[#22b8af] shadow-md shadow-[#22b8af]/25'
-                : 'bg-[#071d2b] text-slate-300 hover:text-white border-[#12425a] hover:border-[#1b5e82]'
-            }`}
-          >
-            {cat}
-          </button>
-        ))}
-      </div>
-
       {/* DIAGNOSES BUTTONS GRID */}
       <div>
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 mb-3 px-1">
