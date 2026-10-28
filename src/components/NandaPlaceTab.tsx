@@ -176,7 +176,7 @@ export const NandaPlaceTab: React.FC = () => {
               Actualización Oficial 2024 – 2026
             </span>
             <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-amber-500/20 text-amber-300 border border-amber-500/40">
-              NANDA-I • NOC 6ta/7ma • NIC 7ma/8va
+              205 Diagnósticos NANDA-I • NOC • NIC
             </span>
             <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-[#092b3d] text-[#42edd8] border border-[#144863]">
               Taxonomía PAE
@@ -245,16 +245,23 @@ export const NandaPlaceTab: React.FC = () => {
               />
             </div>
 
-            {/* Filtros Rápidos de Dominio */}
+            {/* Filtros Rápidos de Dominio (13 Dominios Oficiales) */}
             <div className="flex items-center gap-1 overflow-x-auto pb-1 custom-scrollbar text-[11px]">
               {[
-                { id: 'todos', label: 'Todos' },
-                { id: 'dominio 1', label: 'D1: Promoción' },
-                { id: 'dominio 2', label: 'D2: Nutrición' },
-                { id: 'dominio 4', label: 'D4: Actividad' },
-                { id: 'dominio 5', label: 'D5: Percepción' },
-                { id: 'dominio 11', label: 'D11: Seguridad' },
-                { id: 'dominio 12', label: 'D12: Confort' }
+                { id: 'todos', label: `Todos (${NANDA_INTERRELACIONES_2024_2026.length})` },
+                { id: 'dominio 1:', label: 'D1: Promoción' },
+                { id: 'dominio 2:', label: 'D2: Nutrición' },
+                { id: 'dominio 3:', label: 'D3: Eliminación' },
+                { id: 'dominio 4:', label: 'D4: Actividad/Reposo' },
+                { id: 'dominio 5:', label: 'D5: Percepción/Cognición' },
+                { id: 'dominio 6:', label: 'D6: Autopercepción' },
+                { id: 'dominio 7:', label: 'D7: Rol/Relaciones' },
+                { id: 'dominio 8:', label: 'D8: Sexualidad' },
+                { id: 'dominio 9:', label: 'D9: Afrontamiento/Estrés' },
+                { id: 'dominio 10:', label: 'D10: Principios Vitales' },
+                { id: 'dominio 11:', label: 'D11: Seguridad/Protección' },
+                { id: 'dominio 12:', label: 'D12: Confort' },
+                { id: 'dominio 13:', label: 'D13: Crecimiento/Desarrollo' }
               ].map((d) => (
                 <button
                   key={d.id}
@@ -279,6 +286,23 @@ export const NandaPlaceTab: React.FC = () => {
 
             {/* Lista Scrollable */}
             <div className="flex-1 overflow-y-auto custom-scrollbar space-y-2 pr-1">
+              {filteredDiagnoses.length === 0 && (
+                <div className="text-center py-10 px-4 bg-[#05141f] rounded-xl border border-dashed border-[#175270] space-y-2">
+                  <p className="text-xs text-slate-300 font-semibold">
+                    No se encontraron diagnósticos que coincidan con la búsqueda.
+                  </p>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setSearchQuery('');
+                      setSelectedDomain('todos');
+                    }}
+                    className="text-[11px] font-bold text-[#42edd8] hover:underline cursor-pointer"
+                  >
+                    Restablecer búsqueda y ver los {NANDA_INTERRELACIONES_2024_2026.length} diagnósticos
+                  </button>
+                </div>
+              )}
               {filteredDiagnoses.map((dx) => {
                 const isSelected = selectedDiagnosisId === dx.id;
                 const saved = isItemSaved(dx.id);
