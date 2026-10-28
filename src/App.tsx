@@ -24,6 +24,9 @@ import { ShareModal } from './components/ShareModal';
 import { AuthProvider } from './context/AuthContext';
 import { AuthModal } from './components/AuthModal';
 import { SavedDataModal } from './components/SavedDataModal';
+import { NotificationProvider } from './context/NotificationContext';
+import { NotificationModal } from './components/NotificationModal';
+import { analyticsService } from './services/analyticsTracker';
 import { Smartphone } from 'lucide-react';
 
 function AppContent() {
@@ -31,6 +34,11 @@ function AppContent() {
   const [isFooterDonationOpen, setIsFooterDonationOpen] = useState(false);
   const [isFooterShareOpen, setIsFooterShareOpen] = useState(false);
   const [qrVerifiedCert, setQrVerifiedCert] = useState<IssuedCertificate | null>(null);
+
+  // Registrar vista de página / herramienta para analítica del dueño
+  useEffect(() => {
+    analyticsService.recordPageView(activeTab);
+  }, [activeTab]);
 
   // Detectar automáticamente si el usuario escaneó el Código QR de un Certificado (?verificar=...&datos=...)
   useEffect(() => {
@@ -157,6 +165,9 @@ function AppContent() {
 
       {/* Global Saved Data & Clinical Notebook Modal */}
       <SavedDataModal />
+
+      {/* Global Notification Center & Alerts Modal */}
+      <NotificationModal onNavigateTab={(tab) => setActiveTab(tab)} />
     </div>
   );
 }
@@ -164,7 +175,9 @@ function AppContent() {
 export default function App() {
   return (
     <AuthProvider>
-      <AppContent />
+      <NotificationProvider>
+        <AppContent />
+      </NotificationProvider>
     </AuthProvider>
   );
 }
