@@ -724,11 +724,11 @@ export const capitulo1Raw: CatalogoEntry[] = [
     category: 'Infecciosas y Zoonóticas',
     chapter: 'I. Infecciosas, Tropicales y Zoonóticas (1-80)',
     definition: 'Infección oportunista severa por herpesvirus en inmunodeprimidos (VIH con CD4 < 50 o post-trasplante), con retinitis, colitis o neumonitis.',
-    symptoms: ['Pérdida visual indolora en 'escotomas' (Retinitis por CMV)', 'Diarrea crónica sanguinolenta y dolor abdominal (Colitis)', 'Fiebre persistente y astenia'],
+    symptoms: ['Pérdida visual indolora en \'escotomas\' (Retinitis por CMV)', 'Diarrea crónica sanguinolenta y dolor abdominal (Colitis)', 'Fiebre persistente y astenia'],
     redFlags: ['Ceguera irreversible por desprendimiento de retina', 'Perforación intestinal en colitis'],
     criteria: 'Carga viral cuantitativa de ADN-CMV en plasma elevada + visualización de inclusiones en \'ojo de búho\' en biopsia o fondo de ojo característico.',
     labTests: ['Carga viral ADN-CMV cuantitativa por PCR', 'Biopsia endoscópica con inmunohistoquímica', 'Fondo de ojo bajo dilatación pupilar'],
-    imaging: ['Fondo de ojo con retinografía (hemorragias y exudados blanquecinos en 'pizza con queso y salsa')'],
+    imaging: ['Fondo de ojo con retinografía (hemorragias y exudados blanquecinos en \'pizza con queso y salsa\')'],
     differential: ['Toxoplasmosis ocular', 'Retinitis por herpes simple', 'Colitis amebiana'],
     firstLine: [
       { drug: 'Ganciclovir', dose: '5 mg/kg cada 12 horas EV por 14 a 21 días (inducción)', route: 'EV', freq: 'c/12h', notes: 'Monitorear hemograma por riesgo de neutropenia' },
@@ -767,7 +767,7 @@ export const capitulo1Raw: CatalogoEntry[] = [
     category: 'Infecciosas y Zoonóticas',
     chapter: 'I. Infecciosas, Tropicales y Zoonóticas (1-80)',
     definition: 'Infección primaria aguda por el virus Varicela-Zoster, altamente contagiosa, con erupción vesicular pruriginosa en \'cielo estrellado\'.',
-    symptoms: ['Fiebre moderada y malestar general', 'Erupción centrípeta que inicia en cuero cabelludo y tronco', 'Lesiones polimorfas simultáneas (máculas, pápulas, vesículas 'en gota de rocío' y costras)', 'Prurito intenso'],
+    symptoms: ['Fiebre moderada y malestar general', 'Erupción centrípeta que inicia en cuero cabelludo y tronco', 'Lesiones polimorfas simultáneas (máculas, pápulas, vesículas "en gota de rocío" y costras)', 'Prurito intenso'],
     redFlags: ['Sobreinfección bacteriana dérmica (Fascitis necrotizante por S. pyogenes)', 'Neumonía varicelosa en adultos', 'Ataxia cerebelosa aguda'],
     criteria: 'Diagnóstico clínico característico por polimorfismo lesional simultáneo.',
     labTests: ['Generalmente clínico; en dudas: PCR de líquido vesicular o Frotis de Tzanck (células gigantes multinucleadas)'],
@@ -1031,11 +1031,11 @@ export const capitulo1Raw: CatalogoEntry[] = [
     category: 'Infecciosas y Zoonóticas',
     chapter: 'I. Infecciosas, Tropicales y Zoonóticas (1-80)',
     definition: 'Infección bacteriana aguda de vías respiratorias por Bordetella pertussis con accesos de tos paroxística emetizante y estridor inspiratorio.',
-    symptoms: ['Fase Catarral: coriza, febrícula y tos leve por 1-2 semanas', 'Fase Paroxística: accesos violentos de tos paroxística espasmódica, estridor inspiratorio ('canto de gallo') y vómitos post-tusígenos', 'Apneas cianóticas en menores de 6 meses'],
+    symptoms: ['Fase Catarral: coriza, febrícula y tos leve por 1-2 semanas', 'Fase Paroxística: accesos violentos de tos paroxística espasmódica, estridor inspiratorio (\'canto de gallo\') y vómitos post-tusígenos', 'Apneas cianóticas en menores de 6 meses'],
     redFlags: ['Hiperleucocitosis extrema (>50,000/uL con linfocitosis masiva) con fallo cardiopulmonar', 'Apneas prolongadas y convulsiones por anoxia cerebral'],
     criteria: 'Clínica paroxística con esputo filante y vómito post-tos + confirmación por RT-PCR en aspirado nasofaríngeo.',
     labTests: ['RT-PCR para Bordetella pertussis en hisopado de dacrón nasofaríngeo', 'Cultivo en medio Bordet-Gengou o Regan-Lowe', 'Hemograma con leucocitosis y linfocitosis absoluta marcada'],
-    imaging: ['Radiografía de tórax (infiltrados perihiliares en 'corazón velloso')'],
+    imaging: ['Radiografía de tórax (infiltrados perihiliares en \'corazón velloso\')'],
     differential: ['Infección por Chlamydia trachomatis en lactantes', 'Infección por VSR', 'Aspiración de cuerpo extraño'],
     firstLine: [
       { drug: 'Azitromicina', dose: '10 mg/kg/día el día 1, luego 5 mg/kg/día los días 2 a 5 (en adultos 500mg día 1, luego 250mg d 2-5)', route: 'VO', freq: 'c/24h x 5 días', notes: 'Fármaco de elección en todas las edades' },
@@ -1234,7 +1234,7 @@ export const capitulo1Raw: CatalogoEntry[] = [
     category: 'Infecciosas y Zoonóticas',
     chapter: 'I. Infecciosas, Tropicales y Zoonóticas (1-80)',
     definition: 'Infección entérica aguda por Vibrio cholerae O1 o O139, causante de diarrea acuosa masiva e hipovolemia potencialmente fatal en pocas horas.',
-    symptoms: ['Diarrea acuosa profusa repentina en 'agua de arroz' con olor a pescado', 'Vómitos continuos sin náuseas previas', 'Calambres musculares intensos por pérdida de potasio y calcio', 'Pérdida rápida de hasta 1 litro de líquido por hora'],
+    symptoms: ['Diarrea acuosa profusa repentina en \'agua de arroz\' con olor a pescado', 'Vómitos continuos sin náuseas previas', 'Calambres musculares intensos por pérdida de potasio y calcio', 'Pérdida rápida de hasta 1 litro de líquido por hora'],
     redFlags: ['Choque hipovolémico severo con pulso filiforme y cianosis', 'Insuficiencia renal aguda anúrica', 'Coma hipoglucémico en niños'],
     criteria: 'Aislamiento de Vibrio cholerae en coprocultivo en medio TCBS o prueba rápida de tira reactiva positiva.',
     labTests: ['Cultivo de heces en medio selectivo Agar TCBS', 'Examen microscópico en campo oscuro (movilidad en dardos)', 'Electrolitos séricos (hipopotasemia y acidosis metabólica)', 'Urea y creatinina'],
@@ -1246,7 +1246,7 @@ export const capitulo1Raw: CatalogoEntry[] = [
       { drug: 'Azitromicina', dose: '1 g VO dosis única en gestantes y 20 mg/kg en niños', route: 'VO', freq: 'Dosis única', notes: 'Alternativa de elección' }
     ],
     alternatives: [],
-    nonPharm: ['Uso de 'camas de cólera' con orificio central y balde graduado para cuantificar pérdidas fecales exactas', 'Cloración estricta de fuentes de agua'],
+    nonPharm: ['Uso de "camas de cólera" con orificio central y balde graduado para cuantificar pérdidas fecales exactas', 'Cloración estricta de fuentes de agua'],
     nursingCare: ['Canalización inmediata de 2 vías endovenosas gruesas para infusión a chorro', 'Medición y registro horario exacto del volumen de heces en balde graduado para reponer mililitro a mililitro', 'Vigilancia de signos de hipopotasemia severa (arritmias, hipotonía muscular)', 'Desinfección estricta de excretas con solución de hipoclorito de sodio al 1%']
   },
   {
@@ -1260,7 +1260,7 @@ export const capitulo1Raw: CatalogoEntry[] = [
     symptoms: ['Disentería amebiana con heces mucosanguinolentas, pujo y cólicos', 'Absceso hepático: dolor continuo en hipocondrio derecho, fiebre alta, hepatomegalia dolorosa y diaforesis'],
     redFlags: ['Rotura del absceso hepático a cavidad peritoneal, pleural o pericárdica', 'Megacolon tóxico amebiano', 'Ameboma perforado'],
     criteria: 'Visualización de trofozoítos hematófagos en frotis fecal o antígeno de E. histolytica en heces; en absceso: serología amebiana positiva + ecografía.',
-    labTests: ['Examen coproparasitológico seriado directo en fresco (trofozoítos con eritrocitos fagocitados)', 'Detección de antígeno específico de E. histolytica en heces por ELISA', 'Serología amebiana por hemaglutinación indirecta', 'Aspirado hepático de líquido achocolatado en 'pasta de anchoas''],
+    labTests: ['Examen coproparasitológico seriado directo en fresco (trofozoítos con eritrocitos fagocitados)', 'Detección de antígeno específico de E. histolytica en heces por ELISA', 'Serología amebiana por hemaglutinación indirecta', 'Aspirado hepático de líquido achocolatado en \'pasta de anchoas\''],
     imaging: ['Ecografía abdominal (lesión hipoecoica redondeada única o múltiple en lóbulo hepático derecho)'],
     differential: ['Absceso hepático piógeno bacteriano', 'Quiste hidatídico infectado', 'Shigelosis', 'Cáncer hepático'],
     firstLine: [
@@ -1501,7 +1501,7 @@ export const capitulo1Raw: CatalogoEntry[] = [
     chapter: 'I. Infecciosas, Tropicales y Zoonóticas (1-80)',
     definition: 'Infección de transmisión sexual por Chlamydia trachomatis, causa bacteriana principal de cervicitis, uretritis no gonocócica y secuelas de infertilidad tubárica.',
     symptoms: ['Frecuentemente asintomática (hasta 70% en mujeres)', 'Disuria leve y secreción uretral hialina o mucoide escasa matutina', 'Secreción mucopurulenta cervical y sangrado intermenstrual', 'Dolor pélvico sordo'],
-    redFlags: ['Enfermedad pélvica inflamatoria aguda', 'Síndrome de Fitz-Hugh-Curtis (perihepatitis con adherencias en 'cuerdas de violín')', 'Esterilidad por oclusión tubárica'],
+    redFlags: ['Enfermedad pélvica inflamatoria aguda', 'Síndrome de Fitz-Hugh-Curtis (perihepatitis con adherencias en \'cuerdas de violín\')', 'Esterilidad por oclusión tubárica'],
     criteria: 'Prueba de amplificación de ácidos nucleicos (NAAT / PCR) positiva en orina de primer chorro o hisopado endocervical.',
     labTests: ['NAAT / PCR para Chlamydia trachomatis en orina o frotis genital (prueba de oro)', 'Examen de frotis uretral con leucocitos polimorfonucleares sin diplococos gramnegativos'],
     imaging: ['Ecografía transvaginal si hay dolor pélvico o sospecha de EPI'],
@@ -1534,7 +1534,7 @@ export const capitulo1Raw: CatalogoEntry[] = [
     ],
     alternatives: [],
     nonPharm: ['Abstinencia de bebidas alcohólicas durante el tratamiento y hasta 48h posteriores (efecto Antabuse / disulfiram)', 'Tratamiento simultáneo OBLIGATORIO de la pareja sexual'],
-    nursingCare: ['Advertencia categórica al paciente sobre no consumir ninguna bebida con alcohol por riesgo de efecto disulfiram', 'Énfasis en que la pareja sexual debe tratarse simultáneamente para evitar el efecto 'ping-pong'', 'Orientación en higiene genital adecuada sin duchas vaginales', 'Consejería en salud sexual']
+    nursingCare: ['Advertencia categórica al paciente sobre no consumir ninguna bebida con alcohol por riesgo de efecto disulfiram', 'Énfasis en que la pareja sexual debe tratarse simultáneamente para evitar el efecto \'ping-pong\'', 'Orientación en higiene genital adecuada sin duchas vaginales', 'Consejería en salud sexual']
   },
   {
     number: 71,
@@ -1592,7 +1592,7 @@ export const capitulo1Raw: CatalogoEntry[] = [
     symptoms: ['Pápula eritematosa que se ulcera rápidamente', 'Úlceras múltiples y dolorosas con bordes irregulares socavados no indurados (blandos)', 'Fondo de la úlcera sucio con exudado necrótico purulento fétido y sangrado fácil', 'Bubón inguinal unilateral doloroso fluctuante'],
     redFlags: ['Sobreinfección bacteriana fagedénica destructiva', 'Fistulización supurativa del bubón'],
     criteria: 'Clínica de úlcera dolorosa no indurada con adenopatía supurativa + cultivo o PCR positivo para H. ducreyi.',
-    labTests: ['Tinción de Gram de raspado del borde de la úlcera (bacilos gramnegativos en 'banco de peces' o 'vías de tren')', 'Cultivo en medios especiales enriquecidos', 'Descarte obligatorio de sífilis (RPR negativo) y herpes'],
+    labTests: ['Tinción de Gram de raspado del borde de la úlcera (bacilos gramnegativos en \'banco de peces\' o "vías de tren")', 'Cultivo en medios especiales enriquecidos', 'Descarte obligatorio de sífilis (RPR negativo) y herpes'],
     imaging: ['No requerida'],
     differential: ['Sífilis primaria (chancro duro indoloro)', 'Herpes genital', 'Linfogranuloma venéreo'],
     firstLine: [
@@ -1638,7 +1638,7 @@ export const capitulo1Raw: CatalogoEntry[] = [
     redFlags: ['Diseminación en inmunodeprimidos con bacteriemia refractaria', 'Resistencia intrínseca amplia a antibióticos habituales'],
     criteria: 'Criterios ATS/IDSA: clínica y radiología compatible + cultivos repetidos positivos para la misma especie de MNT.',
     labTests: ['Cultivo de esputo o biopsia en medio Ogawa / MGIT con identificación de especie por sondas moleculares o espectrometría de masas (MALDI-TOF)', 'Pruebas de sensibilidad a claritromicina'],
-    imaging: ['Tomografía computarizada de tórax de alta resolución (TACAR: bronquiectasias cilíndricas y nódulos centrolobulillares en 'árbol en brote')'],
+    imaging: ['Tomografía computarizada de tórax de alta resolución (TACAR: bronquiectasias cilíndricas y nódulos centrolobulillares en \'árbol en brote\')'],
     differential: ['Tuberculosis sensible o MDR', 'Bronquiectasias no tuberculosas', 'Aspergilosis broncopulmonar'],
     firstLine: [
       { drug: 'Claritromicina + Rifampicina + Etambutol', dose: 'Claritromicina 500mg c/12h + Rifampicina 600mg/d + Etambutol 15mg/kg/d', route: 'VO', freq: 'Diario por 12 meses tras negativización de cultivos', notes: 'Esquema estándar para Complejo Mycobacterium avium (MAC)' },
@@ -1656,7 +1656,7 @@ export const capitulo1Raw: CatalogoEntry[] = [
     category: 'Infecciosas y Zoonóticas',
     chapter: 'I. Infecciosas, Tropicales y Zoonóticas (1-80)',
     definition: 'Zoonosis por Coxiella burnetii transmitida por aerosoles de ganado vacuno/ovino durante el parto, manifestada como neumonía atípica o endocarditis.',
-    symptoms: ['Fiebre alta repentina con cefalea retroocular intensa', 'Neumonía atípica con tos seca y dolor pleurítico', 'Hepatitis granulomatosa en 'rosquilla'', 'Endocarditis subaguda con hemocultivos negativos'],
+    symptoms: ['Fiebre alta repentina con cefalea retroocular intensa', 'Neumonía atípica con tos seca y dolor pleurítico', 'Hepatitis granulomatosa en \'rosquilla\'', 'Endocarditis subaguda con hemocultivos negativos'],
     redFlags: ['Endocarditis crónica con fallo valvular', 'Aneurismas infectados o vasculitis'],
     criteria: 'Serología por inmunofluorescencia indirecta (IFI) con títulos elevados contra antígenos de fase I o fase II.',
     labTests: ['Serología IFI para anticuerpos anti-Coxiella burnetii de fase I y II', 'PCR en sangre o tejido valvular', 'Perfil hepático'],
@@ -1746,7 +1746,7 @@ export const capitulo1Raw: CatalogoEntry[] = [
     redFlags: ['Insuficiencia suprarrenal por destrucción granulomatosa', 'Fibrosis pulmonar secuelar severa con cor pulmonale', 'Obstrucción laríngea aguda'],
     criteria: 'Visualización de levaduras multigemantes en \'timón de barco\' o \'cabeza de Mickey Mouse\' en examen directo con KOH o biopsia.',
     labTests: ['Examen directo en fresco con KOH al 10% de esputo o raspado de lesión oral (levaduras con gemación múltiple)', 'Biopsia de lesión mucosa con tinción de Grocott / PAS', 'Serología por inmunodifusión radial en gel'],
-    imaging: ['Radiografía de tórax (infiltrados intersticiales bilaterales con patrón simétrico en 'alas de mariposa' que respetan las bases)'],
+    imaging: ['Radiografía de tórax (infiltrados intersticiales bilaterales con patrón simétrico en \'alas de mariposa\' que respetan las bases)'],
     differential: ['Tuberculosis pulmonar', 'Leishmaniasis mucocutánea (espundia)', 'Carcinoma epidermoide de orofaringe', 'Histoplasmosis'],
     firstLine: [
       { drug: 'Itraconazol', dose: '200 mg cada 24 horas VO con alimentos por 9 a 12 meses (formas leves a moderadas)', route: 'VO', freq: 'c/24h por 9-12 meses', notes: 'Fármaco de primera línea de elección' },
