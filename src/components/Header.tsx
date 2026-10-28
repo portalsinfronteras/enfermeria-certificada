@@ -156,54 +156,22 @@ export const Header: React.FC<HeaderProps> = ({ activeTab, setActiveTab }) => {
     <header className="sticky top-0 z-40 border-b border-[#12425a] bg-[#071d2b]/95 backdrop-blur-md px-2.5 sm:px-4 md:px-6 py-2.5 shadow-xl space-y-2.5">
       {/* Top Bar: Brand, Anuncio Tesis, Contáctanos & Yape */}
       <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-stretch md:items-center justify-between gap-2.5 sm:gap-3">
-        {/* Brand identity & Announcement */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between md:justify-start gap-2 flex-1 min-w-0">
-          <div className="flex items-center space-x-2.5 sm:space-x-3 min-w-0">
-            <div className="relative w-9 h-9 sm:w-11 sm:h-11 rounded-full p-0.5 bg-gradient-to-tr from-[#179c94] via-[#22b8af] to-[#42edd8] shadow-lg shadow-[#22b8af]/25 shrink-0">
-              <img
-                src="/icon-192.png"
-                alt="Logo Enfermería Certificada"
-                className="w-full h-full rounded-full object-cover bg-white"
-              />
-            </div>
-            <div className="min-w-0">
-              <h1 className="font-bold text-sm sm:text-base md:text-lg leading-tight tracking-wide text-white truncate">
-                Enfermería Certificada
-              </h1>
-              <p className="text-[11px] sm:text-xs text-[#32d2c2] font-medium leading-none mt-0.5">
-                Lic. Miguel Pantoja <span className="text-slate-400">| CEP 120064</span>
-              </p>
-            </div>
+        {/* Brand identity */}
+        <div className="flex items-center space-x-2.5 sm:space-x-3 min-w-0">
+          <div className="relative w-9 h-9 sm:w-11 sm:h-11 rounded-full p-0.5 bg-gradient-to-tr from-[#179c94] via-[#22b8af] to-[#42edd8] shadow-lg shadow-[#22b8af]/25 shrink-0">
+            <img
+              src="/icon-192.png"
+              alt="Logo Enfermería Certificada"
+              className="w-full h-full rounded-full object-cover bg-white"
+            />
           </div>
-
-          {/* Anuncio dinámico para Tesis y Trabajos */}
-          <div className="w-full sm:w-auto">
-            <a
-              href="https://wa.me/51935281052?text=Hola%20Lic.%20Miguel%20Pantoja%2C%20le%20escribo%20por%20el%20anuncio%20de%20apoyo%20en%20tesis%20y%20trabajos%20universitarios."
-              target="_blank"
-              rel="noopener noreferrer"
-              className="group flex items-center justify-between sm:justify-start gap-1.5 px-2.5 sm:px-3 py-1 rounded-full bg-gradient-to-r from-amber-500/20 via-orange-500/20 to-amber-500/20 border border-amber-400/60 hover:border-amber-300 text-amber-200 hover:text-white transition-all shadow-md shadow-amber-950/30 cursor-pointer text-xs w-full sm:w-auto"
-              title="Ofrecemos ayuda o hacemos tesis y trabajos universitarios. ¡Haz clic para contactarnos por WhatsApp!"
-            >
-              <div className="flex items-center gap-1.5 truncate">
-                <span className="flex h-2 w-2 rounded-full bg-amber-400 animate-pulse shrink-0" />
-                <span className="font-black uppercase text-[9px] sm:text-[10px] text-slate-950 bg-amber-400 px-1.5 py-0.2 rounded shadow-sm shrink-0">
-                  📢 Anuncio
-                </span>
-                <span className="font-medium text-[11px] sm:text-xs truncate">
-                  <span className="inline sm:hidden">
-                    ¿Tesis o trabajos? <strong className="text-amber-300 underline">¡Te ayudamos!</strong>
-                  </span>
-                  <span className="hidden sm:inline">
-                    ¿Ayuda con tu <strong className="text-amber-300 underline font-bold">tesis o trabajos universitarios</strong>? ¡Te ayudamos o lo hacemos por ti!
-                  </span>
-                </span>
-              </div>
-              <span className="font-bold text-[#25D366] text-[10px] sm:text-[11px] group-hover:translate-x-0.5 transition-transform flex items-center gap-0.5 shrink-0 ml-1">
-                <span>💬 WhatsApp</span>
-                <span>→</span>
-              </span>
-            </a>
+          <div className="min-w-0">
+            <h1 className="font-bold text-sm sm:text-base md:text-lg leading-tight tracking-wide text-white truncate">
+              Enfermería Certificada
+            </h1>
+            <p className="text-[11px] sm:text-xs text-[#32d2c2] font-medium leading-none mt-0.5">
+              Lic. Miguel Pantoja <span className="text-slate-400">| CEP 120064</span>
+            </p>
           </div>
         </div>
 
@@ -357,6 +325,31 @@ export const Header: React.FC<HeaderProps> = ({ activeTab, setActiveTab }) => {
             );
           })}
         </div>
+      </div>
+
+      {/* ANUNCIO DINÁMICO: APOYO EN TESIS Y TRABAJOS UNIVERSITARIOS (DEBAJO DEL MENÚ DE NAVEGACIÓN) */}
+      <div className="max-w-7xl mx-auto pt-0.5">
+        <a
+          href="https://wa.me/51935281052?text=Hola%20Lic.%20Miguel%20Pantoja%2C%20le%20escribo%20por%20el%20anuncio%20de%20apoyo%20en%20tesis%20y%20trabajos%20universitarios."
+          target="_blank"
+          rel="noopener noreferrer"
+          className="group w-full flex flex-col sm:flex-row items-center justify-between gap-2 px-3 sm:px-4 py-2 rounded-xl bg-gradient-to-r from-amber-500/15 via-orange-500/20 to-amber-500/15 border border-amber-400/60 hover:border-amber-300 text-amber-200 hover:text-white transition-all shadow-md shadow-amber-950/30 cursor-pointer"
+          title="Ofrecemos ayuda o hacemos tesis y trabajos universitarios. ¡Haz clic para contactarnos por WhatsApp!"
+        >
+          <div className="flex items-center gap-2 text-center sm:text-left flex-wrap sm:flex-nowrap justify-center sm:justify-start min-w-0">
+            <span className="flex h-2 w-2 rounded-full bg-amber-400 animate-pulse shrink-0" />
+            <span className="font-black uppercase text-[10px] sm:text-xs text-slate-950 bg-amber-400 px-2 py-0.5 rounded shadow-sm shrink-0">
+              📢 Anuncio
+            </span>
+            <span className="font-medium text-xs sm:text-sm text-slate-200">
+              ¿Ayuda con tu <strong className="text-amber-300 underline font-bold">tesis o trabajos universitarios</strong>? <span className="text-amber-100 font-semibold">¡Te ayudamos o lo hacemos por ti!</span>
+            </span>
+          </div>
+          <div className="flex items-center gap-1.5 px-3 py-1 rounded-lg bg-[#25D366]/20 border border-[#25D366]/50 text-[#25D366] group-hover:bg-[#25D366] group-hover:text-slate-950 font-bold text-xs transition-all shrink-0">
+            <span>💬 WhatsApp</span>
+            <span className="group-hover:translate-x-0.5 transition-transform">→</span>
+          </div>
+        </a>
       </div>
 
       {/* Yape Donation Modal */}
