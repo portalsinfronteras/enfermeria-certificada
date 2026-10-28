@@ -615,13 +615,18 @@ export const SimulacroEnaeTab: React.FC = () => {
                     {/* Question Content */}
                     <div className="p-4 sm:p-5 space-y-4">
                       {/* Topic Pill */}
-                      <div className="flex items-center gap-2">
+                      <div className="flex items-center gap-2 flex-wrap">
                         <span className="text-[11px] font-medium text-slate-400 flex items-center gap-1">
                           <Layers className="w-3 h-3 text-[#22b8af]" /> Tema clave:
                         </span>
                         <span className="text-xs font-semibold text-white bg-[#092b3d] px-2 py-0.5 rounded border border-[#134e6f]">
                           {q.topic}
                         </span>
+                        {(q.area === 'Cuidado Integral de Salud' || q.subarea.includes('PAE') || q.explanation.includes('NANDA') || q.question.toLowerCase().includes('nanda') || q.question.toLowerCase().includes('diagnóstico de enfermería')) && (
+                          <span className="text-[10px] font-bold text-amber-300 bg-amber-500/15 px-2 py-0.5 rounded-md border border-amber-500/30 flex items-center gap-1">
+                            <span>⚕️ NANDA - NOC - NIC 2024–2026</span>
+                          </span>
+                        )}
                       </div>
 
                       {/* Question Statement */}
