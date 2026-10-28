@@ -178,8 +178,8 @@ export const NandaPlaceTab: React.FC = () => {
             <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-amber-500/20 text-amber-300 border border-amber-500/40">
               NANDA-I • NOC 6ta/7ma • NIC 7ma/8va
             </span>
-            <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-[#092b3d] text-slate-300 border border-[#144863]">
-              L.E. Alex Santiago
+            <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-[#092b3d] text-[#42edd8] border border-[#144863]">
+              Taxonomía PAE
             </span>
           </div>
           <h2 className="text-lg sm:text-xl font-black text-white flex items-center gap-2">
@@ -686,7 +686,7 @@ export const NandaPlaceTab: React.FC = () => {
         <div className="bg-[#071d2b] p-5 sm:p-7 rounded-2xl border border-[#12425a] shadow-xl space-y-6">
           <div className="border-b border-[#12425a] pb-4">
             <span className="text-xs font-bold text-[#42edd8] uppercase tracking-wider block mb-1">
-              Guía Metodológica Oficial • L.E. Alex Santiago
+              Guía Metodológica Oficial • Proceso de Atención de Enfermería (PAE)
             </span>
             <h3 className="text-lg sm:text-xl font-black text-white">
               Estructura y Fases del Proceso de Atención de Enfermería (PAE) 2024–2026
