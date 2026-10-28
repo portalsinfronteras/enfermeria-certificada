@@ -1,6 +1,7 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { vademecumData, Drug } from '../data/vademecumData';
 import { offlineCacheService } from '../services/offlineCacheService';
+import { useAuth } from '../context/AuthContext';
 import {
   Search,
   Pill,
@@ -19,6 +20,7 @@ import {
 } from 'lucide-react';
 
 export const VademecumTab: React.FC = () => {
+  const { user, saveItem } = useAuth();
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string>('Todos');
   const [selectedDrug, setSelectedDrug] = useState<Drug | null>(null);
@@ -77,6 +79,16 @@ export const VademecumTab: React.FC = () => {
   const toggleFavorite = (id: number, e?: React.MouseEvent) => {
     if (e) {
       e.stopPropagation();
+    }
+    const drug = drugsList.find((d) => d.id === id);
+    if (user && drug) {
+      saveItem({
+        id: 'med_' + drug.id,
+        type: 'medicamento',
+        title: drug.name,
+        subtitle: `${drug.cat} • ${drug.ind}`,
+        category: drug.cat,
+      });
     }
     setFavorites((prev) =>
       prev.includes(id) ? prev.filter((favId) => favId !== id) : [...prev, id]
