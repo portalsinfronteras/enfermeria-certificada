@@ -9,5 +9,8 @@ coverage/
 .antigravity/
 .vscode/
 reference_docs/
+*.pdf
+*.bmp
+*.tmp
 
 
