@@ -60,14 +60,22 @@ export const SavedDataModal: React.FC = () => {
     setIsAddingNote(false);
   };
 
-  const getItemIcon = (type: string) => {
+    const getItemIcon = (type: string) => {
     switch (type) {
       case 'diagnostico':
         return <Stethoscope className="w-4 h-4 text-emerald-400" />;
       case 'medicamento':
         return <Pill className="w-4 h-4 text-[#32d2c2]" />;
+      case 'place':
+        return <FileSpreadsheet className="w-4 h-4 text-amber-400" />;
+      case 'simulacro':
+        return <GraduationCap className="w-4 h-4 text-purple-400" />;
+      case 'soapie':
+        return <Wand2 className="w-4 h-4 text-cyan-400" />;
+      case 'certificado':
+        return <Award className="w-4 h-4 text-yellow-400" />;
       default:
-        return <FileText className="w-4 h-4 text-amber-400" />;
+        return <FileText className="w-4 h-4 text-teal-400" />;
     }
   };
 
@@ -123,11 +131,14 @@ export const SavedDataModal: React.FC = () => {
         {/* Filtros de Categoría */}
         <div className="px-4 py-2.5 bg-[#05141f] border-b border-[#12425a] flex items-center justify-between gap-2 overflow-x-auto shrink-0">
           <div className="flex items-center gap-1.5">
-            {[
+                        {[
               { id: 'todos', label: 'Todos' },
               { id: 'diagnostico', label: 'Diagnósticos Médicos' },
+              { id: 'place', label: 'Planes PLACE' },
+              { id: 'simulacro', label: 'Simulacros ENAE' },
               { id: 'medicamento', label: 'Medicamentos' },
-              { id: 'nota', label: 'Mis Notas Clínicas' },
+              { id: 'soapie', label: 'Notas SOAPIE' },
+              { id: 'nota', label: 'Mis Notas' },
             ].map((tab) => (
               <button
                 key={tab.id}
