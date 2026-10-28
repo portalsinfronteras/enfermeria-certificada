@@ -95,6 +95,7 @@ export const NandaPlaceTab: React.FC = () => {
     'Paciente evoluciona favorablemente con mejoría de los parámetros fisiológicos y alivio de síntomas tras intervenciones de enfermería.'
   );
   const [copiedPlace, setCopiedPlace] = useState<boolean>(false);
+  const [savedPlaceSuccess, setSavedPlaceSuccess] = useState<boolean>(false);
 
   // Conteo de diagnósticos por dominio (usando número exacto de dominio)
   const domainCounts = useMemo(() => {
@@ -822,7 +823,34 @@ ${placeEvaluation}
                 </p>
               </div>
 
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 flex-wrap">
+                {/* Guardar PLACE en cuenta */}
+                <button
+                  type="button"
+                  onClick={() => {
+                    saveItem({
+                      id: 'place_' + Date.now(),
+                      type: 'place',
+                      title: placeNanda,
+                      subtitle: `${placePatientName} • ${placeService}`,
+                      data: {
+                        placePatientName,
+                        placeService,
+                        placeNanda,
+                        placeNoc,
+                        placeNic,
+                        placeEvaluation
+                      }
+                    });
+                    setSavedPlaceSuccess(true);
+                    setTimeout(() => setSavedPlaceSuccess(false), 3000);
+                  }}
+                  className="px-3.5 py-2 rounded-xl bg-[#0e3852] hover:bg-[#134e73] text-[#42edd8] border border-[#1b6287] text-xs font-bold transition flex items-center gap-1.5 cursor-pointer shadow-sm active:scale-95"
+                >
+                  <Bookmark className="w-4 h-4 fill-amber-400 text-amber-400" />
+                  <span>{savedPlaceSuccess ? '¡Guardado en tu Libreta!' : 'Guardar en mi Libreta'}</span>
+                </button>
+
                 <button
                   type="button"
                   onClick={handleCopyPlace}
