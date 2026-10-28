@@ -11,11 +11,7 @@ export default defineConfig(() => {
       tailwindcss(),
       VitePWA({
         registerType: 'autoUpdate',
-<<<<<<< Updated upstream
-        includeAssets: ['icon.svg', 'icon-192.png', 'icon-512.png', 'apple-touch-icon.png'],
-=======
-        includeAssets: ['favicon.ico', 'icon.svg', 'icon-192.png', 'icon-512.png', 'apple-touch-icon.png', 'assets/aistudio/*'],
->>>>>>> Stashed changes
+        includeAssets: ['icon.svg', 'icon-192.png', 'icon-512.png', 'apple-touch-icon.png', 'assets/aistudio/*'],
         manifest: {
           id: '/',
           name: 'Enfermería Certificada - Lic. Miguel Pantoja',

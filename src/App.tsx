@@ -26,10 +26,7 @@ import { Smartphone } from 'lucide-react';
 export default function App() {
   const [activeTab, setActiveTab] = useState<TabType>('vademecum');
   const [isFooterDonationOpen, setIsFooterDonationOpen] = useState(false);
-<<<<<<< Updated upstream
   const [isFooterShareOpen, setIsFooterShareOpen] = useState(false);
-=======
->>>>>>> Stashed changes
   const [qrVerifiedCert, setQrVerifiedCert] = useState<IssuedCertificate | null>(null);
 
   // Detectar automáticamente si el usuario escaneó el Código QR de un Certificado (?verificar=...&datos=...)

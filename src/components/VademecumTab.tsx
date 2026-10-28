@@ -518,12 +518,6 @@ export const VademecumTab: React.FC = () => {
           </button>
         </div>
       )}
-            >
-              Restablecer búsqueda
-            </button>
-          </div>
-        )}
-      </div>
 
       {/* Modal Ficha Completa */}
       {selectedDrug && (

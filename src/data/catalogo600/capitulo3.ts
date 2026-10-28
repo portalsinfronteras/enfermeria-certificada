@@ -31,10 +31,10 @@ export const capitulo3Raw: CatalogoEntry[] = [
     category: 'Digestivas y Metabólicas',
     chapter: 'III. Enfermedades del Aparato Digestivo y Metabólicas (136-210)',
     definition: 'Inflamación reversible de la encía marginal inducida por el acúmulo de placa bacteriana, sin pérdida de inserción ni hueso alveolar.',
-    symptoms: ['Sangrado gingival espontáneo o provocado por el cepillado dental', 'Encías tumefactas, eritematosas y brillantes que pierden su aspecto en 'cáscara de naranja'', 'Halitosis o mal aliento matutino', 'Sensibilidad gingival leve'],
+    symptoms: ['Sangrado gingival espontáneo o provocado por el cepillado dental', 'Encías tumefactas, eritematosas y brillantes que pierden su aspecto en \'cáscara de naranja\'', 'Halitosis o mal aliento matutino', 'Sensibilidad gingival leve'],
     redFlags: ['Gingivitis úlcero-necrotizante aguda (GUNA) con dolor severo, pseudomembranas y necrosis interdental en inmunodeprimidos'],
     criteria: 'Sondaje periodontal con sangrado al sondaje en ≥ 10% de localizaciones con profundidad de surco ≤ 3 mm sin pérdida ósea.',
-    labTests: ['Evaluación de índice de placa bacteriana de O'Leary'],
+    labTests: ['Evaluación de índice de placa bacteriana de O\'Leary'],
     imaging: ['Radiografías periapicales (crestas óseas alveolares intactas sin reabsorción)'],
     differential: ['Periodontitis crónica', 'Gingivitis por fármacos (fenitoína, ciclosporina, nifedipino)', 'Leucemia aguda con infiltración gingival'],
     firstLine: [
@@ -381,7 +381,7 @@ export const capitulo3Raw: CatalogoEntry[] = [
     cie10: 'K57.2',
     category: 'Digestivas y Metabólicas',
     chapter: 'III. Enfermedades del Aparato Digestivo y Metabólicas (136-210)',
-    definition: 'Inflamación e infección de uno o más divertículos colónicos por micro o macroperforación (la 'apendicitis izquierda').',
+    definition: 'Inflamación e infección de uno o más divertículos colónicos por micro o macroperforación (la \'apendicitis izquierda\').',
     symptoms: ['Dolor constante y agudo en fosa ilíaca izquierda', 'Fiebre persistente con escalofríos', 'Estreñimiento o diarrea refleja de inicio reciente', 'Náuseas y anorexia', 'Defensa muscular en cuadrante inferior izquierdo'],
     redFlags: ['Perforación libre con peritonitis fecal difusa (abdomen en tabla y choque séptico)', 'Absceso pélvico o peridiverticular (Hinchey II)', 'Fístula colovesical (neumaturia y fecaluria)'],
     criteria: 'Tomografía computarizada de abdomen con contraste: engrosamiento de pared colónica > 4 mm, trabeculación de la grasa pericolónica y divertículos inflamados.',
@@ -561,7 +561,7 @@ export const capitulo3Raw: CatalogoEntry[] = [
     definition: 'Enfermedad inflamatoria intestinal granulomatosa transmural crónica que puede afectar cualquier segmento del tubo digestivo desde la boca hasta el ano en parches discontinuos.',
     symptoms: ['Dolor abdominal cólico recurrente en fosa ilíaca derecha', 'Diarrea crónica no sanguinolenta o con moco', 'Pérdida de peso progresiva, malnutrición y fiebre baja', 'Lesiones perianales complejas (fístulas, fisuras profundas o abscesos recurrentes)'],
     redFlags: ['Estenosis intestinal con obstrucción intestinal mecánica', 'Fístulas enteroentéricas, enterovesicales o enterocutáneas', 'Perforación libre'],
-    criteria: 'Criterios de Lennard-Jones: lesiones discontinuas 'en empedrado', afectación transmural con úlceras serpiginosas y granulomas no caseificantes en biopsia.',
+    criteria: 'Criterios de Lennard-Jones: lesiones discontinuas \'en empedrado\', afectación transmural con úlceras serpiginosas y granulomas no caseificantes en biopsia.',
     labTests: ['Calprotectina fecal marcadamente elevada (> 250 ug/g)', 'Proteína C reactiva y VSG elevadas', 'Anticuerpos ASCA (Anti-Saccharomyces cerevisiae) positivos en > 60%', 'Hemograma (anemia mixta por inflamación y malabsorción de B12/hierro)'],
     imaging: ['Entero-Resonancia magnética de intestino delgado (estándar de oro para valorar extensión transmural y estenosis)', 'Colonoscopía con ileoscopía retrógrada y biopsias'],
     differential: ['Tuberculosis intestinal (diagnóstico diferencial primordial en el Perú)', 'Colitis ulcerosa', 'Apendicitis aguda'],
@@ -1701,7 +1701,7 @@ export const capitulo3Raw: CatalogoEntry[] = [
       { drug: 'Ácido Zoledrónico EV', dose: '4 mg EV en infusión de 15 minutos con hidratación vigorosa previa', route: 'EV infusión', freq: 'Dosis rescate', notes: 'Manejo hospitalario de hipercalcemia severa sintomática' }
     ],
     nonPharm: ['Hidratación oral abundante (2.5 a 3 litros de agua/día) para prevenir la formación de cálculos renales', 'Mantenerse activo y evitar la inmovilización prolongada en cama'],
-    nursingCare: ['Monitoreo continuo de signos vitales y sensorio en hipercalcemia', 'Hidratación endovenosa vigorosa con solución salina al 0.9% para forzar la calciuria por arrastre', 'Control de diuresis horaria estricta', 'En el postoperatorio de paratiroidectomía: vigilar desarrollo del "Síndrome del hueso hambriento" (hipocalcemia severa por rápida captación ósea)']
+    nursingCare: ['Monitoreo continuo de signos vitales y sensorio en hipercalcemia', 'Hidratación endovenosa vigorosa con solución salina al 0.9% para forzar la calciuria por arrastre', 'Control de diuresis horaria estricta', 'En el postoperatorio de paratiroidectomía: vigilar desarrollo del Síndrome del hueso hambriento (hipocalcemia severa por rápida captación ósea)']
   }
 ];
 

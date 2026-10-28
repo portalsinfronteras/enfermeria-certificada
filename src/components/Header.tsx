@@ -15,14 +15,10 @@ import {
   FileSpreadsheet,
   ChevronDown,
   Layers,
-<<<<<<< Updated upstream
   Award,
   Baby,
   Share2,
   Smartphone
-=======
-  Award
->>>>>>> Stashed changes
 } from 'lucide-react';
 import { DonationModal } from './DonationModal';
 import { PWAInstallButton } from './PWAInstallButton';
@@ -42,10 +38,7 @@ export type TabType =
   | 'vacunas'
   | 'crecimiento'
   | 'imc'
-<<<<<<< Updated upstream
   | 'hierro'
-=======
->>>>>>> Stashed changes
   | 'enae'
   | 'cursos';
 
@@ -89,18 +82,9 @@ export const Header: React.FC<HeaderProps> = ({ activeTab, setActiveTab }) => {
     { id: 'nanda', label: 'NANDA-NOC-NIC (PLACE)', category: 'gestion', icon: FileSpreadsheet, color: 'text-amber-300' },
     { id: 'soapie', label: 'SOAPIE IA', category: 'gestion', icon: Wand2, color: 'text-amber-400' },
 
-<<<<<<< Updated upstream
     // 🎓 Docencia y Certificación (2)
     { id: 'cursos', label: 'Cursos + Certificado QR', category: 'docencia', icon: Award, color: 'text-amber-400' },
     { id: 'enae', label: 'Simulacro ENAE', category: 'docencia', icon: GraduationCap, color: 'text-amber-300' },
-=======
-    // 📈 Docencia & Niño (5)
-    { id: 'cursos', label: 'Cursos + Certificado QR', category: 'docencia', icon: Award, color: 'text-amber-400' },
-    { id: 'enae', label: 'Simulacro ENAE', category: 'docencia', icon: GraduationCap, color: 'text-amber-300' },
-    { id: 'vacunas', label: 'Inmunizaciones', category: 'docencia', icon: Syringe, color: 'text-rose-400' },
-    { id: 'crecimiento', label: 'Curvas / TPED', category: 'docencia', icon: LineChart, color: 'text-teal-300' },
-    { id: 'imc', label: 'IMC / Z-Score', category: 'docencia', icon: Scale, color: 'text-cyan-400' },
->>>>>>> Stashed changes
   ];
 
   // Estado del Acordeón: Al iniciar, todos los menús empiezan completamente cerrados

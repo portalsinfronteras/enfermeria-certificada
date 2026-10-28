@@ -23,10 +23,7 @@ import {
   Share2
 } from 'lucide-react';
 import { COURSES_DATA, ClinicalCourse } from '../data/coursesData';
-<<<<<<< Updated upstream
 import { CERTIFICATE_TEMPLATE_DATA_URI } from '../data/certificateTemplateData';
-=======
->>>>>>> Stashed changes
 
 export interface IssuedCertificate {
   certId: string;
@@ -85,13 +82,8 @@ export function decodeCertificateToken(token: string): IssuedCertificate | null 
       courseId: p.c || '',
       courseCode: course?.code || 'EC-CUR',
       courseTitle: p.ct || course?.title || 'Curso de Actualización Clínica',
-<<<<<<< Updated upstream
       academicHours: Number(p.h) || 40,
       credits: Number(p.cr) || 2.5,
-=======
-      academicHours: Number(p.h) || 24,
-      credits: Number(p.cr) || 1.5,
->>>>>>> Stashed changes
       score: Number(p.s) || 20,
       issueDate: p.d || new Date().toLocaleDateString('es-PE'),
       modules: course ? course.modules.map((m) => m.title) : [],
@@ -134,11 +126,8 @@ export const CursosTab: React.FC<CursosTabProps> = ({ initialVerifyData, onClear
   // Module self-check state
   const [moduleAnswer, setModuleAnswer] = useState<number | null>(null);
   const [moduleChecked, setModuleChecked] = useState<boolean>(false);
-<<<<<<< Updated upstream
   const [moduleQuizAnswers, setModuleQuizAnswers] = useState<Record<string, number>>({});
   const [showFullModuleQuiz, setShowFullModuleQuiz] = useState<boolean>(false);
-=======
->>>>>>> Stashed changes
 
   // Final exam answers: { [questionId]: selectedOptionIndex }
   const [examAnswers, setExamAnswers] = useState<Record<string, number>>({});
@@ -327,13 +316,8 @@ export const CursosTab: React.FC<CursosTabProps> = ({ initialVerifyData, onClear
     canvas.height = H;
     const ctx = canvas.getContext('2d')!;
 
-<<<<<<< Updated upstream
     // 1. Dibujar tu plantilla limpia oficial de fondo (100% embebida, sin fallos de red/CORS)
     const bgImg = await loadImageElement(CERTIFICATE_TEMPLATE_DATA_URI);
-=======
-    // 1. Dibujar tu plantilla limpia oficial de fondo
-    const bgImg = await loadImageElement('/plantilla-certificado.jpg');
->>>>>>> Stashed changes
     ctx.drawImage(bgImg, 0, 0, W, H);
 
     // 2. Título principal: CONSTANCIA
@@ -472,11 +456,7 @@ export const CursosTab: React.FC<CursosTabProps> = ({ initialVerifyData, onClear
 
   const handlePrintCertificate = (cert: IssuedCertificate) => {
     const qrUrl = getQrImageUrl(cert);
-<<<<<<< Updated upstream
     const tplUrl = CERTIFICATE_TEMPLATE_DATA_URI;
-=======
-    const tplUrl = `${window.location.origin}/plantilla-certificado.jpg`;
->>>>>>> Stashed changes
 
     const printWindow = window.open('', '_blank');
     if (!printWindow) return;
@@ -675,397 +655,9 @@ export const CursosTab: React.FC<CursosTabProps> = ({ initialVerifyData, onClear
     printWindow.document.close();
   };
 
-<<<<<<< Updated upstream
   // Generador e Impresor del Manual de Cátedra Oficial en PDF (A4) - Deshabilitado para evitar descargas
-  const handlePrintManual = (_course: ClinicalCourse) => {
-    return;
-    const printWindow = window.open('', '_blank');
-    if (!printWindow) return;
+  const handlePrintManual = (_course: ClinicalCourse) => {};
 
-    const modulesHtml = course.modules
-      .map(
-        (mod) => `
-      <div class="module-block">
-        <div class="module-header">
-          <span class="module-badge">MÓDULO ${mod.number} (${mod.duration})</span>
-          <h2>${mod.title}</h2>
-        </div>
-
-        ${
-          mod.part1Title || mod.part2Title
-            ? `
-          <div class="parts-grid">
-            ${mod.part1Title ? `<div class="part-badge">📘 ${mod.part1Title}</div>` : ''}
-            ${mod.part2Title ? `<div class="part-badge">📗 ${mod.part2Title}</div>` : ''}
-          </div>
-        `
-            : ''
-        }
-
-        <div class="summary-box">
-          <strong>Resumen Ejecutivo:</strong> ${mod.summary}
-        </div>
-
-        <div class="content-body">
-          ${mod.content.map((p) => `<p>${p}</p>`).join('')}
-        </div>
-
-        ${
-          mod.tableData
-            ? `
-          <div class="table-container">
-            <div class="table-title">📊 ${mod.tableData.title}</div>
-            <table>
-              <thead>
-                <tr>${mod.tableData.headers.map((h) => `<th>${h}</th>`).join('')}</tr>
-              </thead>
-              <tbody>
-                ${mod.tableData.rows
-                  .map(
-                    (row) =>
-                      `<tr>${row
-                        .map(
-                          (cell, cIdx) =>
-                            `<td class="${cIdx === 0 ? 'first-col' : ''}">${cell}</td>`
-                        )
-                        .join('')}</tr>`
-                  )
-                  .join('')}
-              </tbody>
-            </table>
-          </div>
-        `
-            : ''
-        }
-
-        <div class="keypoints-box">
-          <h4>✓ Puntos Clave para la Práctica Asistencial y Examen:</h4>
-          <ul>
-            ${mod.keyPoints.map((kp) => `<li>${kp}</li>`).join('')}
-          </ul>
-        </div>
-
-        <div class="pearl-box">
-          <strong>💡 Perla Clínica de Guardia:</strong> ${mod.clinicalPearl}
-        </div>
-
-        ${
-          mod.moduleQuiz && mod.moduleQuiz.length > 0
-            ? `
-          <div class="quiz-section">
-            <h3>Evaluación de Acreditación del Módulo ${mod.number} (${mod.moduleQuiz.length} Preguntas)</h3>
-            <div class="quiz-list">
-              ${mod.moduleQuiz
-                .map(
-                  (q, idx) => `
-                <div class="question-card">
-                  <div class="question-text"><strong>${idx + 1}.</strong> ${q.question}</div>
-                  <div class="options-grid">
-                    ${q.options
-                      .map(
-                        (opt, oIdx) => `
-                      <div class="option-item ${oIdx === q.correctIndex ? 'correct-option' : ''}">
-                        <span class="opt-letter">${String.fromCharCode(97 + oIdx)})</span> ${opt}
-                        ${oIdx === q.correctIndex ? ' <strong>✓ [Correcta]</strong>' : ''}
-                      </div>
-                    `
-                      )
-                      .join('')}
-                  </div>
-                  <div class="rationale-box"><strong>Fundamento Clínico:</strong> ${q.rationale}</div>
-                </div>
-              `
-                )
-                .join('')}
-            </div>
-          </div>
-        `
-            : ''
-        }
-      </div>
-    `
-      )
-      .join('');
-
-    printWindow.document.write(`
-      <!DOCTYPE html>
-      <html lang="es">
-      <head>
-        <meta charset="UTF-8" />
-        <title>Manual_de_Catedra_${course.code}_${course.id}</title>
-        <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-        <style>
-          @page {
-            size: A4 portrait;
-            margin: 14mm 12mm 14mm 12mm;
-          }
-          * {
-            box-sizing: border-box;
-            -webkit-print-color-adjust: exact !important;
-            print-color-adjust: exact !important;
-          }
-          body {
-            font-family: 'Montserrat', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            color: #1e293b;
-            background: #ffffff;
-            margin: 0;
-            padding: 0;
-            line-height: 1.5;
-            font-size: 9.5pt;
-          }
-          .cover-banner {
-            background: linear-gradient(135deg, #071d2b 0%, #0f405c 100%);
-            color: #ffffff;
-            padding: 20px 24px;
-            border-radius: 12px;
-            margin-bottom: 22px;
-            border-left: 6px solid #32d2c2;
-          }
-          .program-badge {
-            display: inline-block;
-            background: #32d2c2;
-            color: #071d2b;
-            font-size: 8pt;
-            font-weight: 800;
-            padding: 3px 10px;
-            border-radius: 9999px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-bottom: 8px;
-          }
-          .cover-title {
-            font-size: 17pt;
-            font-weight: 900;
-            margin: 4px 0 8px;
-            line-height: 1.2;
-          }
-          .cover-meta {
-            font-size: 8.5pt;
-            color: #cbd5e1;
-            line-height: 1.5;
-          }
-          .cover-meta strong {
-            color: #32d2c2;
-          }
-          .module-block {
-            margin-bottom: 26px;
-            page-break-inside: avoid;
-            border: 1px solid #e2e8f0;
-            border-radius: 10px;
-            padding: 16px;
-            background: #ffffff;
-          }
-          .module-header {
-            border-bottom: 2px solid #0f766e;
-            padding-bottom: 6px;
-            margin-bottom: 10px;
-          }
-          .module-badge {
-            background: #0f766e;
-            color: white;
-            font-size: 7.5pt;
-            font-weight: 800;
-            padding: 2px 8px;
-            border-radius: 4px;
-            text-transform: uppercase;
-          }
-          .module-header h2 {
-            font-size: 12pt;
-            font-weight: 800;
-            color: #0f172a;
-            margin: 6px 0 0;
-          }
-          .parts-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 8px;
-            margin-bottom: 10px;
-          }
-          .part-badge {
-            background: #f0fdfa;
-            border: 1px solid #99f6e4;
-            color: #0f766e;
-            padding: 5px 8px;
-            border-radius: 6px;
-            font-size: 8pt;
-            font-weight: 700;
-          }
-          .summary-box {
-            background: #f8fafc;
-            border-left: 3px solid #3b82f6;
-            padding: 8px 12px;
-            font-size: 8.5pt;
-            color: #334155;
-            margin-bottom: 10px;
-            border-radius: 0 6px 6px 0;
-          }
-          .content-body p {
-            margin: 0 0 7px;
-            text-align: justify;
-            font-size: 8.5pt;
-            line-height: 1.5;
-            color: #334155;
-          }
-          .table-container {
-            margin: 12px 0;
-            border: 1px solid #cbd5e1;
-            border-radius: 8px;
-            overflow: hidden;
-          }
-          .table-title {
-            background: #0f766e;
-            color: white;
-            font-weight: 700;
-            font-size: 8pt;
-            padding: 5px 10px;
-          }
-          table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 7.5pt;
-          }
-          th {
-            background: #f1f5f9;
-            color: #0f172a;
-            font-weight: 700;
-            padding: 5px 7px;
-            border-bottom: 1px solid #cbd5e1;
-            text-align: left;
-          }
-          td {
-            padding: 5px 7px;
-            border-bottom: 1px solid #e2e8f0;
-            color: #334155;
-            vertical-align: top;
-          }
-          td.first-col {
-            font-weight: 700;
-            color: #0f172a;
-          }
-          .keypoints-box {
-            background: #f0fdf4;
-            border: 1px solid #86efac;
-            padding: 9px 12px;
-            border-radius: 8px;
-            margin: 10px 0;
-          }
-          .keypoints-box h4 {
-            margin: 0 0 5px;
-            font-size: 8pt;
-            font-weight: 800;
-            color: #166534;
-          }
-          .keypoints-box ul {
-            margin: 0;
-            padding-left: 15px;
-            font-size: 7.5pt;
-            color: #14532d;
-          }
-          .keypoints-box li {
-            margin-bottom: 3px;
-          }
-          .pearl-box {
-            background: #fefce8;
-            border: 1px solid #fde047;
-            padding: 7px 10px;
-            border-radius: 8px;
-            font-size: 8pt;
-            color: #854d0e;
-            margin-bottom: 12px;
-          }
-          .quiz-section {
-            background: #f8fafc;
-            border: 1px solid #cbd5e1;
-            border-radius: 8px;
-            padding: 10px;
-            margin-top: 12px;
-          }
-          .quiz-section h3 {
-            margin: 0 0 8px;
-            font-size: 9pt;
-            font-weight: 800;
-            color: #0f172a;
-            border-bottom: 1px solid #e2e8f0;
-            padding-bottom: 4px;
-          }
-          .question-card {
-            background: white;
-            border: 1px solid #e2e8f0;
-            border-radius: 6px;
-            padding: 7px 9px;
-            margin-bottom: 6px;
-            page-break-inside: avoid;
-          }
-          .question-text {
-            font-size: 8pt;
-            font-weight: 700;
-            color: #0f172a;
-            margin-bottom: 4px;
-          }
-          .options-grid {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 3px;
-            margin-bottom: 4px;
-          }
-          .option-item {
-            font-size: 7.5pt;
-            color: #475569;
-            padding: 2px 5px;
-            border-radius: 4px;
-          }
-          .option-item.correct-option {
-            background: #dcfce7;
-            color: #166534;
-            font-weight: 600;
-          }
-          .rationale-box {
-            background: #f1f5f9;
-            padding: 3px 6px;
-            border-radius: 4px;
-            font-size: 7pt;
-            color: #334155;
-          }
-          .footer-note {
-            text-align: center;
-            font-size: 7.5pt;
-            color: #64748b;
-            margin-top: 18px;
-            border-top: 1px solid #e2e8f0;
-            padding-top: 8px;
-          }
-        </style>
-      </head>
-      <body>
-        <div class="cover-banner">
-          <div class="program-badge">PROGRAMA DE ALTA ESPECIALIZACIÓN ACADÉMICA Y CLÍNICA (40 HORAS)</div>
-          <h1 class="cover-title">Manual de Cátedra: ${course.title}</h1>
-          <div class="cover-meta">
-            <strong>Marco Técnico Normativo:</strong> ${course.normativaBase}<br/>
-            <strong>Carga Académica:</strong> ${course.academicHours} Horas Lectivas (${course.credits} Créditos) • <strong>Código:</strong> ${course.code}<br/>
-            <strong>Dirección Académica:</strong> Lic. Miguel Pantoja Antonio (CEP 120064) • <strong>Plataforma:</strong> www.enfermeriacertificada.com
-          </div>
-        </div>
-
-        ${modulesHtml}
-
-        <div class="footer-note">
-          © 2026 Enfermería Certificada — Lic. Miguel Pantoja Antonio (CEP 120064). Material de cátedra oficial para uso de licenciados y estudiantes de enfermería.
-        </div>
-
-        <script>
-          window.onload = function() {
-            setTimeout(function() { window.print(); }, 400);
-          };
-        </script>
-      </body>
-      </html>
-    `);
-    printWindow.document.close();
-  };
-
-=======
->>>>>>> Stashed changes
   // ============================================================================
   // VISTA 1: VALIDADOR PÚBLICO DE CERTIFICADO (QR)
   // ============================================================================
@@ -1226,7 +818,6 @@ export const CursosTab: React.FC<CursosTabProps> = ({ initialVerifyData, onClear
             <p className="text-xs text-slate-400">{selectedCourse.normativaBase}</p>
           </div>
 
-<<<<<<< Updated upstream
           <div className="flex flex-wrap items-center gap-2 w-full md:w-auto">
             <button
               onClick={startFinalExam}
@@ -1236,15 +827,6 @@ export const CursosTab: React.FC<CursosTabProps> = ({ initialVerifyData, onClear
               <span>Rendir Examen Final para Constancia</span>
             </button>
           </div>
-=======
-          <button
-            onClick={startFinalExam}
-            className="w-full md:w-auto px-4 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-slate-950 font-black text-xs sm:text-sm flex items-center justify-center gap-2 shadow-lg cursor-pointer"
-          >
-            <FileCheck className="w-4 h-4" />
-            <span>Rendir Examen Final para Certificado</span>
-          </button>
->>>>>>> Stashed changes
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
@@ -1339,7 +921,6 @@ export const CursosTab: React.FC<CursosTabProps> = ({ initialVerifyData, onClear
               {currentModule.summary}
             </p>
 
-<<<<<<< Updated upstream
             {/* Subtítulos Parte 1 y Parte 2 del Manual de Cátedra */}
             {(currentModule.part1Title || currentModule.part2Title) && (
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
@@ -1356,8 +937,6 @@ export const CursosTab: React.FC<CursosTabProps> = ({ initialVerifyData, onClear
               </div>
             )}
 
-=======
->>>>>>> Stashed changes
             {/* Desarrollo teórico-clínico */}
             <div className="space-y-3 text-xs sm:text-sm text-slate-200 leading-relaxed">
               {currentModule.content.map((paragraph, i) => (
@@ -1367,7 +946,6 @@ export const CursosTab: React.FC<CursosTabProps> = ({ initialVerifyData, onClear
               ))}
             </div>
 
-<<<<<<< Updated upstream
             {/* Tabla Clínica Estructurada del Manual de Cátedra */}
             {currentModule.tableData && (
               <div className="bg-slate-950/70 rounded-2xl border border-[#164e63] overflow-hidden shadow-lg">
@@ -1404,8 +982,6 @@ export const CursosTab: React.FC<CursosTabProps> = ({ initialVerifyData, onClear
               </div>
             )}
 
-=======
->>>>>>> Stashed changes
             {/* Puntos Clave de Enfermería */}
             <div className="bg-gradient-to-br from-[#072638] to-[#061c29] p-4 rounded-2xl border border-teal-500/30 space-y-2.5">
               <h4 className="text-xs sm:text-sm font-black text-[#32d2c2] flex items-center gap-2">
@@ -1481,7 +1057,6 @@ export const CursosTab: React.FC<CursosTabProps> = ({ initialVerifyData, onClear
               )}
             </div>
 
-<<<<<<< Updated upstream
             {/* Banco de 10 Preguntas de Acreditación del Módulo (del Manual de Cátedra) */}
             {currentModule.moduleQuiz && currentModule.moduleQuiz.length > 0 && (
               <div className="bg-[#061824]/90 p-4 sm:p-5 rounded-2xl border border-teal-500/40 space-y-4">
@@ -1564,8 +1139,6 @@ export const CursosTab: React.FC<CursosTabProps> = ({ initialVerifyData, onClear
               </div>
             )}
 
-=======
->>>>>>> Stashed changes
             {/* Botón Completar y Avanzar */}
             <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-2">
               <button
@@ -1754,17 +1327,10 @@ export const CursosTab: React.FC<CursosTabProps> = ({ initialVerifyData, onClear
                   </button>
                 </div>
 
-<<<<<<< Updated upstream
                 {/* Vista previa usando directamente tu plantilla en limpio embebida */}
                 <div className="relative max-w-4xl mx-auto aspect-[1024/722] rounded-2xl shadow-2xl overflow-hidden border border-slate-300 select-none bg-white">
                   <img
                     src={CERTIFICATE_TEMPLATE_DATA_URI}
-=======
-                {/* Vista previa usando directamente tu plantilla en limpio (/plantilla-certificado.jpg) */}
-                <div className="relative max-w-4xl mx-auto aspect-[1024/722] rounded-2xl shadow-2xl overflow-hidden border border-slate-300 select-none bg-white">
-                  <img
-                    src="/plantilla-certificado.jpg"
->>>>>>> Stashed changes
                     alt="Plantilla Oficial Enfermería Certificada"
                     className="absolute inset-0 w-full h-full object-fill pointer-events-none"
                   />
