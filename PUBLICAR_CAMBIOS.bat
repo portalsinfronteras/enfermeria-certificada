@@ -7,12 +7,25 @@ echo    PUBLICANDO ACTUALIZACIONES A ENFERMERIA CERTIFICADA
 echo ======================================================================
 echo.
 
-set "GIT_CMD=C:\Users\Amir Pantoja\AppData\Local\GitHubDesktop\app-3.6.9\resources\app\git\cmd\git.exe"
-if not exist "%GIT_CMD%" (
+set "GIT_CMD="
+for /d %%D in ("%LOCALAPPDATA%\GitHubDesktop\app-*") do (
+    if exist "%%D\resources\app\git\cmd\git.exe" (
+        set "GIT_CMD=%%D\resources\app\git\cmd\git.exe"
+    )
+)
+
+if not defined GIT_CMD (
     where git >nul 2>&1
     if %errorlevel% equ 0 (
         set "GIT_CMD=git"
     )
+)
+
+if not defined GIT_CMD (
+    echo [AVISO] Git por consola no encontrado automaticamente.
+    echo Abre GitHub Desktop directamente desde tu escritorio para hacer Commit y Push.
+    pause
+    exit /b 1
 )
 
 echo Usando ejecutable: %GIT_CMD%
@@ -23,7 +36,7 @@ echo [1/3] Preparando archivos modificados...
 
 echo.
 echo [2/3] Registrando cambios...
-"%GIT_CMD%" commit -m "Organizar NANDA-NOC-NIC por 13 dominios con tarjetas y ventana modal clinica para cada diagnostico"
+"%GIT_CMD%" commit -m "Centro de Notificaciones y Alertas Sanitarias, guardado de PLACE y Simulacros en perfil de usuario"
 
 echo.
 echo [3/3] Enviando a GitHub y Vercel...
