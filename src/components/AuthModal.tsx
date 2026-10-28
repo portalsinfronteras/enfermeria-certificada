@@ -63,19 +63,36 @@ export const AuthModal: React.FC = () => {
     }
   };
 
+  const resetFormFields = () => {
+    setName('');
+    setEmail('');
+    setPassword('');
+    setCep('');
+    setErrorMsg('');
+    setShowPassword(false);
+  };
+
+  const switchMode = (newMode: 'login' | 'register') => {
+    setMode(newMode);
+    resetFormFields();
+  };
+
   const handleStartSocial = (provider: 'google' | 'facebook') => {
     setErrorMsg('');
     setSocialModal(provider);
-    setSocialName(provider === 'google' ? 'Lic. Usuario de Google' : 'Lic. Usuario de Facebook');
-    setSocialEmail(provider === 'google' ? 'usuario.salud@gmail.com' : 'usuario.salud@facebook.com');
+    setSocialName('');
+    setSocialEmail('');
   };
 
   const handleConfirmSocial = async () => {
     if (!socialModal) return;
     setLoading(true);
+    const finalName = socialName.trim() || (socialModal === 'google' ? 'Lic. Colega de Google' : 'Lic. Colega de Facebook');
+    const finalEmail = socialEmail.trim() || (socialModal === 'google' ? 'usuario.enfermeria@gmail.com' : 'usuario.enfermeria@facebook.com');
+
     await loginWithSocial(socialModal, {
-      name: socialName.trim() || undefined,
-      email: socialEmail.trim() || undefined,
+      name: finalName,
+      email: finalEmail,
       avatar: socialModal === 'google'
         ? 'https://lh3.googleusercontent.com/a/default-user'
         : 'https://graph.facebook.com/4/picture?type=normal',
@@ -262,10 +279,7 @@ export const AuthModal: React.FC = () => {
             <div className="flex items-center gap-1 bg-[#051522] p-1 rounded-xl border border-[#11405c]">
               <button
                 type="button"
-                onClick={() => {
-                  setMode('login');
-                  setErrorMsg('');
-                }}
+                onClick={() => switchMode('login')}
                 className={`flex-1 py-1.5 rounded-lg text-xs font-bold transition cursor-pointer flex items-center justify-center gap-1.5 ${
                   mode === 'login'
                     ? 'bg-[#179c94] text-white shadow'
@@ -277,15 +291,17 @@ export const AuthModal: React.FC = () => {
               </button>
               <button
                 type="button"
-                onClick={() => {
-                  setMode('register');
-                  setErrorMsg('');
-                }}
+                onClick={() => switchMode('register')}
                 className={`flex-1 py-1.5 rounded-lg text-xs font-bold transition cursor-pointer flex items-center justify-center gap-1.5 ${
                   mode === 'register'
                     ? 'bg-[#179c94] text-white shadow'
                     : 'text-slate-400 hover:text-white'
                 }`}
+              >
+                <UserPlus className="w-3.5 h-3.5" />
+                <span>Crear Cuenta</span>
+              </button>
+            </div>
               >
                 <UserPlus className="w-3.5 h-3.5" />
                 <span>Crear Cuenta</span>
@@ -344,13 +360,23 @@ export const AuthModal: React.FC = () => {
                   </div>
                 </div>
 
-                <button
-                  type="submit"
-                  disabled={loading}
-                  className="w-full py-2.5 rounded-xl bg-gradient-to-r from-[#179c94] to-[#22b8af] hover:brightness-110 text-white font-bold text-xs sm:text-sm shadow-md shadow-[#22b8af]/25 cursor-pointer transition active:scale-95"
-                >
-                  {loading ? 'Comprobando...' : 'Entrar a mi Cuenta'}
-                </button>
+                <div className="flex items-center gap-2">
+                  <button
+                    type="submit"
+                    disabled={loading}
+                    className="flex-1 py-2.5 rounded-xl bg-gradient-to-r from-[#179c94] to-[#22b8af] hover:brightness-110 text-white font-bold text-xs sm:text-sm shadow-md shadow-[#22b8af]/25 cursor-pointer transition active:scale-95"
+                  >
+                    {loading ? 'Comprobando...' : 'Entrar a mi Cuenta'}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={resetFormFields}
+                    className="px-3 py-2.5 rounded-xl border border-[#144863] hover:border-slate-500 text-slate-400 hover:text-white text-xs font-bold transition cursor-pointer"
+                    title="Limpiar campos"
+                  >
+                    Limpiar
+                  </button>
+                </div>
               </form>
             ) : (
               <form onSubmit={handleRegisterSubmit} className="space-y-3">
@@ -428,27 +454,50 @@ export const AuthModal: React.FC = () => {
                   </div>
                 </div>
 
-                <button
-                  type="submit"
-                  disabled={loading}
-                  className="w-full py-2.5 rounded-xl bg-gradient-to-r from-[#179c94] to-[#22b8af] hover:brightness-110 text-white font-bold text-xs sm:text-sm shadow-md shadow-[#22b8af]/25 cursor-pointer transition active:scale-95"
-                >
-                  {loading ? 'Creando cuenta...' : 'Crear mi Cuenta Gratis'}
-                </button>
+                <div className="flex items-center gap-2">
+                  <button
+                    type="submit"
+                    disabled={loading}
+                    className="flex-1 py-2.5 rounded-xl bg-gradient-to-r from-[#179c94] to-[#22b8af] hover:brightness-110 text-white font-bold text-xs sm:text-sm shadow-md shadow-[#22b8af]/25 cursor-pointer transition active:scale-95"
+                  >
+                    {loading ? 'Creando cuenta...' : 'Crear mi Cuenta Gratis'}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={resetFormFields}
+                    className="px-3 py-2.5 rounded-xl border border-[#144863] hover:border-slate-500 text-slate-400 hover:text-white text-xs font-bold transition cursor-pointer"
+                    title="Limpiar todos los campos del formulario"
+                  >
+                    Limpiar
+                  </button>
+                </div>
               </form>
             )}
 
-            {/* Ventajas de registrarse */}
-            <div className="pt-2 border-t border-[#12425a] space-y-1 text-[11px] text-slate-300">
-              <p className="font-bold text-white flex items-center gap-1.5">
-                <Bookmark className="w-3.5 h-3.5 text-[#22b8af]" />
-                ¿Qué puedes hacer con tu cuenta?
+            {/* Ventajas y Beneficios de registrarse */}
+            <div className="pt-3 border-t border-[#12425a] space-y-2 text-[11px] text-slate-300">
+              <p className="font-extrabold text-[#42edd8] flex items-center gap-1.5 uppercase tracking-wide text-[10px]">
+                <Sparkles className="w-3.5 h-3.5 text-[#22b8af]" />
+                Beneficios exclusivos al registrarte:
               </p>
-              <ul className="space-y-0.5 text-slate-400 pl-4 list-disc">
-                <li>Guardar diagnósticos y dosis pediátricas en tu libreta.</li>
-                <li>Tus datos se mantienen guardados y disponibles en tu dispositivo.</li>
-                <li>Acceso gratuito y seguro.</li>
-              </ul>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-[11px]">
+                <div className="p-2 rounded-lg bg-[#05141f] border border-[#113a52] space-y-0.5">
+                  <span className="font-bold text-white block">📓 Libreta Clínica 24/7</span>
+                  <span className="text-slate-400 text-[10px]">Guarda diagnósticos, dosis calculadas y PLACE.</span>
+                </div>
+                <div className="p-2 rounded-lg bg-[#05141f] border border-[#113a52] space-y-0.5">
+                  <span className="font-bold text-white block">📊 Simulacros ENAE</span>
+                  <span className="text-slate-400 text-[10px]">Historial de puntajes y seguimiento de aciertos.</span>
+                </div>
+                <div className="p-2 rounded-lg bg-[#05141f] border border-[#113a52] space-y-0.5">
+                  <span className="font-bold text-white block">🎓 Certificados con QR</span>
+                  <span className="text-slate-400 text-[10px]">Descarga tus constancias en PDF en cualquier momento.</span>
+                </div>
+                <div className="p-2 rounded-lg bg-[#05141f] border border-[#113a52] space-y-0.5">
+                  <span className="font-bold text-white block">⚡ 100% Gratuito y Seguro</span>
+                  <span className="text-slate-400 text-[10px]">Tus apuntes se mantienen disponibles en tu dispositivo.</span>
+                </div>
+              </div>
             </div>
           </div>
         )}
